@@ -15,6 +15,8 @@ body{font-family:var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0p
 button{font-family:inherit;color:var(--ink)}
 button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
+.shake-coach{position:absolute;z-index:8;left:50%;bottom:14%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);padding:15px 34px 15px 18px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.92);color:var(--ink);box-shadow:0 8px 28px rgba(29,27,38,.1);text-align:center;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.shake-coach p{margin:0;font-size:13px;line-height:1.55;word-break:keep-all}.shake-coach strong,.shake-coach p span{display:block}.shake-coach .btn{margin-top:10px}.shake-close{position:absolute;top:5px;right:5px;border:0;background:none;padding:4px;cursor:pointer;font-size:18px;line-height:1}
 .language-toggle{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:max(16px,calc((100vw - 1040px)/2));z-index:30;display:flex;align-items:center;gap:6px;min-height:34px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--white);font:500 12px var(--f-body);cursor:pointer}
 .language-toggle [data-lang]{opacity:.45}.language-toggle .active{opacity:1;font-weight:700}
 html[lang="en"] .is-story .savebtns .btn{font-size:12px}
@@ -242,6 +244,7 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
   </section>
   <section class="preview" aria-label="포스터 미리보기">
     <canvas id="poster" role="img" aria-label="포스터 미리보기"></canvas>
+    <aside class="shake-coach" id="shakeCoach" hidden aria-live="polite"><p><strong id="shakeLead">휴대폰을 가볍게 흔들어보세요.</strong><span id="shakeSub">새로운 무드를 만나보세요.</span></p><button type="button" class="btn sm" id="shakeEnable">흔들기 켜기</button><button type="button" class="shake-close" id="shakeClose" aria-label="흔들기 안내 닫기">×</button></aside>
     <p class="preview-hint">터치한 곳으로 빛망울이 이동하며 새로운 감정 표현이 나타나요.</p>
   </section>
   <button type="button" class="mini" id="mini" aria-label="포스터로 돌아가기" tabindex="-1"><canvas id="miniCv"></canvas></button>
@@ -422,7 +425,15 @@ const UI_EN={
   "아래 버튼을 누른 뒤 ‘이미지 저장’을 선택하세요. 저장한 결과는 사진 앱에서 확인해 주세요.": "Tap the button below, then choose “Save Image”. Find your saved file in the Photos app.",
   "아래 버튼을 누른 뒤 ‘비디오 저장’을 선택하세요. 저장한 결과는 사진 앱에서 확인해 주세요.": "Tap the button below, then choose “Save Video”. Find your saved file in the Photos app.",
   "이 브라우저에서는 소리를 시작할 수 없어요.": "This browser could not start audio.",
-  "영상이 준비됐어요.": "Your video is ready."
+  "영상이 준비됐어요.": "Your video is ready.",
+  "휴대폰을 가볍게 흔들어보세요.": "Give your phone a gentle shake.",
+  "새로운 무드를 만나보세요.": "Discover a new mood.",
+  "흔들기 켜기": "Enable shake",
+  "흔들기 안내 닫기": "Dismiss shake tip",
+  "흔들기 권한이 꺼져 있어요.": "Motion access is off.",
+  "‘색 바꾸기’로 새로운 무드를 만나보세요.": "Tap “Colors” to discover a new mood.",
+  "연결 중…": "Connecting…",
+  "빛망울을 1~3개 골라 주세요": "Choose 1–3 orbs"
 };
 const UI_KO=Object.fromEntries(Object.entries(UI_EN).map(([ko,en])=>[en,ko]));
 const originalUI=text=>UI_KO[text]||text;
@@ -430,7 +441,7 @@ const tr=text=>{const ko=originalUI(text);return lang==='en'?(UI_EN[ko]||text):k
 const L=(ko,en)=>lang==='en'?en:ko;
 const staticText=[],staticAttrs=[];
 function captureLanguageNodes(){
-  const skip='#saveImg,#vidLabel,#count,#moodName,#presets,#ground,#soundBtnD,#status,#formats,#sheetMsg,#toast,#pause';
+  const skip='#saveImg,#vidLabel,#count,#moodName,#presets,#ground,#soundBtnD,#status,#formats,#sheetMsg,#toast,#pause,#shakeLead,#shakeSub,#shakeEnable';
   const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let node;
   while(node=walk.nextNode()){
     const key=node.nodeValue.trim();if(UI_EN[key]&&!node.parentElement.closest('script,style,'+skip))staticText.push({node,key,raw:node.nodeValue});
@@ -452,7 +463,7 @@ function setLanguage(next,persist=true){
   statusEl.textContent=tr(statusEl.textContent);sheetMsg.textContent=tr(sheetMsg.textContent);document.getElementById('toast').textContent=tr(document.getElementById('toast').textContent);
   document.querySelectorAll('.sheet-prev [aria-label],.sheet-prev img').forEach(el=>{if(el.hasAttribute('aria-label'))el.setAttribute('aria-label',tr(el.getAttribute('aria-label')));if(el.alt)el.alt=tr(el.alt);});
   if(persist)try{localStorage.setItem('mindful-day-language',lang);}catch(err){}
-  fit=null;resize();drawPoster();drawMobileBackdrop();
+  updateShakeCoach();fit=null;resize();drawPoster();drawMobileBackdrop();
 }
 
 // ================= 색 유틸 =================
@@ -1403,9 +1414,9 @@ function drawSceneOrbs(ctx,W,H){const T=reduce?0:clock*S.speed;
   chosen.forEach((idx,i)=>{const pl=placements[i];if(!pl)return;
     const drift=reduce?0:pl.touchAt==null?1:clamp((performance.now()-pl.touchAt-TOUCH_MOVE_MS-TOUCH_HOLD_MS)/700);
     const a=pl.amp*S.drift*drift, x=pl.x+Math.sin(T*pl.f1*TAU+pl.ph1)*a, y=pl.y+Math.cos(T*pl.f2*TAU+pl.ph2)*a;
-    const sc=(pl.cs??SZ()[i]*pl.tj)*(1+.04*S.drift*Math.sin(T*.8+pl.ph3));
-    pl.lx=x;pl.ly=y;pl.lr=sc*.38;
-    drawOrb(ctx,tiles[idx].cur,x*W,y*H,sc*W);});
+    const sc=(pl.cs??SZ()[i]*pl.tj)*(1+.04*S.drift*Math.sin(T*.8+pl.ph3)),jolt=shakeOffset(i);
+    pl.lx=x+jolt.x;pl.ly=y+jolt.y;pl.lr=sc*.38;
+    drawOrb(ctx,tiles[idx].cur,pl.lx*W,pl.ly*H,sc*W);});
 }
 function drawPosterText(ctx,W,H,G){
   drawFeeling(ctx,W,H);
@@ -1416,7 +1427,7 @@ function drawPosterText(ctx,W,H,G){
   const fz=W*.026;ctx.font=fontStr(S.fs,'s',fz);ctx.globalAlpha=.8;ctx.textBaseline='alphabetic';
   footer(ctx,W,H,pad,fz,id=>fontStr(S.fs,'s',id),stampText(),colorNames());
   if(!chosen.length){ctx.textBaseline='middle';ctx.textAlign='center';ctx.font=fontStr('pretendard','s',W*.036);
-    ctx.fillText('빛망울을 1~3개 골라 주세요',W/2,H*.6);ctx.textAlign='left';}
+    ctx.fillText(tr('빛망울을 1~3개 골라 주세요'),W/2,H*.6);ctx.textAlign='left';}
 }
 // 저장/녹화는 항상 원래 9:16 포스터 캔버스를 사용. 모바일 배경과 메뉴는 포함하지 않음.
 function renderPoster(ctx,W,H,withText=true){const G=groundColors();
@@ -1498,7 +1509,8 @@ const MIX=['deep','calm','vivid','dusk','deep','calm'];
 let moodIdx=2;
 const toneOf=id=>MOODS.find(m=>m.id===id).t;
 const MODES=['analog','comp','triad','mono'];
-function cycleColors(){moodIdx=(moodIdx+1)%MOODS.length;const m=MOODS[moodIdx],h0=R(0,360);KEY=KEY_BY_HUE[Math.floor(h0/30)%12];const modes=[...MODES,'analog','comp'].sort(()=>Math.random()-.5);
+function cycleColors(){applyMood((moodIdx+1)%MOODS.length);}
+function applyMood(index){moodIdx=index;const m=MOODS[moodIdx],h0=R(0,360);KEY=KEY_BY_HUE[Math.floor(h0/30)%12];const modes=[...MODES,'analog','comp'].sort(()=>Math.random()-.5);
   tiles.forEach((t,i)=>{t.combo={mode:modes[i],h:(h0+i*60+R(-12,12)+360)%360,tone:m.t==='mix'?toneOf(MIX[i]):m.t};retarget(t,1.2);});
   S.combo=tiles[chosen[0]??0].combo;updateColorUI();showToast(m.name+' 조합');if(typeof strum==='function')strum();if(feel)showFeeling(chosen.includes(feel.idx)?feel.idx:chosen[0]);}
 let toastT=0;
@@ -1573,7 +1585,7 @@ function touchPoster(e){
   const t=tiles[chosen[hit]];t.combo={mode:pick(MODES),h:R(0,360),tone:t.combo.tone};retarget(t,.9);
   strum([hit]);
   showFeeling(chosen[hit]);
-  updateColorUI();
+  offerShakeAfterTouch();updateColorUI();
 }
 pc.addEventListener('pointerdown',touchPoster);
 document.addEventListener('pointerdown',e=>{
@@ -1932,7 +1944,7 @@ $('copyCode').addEventListener('click',()=>{const code=buildCode(),done='코드�
 // ================= 모바일 스토리형 배치 =================
 // 같은 조작 요소를 화면 폭에 따라 옮겨 씀 (PC: 단계 카드 / 모바일: 레일·시트·아래 막대)
 const mq=matchMedia('(max-width:859px)');
-const MOVES=[[pc,'posterSlot'],[tilesBox,'railTiles'],[$('fPreset'),'sbMotion'],[$('saveBox'),'storyBar']];
+const MOVES=[[pc,'posterSlot'],[$('shakeCoach'),'storyStage'],[tilesBox,'railTiles'],[$('fPreset'),'sbMotion'],[$('saveBox'),'storyBar']];
 MOVES.forEach(([el])=>{const ph=document.createComment('home');el.before(ph);el._home=ph;});
 let curSheet=null;
 // 펼침 창은 아래 메뉴 영역 안에서 열림. 같은 버튼이나 포스터를 다시 누르면 닫힘
@@ -1952,6 +1964,74 @@ if(mq.addEventListener)mq.addEventListener('change',relocate);else mq.addListene
 let guideGone=false;
 function hideGuide(){guideGone=true;const guide=$('guide');guide.classList.add('gone');guide.setAttribute('aria-hidden','true');}
 // 모바일 첫 안내는 포스터를 처음 터치할 때까지 유지. 첫 터치도 바로 작품에 반영.
+
+// ================= 흔들어서 새 무드 =================
+const shake={enabled:false,busy:false,denied:false,offered:false,hidden:false,offerTimer:0,hideTimer:0,peak:null,gravity:null,last:-Infinity,start:-Infinity,strength:0};
+const SHAKE_MS=1450,SHAKE_COOLDOWN=2300;
+function mobileMotionAvailable(){return typeof window.DeviceMotionEvent!=='undefined'&&((navigator.maxTouchPoints||0)>0||matchMedia('(pointer:coarse)').matches);}
+function updateShakeCoach(){
+  $('shakeLead').textContent=tr(shake.denied?'흔들기 권한이 꺼져 있어요.':'휴대폰을 가볍게 흔들어보세요.');
+  $('shakeSub').textContent=tr(shake.denied?'‘색 바꾸기’로 새로운 무드를 만나보세요.':'새로운 무드를 만나보세요.');
+  const button=$('shakeEnable');button.hidden=shake.enabled||shake.denied;button.disabled=shake.busy;
+  button.textContent=tr(shake.busy?'연결 중…':'흔들기 켜기');
+}
+function dismissShakeCoach(){shake.hidden=true;clearTimeout(shake.offerTimer);clearTimeout(shake.hideTimer);$('shakeCoach').hidden=true;}
+function showShakeCoach(){if(shake.hidden||document.hidden)return;updateShakeCoach();$('shakeCoach').hidden=false;
+  if(shake.enabled){clearTimeout(shake.hideTimer);shake.hideTimer=setTimeout(dismissShakeCoach,9000);}
+}
+function connectShake(){if(shake.enabled)return;shake.enabled=true;shake.denied=false;shake.peak=null;shake.gravity=null;
+  window.addEventListener('devicemotion',handleDeviceShake,{passive:true});updateShakeCoach();
+}
+async function enableShake(){
+  if(shake.busy||shake.enabled)return;shake.busy=true;updateShakeCoach();
+  try{
+    const Motion=window.DeviceMotionEvent;
+    const permission=typeof Motion.requestPermission==='function'?await Motion.requestPermission():'granted';
+    if(permission==='granted'){connectShake();showShakeCoach();}
+    else{shake.denied=true;updateShakeCoach();}
+  }catch(err){shake.denied=true;updateShakeCoach();}
+  finally{shake.busy=false;updateShakeCoach();}
+}
+function offerShakeAfterTouch(){
+  if(shake.offered||!mobileMotionAvailable())return;shake.offered=true;
+  // iPhone의 권한 요청은 안내의 명시적인 버튼 탭 안에서만 실행.
+  if(typeof window.DeviceMotionEvent.requestPermission!=='function')connectShake();
+  shake.offerTimer=setTimeout(showShakeCoach,1200);
+}
+function motionVector(event){
+  const xyz=a=>a&&[a.x,a.y,a.z].every(Number.isFinite)?[a.x,a.y,a.z]:null;
+  const direct=xyz(event.acceleration);if(direct)return direct;
+  const raw=xyz(event.accelerationIncludingGravity);if(!raw)return null;
+  if(!shake.gravity){shake.gravity=raw;return null;}
+  // 중력을 저역 통과 필터로 분리해, 단순한 기울이기나 자세 변경의 오작동을 줄임.
+  shake.gravity=shake.gravity.map((v,i)=>v*.85+raw[i]*.15);
+  return raw.map((v,i)=>v-shake.gravity[i]);
+}
+function handleDeviceShake(event){
+  if(!shake.enabled||document.hidden)return;
+  const v=motionVector(event);if(!v)return;const now=performance.now(),m=Math.hypot(...v);
+  if(now-shake.last<SHAKE_COOLDOWN)return;
+  if(m<8.5){if(shake.peak&&now-shake.peak.time>750)shake.peak=null;return;}
+  const peak=shake.peak;
+  if(peak&&now-peak.time>=90&&now-peak.time<=750&&v.reduce((s,n,i)=>s+n*peak.v[i],0)<-.15*m*peak.m){
+    shake.peak=null;if(imageBusy||vstate==='prep'||vstate==='making')return;
+    shake.last=now;randomShakeMood(Math.max(m,peak.m));
+  }else if(!peak||now-peak.time>750)shake.peak={v,m,time:now};
+}
+function randomShakeMood(force=12){
+  if(!chosen.length)toggle(0);
+  shake.start=performance.now();shake.strength=clamp(force/20,.55,1);
+  const choices=MOODS.map((_,i)=>i).filter(i=>i!==moodIdx);applyMood(pick(choices));
+  dismissShakeCoach();
+}
+function shakeOffset(slot,now=performance.now()){
+  const t=(now-shake.start)/SHAKE_MS;if(reduce||t<0||t>=1)return{x:0,y:0};
+  const envelope=Math.sin(Math.PI*t)*(1-t)*shake.strength,phase=slot*1.1;
+  return{x:Math.sin(t*Math.PI*10+phase)*.065*envelope,y:Math.sin(t*Math.PI*8+phase+.6)*.035*envelope};
+}
+$('shakeEnable').addEventListener('click',enableShake);
+$('shakeClose').addEventListener('click',dismissShakeCoach);
+document.addEventListener('visibilitychange',()=>{shake.peak=null;shake.gravity=null;if(document.hidden){clearTimeout(shake.offerTimer);$('shakeCoach').hidden=true;}});
 
 // ================= 시작 =================
 relocate();
