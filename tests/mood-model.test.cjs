@@ -74,13 +74,32 @@ test('UI uses automatic backgrounds, cyclic moods and current-color analysis',()
  assert.ok(!html.includes('moodSceneScores'));assert.ok(!html.includes('baseFeelingWeights'));
 });
 
+function moodSwitchSandbox(){
+ const synced=[],placementCalls=[],ctx={synced,placementCalls,placements:[{touchActive:true,scaleTween:{from:1}}],leaving:[],MindfulMood:model,MOODS:model.MOODS,S:{szL:2.5,szM:.8,szS:.25},moodIdx:0,KEY:0,KEY_BY_HUE:Array(12).fill(0),rgb2hsl:()=>[0,1,.5],hex2rgb:()=>[0,0,0],paletteCombo:p=>({paletteId:p.id}),tiles:Array.from({length:5},()=>({})),chosen:[0],mkPl:(role,others,jitter)=>{placementCalls.push({role,others,jitter});return {sizeRole:role,tj:1,x:.3,y:.4,tx:.3,ty:.4,cs:null};},renderGround(){},syncSlider:k=>synced.push(k),retarget(){},performance:{now:()=>0},moodTransitionUntil:0,feel:null,prevFeel:null,syncFeelingStatus(){},updateColorUI(){},refreshTiles(){},showToast(){},L:k=>k,clearTimeout(){},feelingTimer:0,setTimeout:()=>0,showPrimaryMood(){}};
+ vm.createContext(ctx);vm.runInContext(functionSource(html,'applyMood')+'\n'+functionSource(html,'cycleColors'),ctx);return ctx;
+}
 test('user-approved mood settings are initial values and replace custom edits on every mood switch',()=>{
  const expected=[{hue:0,sat:1.26,light:-.16,contrast:1},{hue:0,sat:1.2,light:-.1,contrast:.78},{hue:-38,sat:1,light:-.21,contrast:.7},{hue:-40,sat:1,light:0,contrast:1},{hue:0,sat:1,light:-.1,contrast:1}];
  const fresh=sandbox();for(const key of Object.keys(expected[0]))assert.equal(fresh.S[key],expected[0][key]);
- const synced=[],ctx={placements:[{touchActive:true,scaleTween:{from:1}}],MindfulMood:model,MOODS:model.MOODS,S:{},moodIdx:0,KEY:0,KEY_BY_HUE:Array(12).fill(0),rgb2hsl:()=>[0,1,.5],hex2rgb:()=>[0,0,0],paletteCombo:p=>({paletteId:p.id}),tiles:Array.from({length:5},()=>({})),chosen:[0],renderGround(){},syncSlider:k=>synced.push(k),retarget(){},performance:{now:()=>0},moodTransitionUntil:0,feel:null,prevFeel:null,syncFeelingStatus(){},updateColorUI(){},refreshTiles(){},showToast(){},L:k=>k,clearTimeout(){},feelingTimer:0,setTimeout:()=>0,showPrimaryMood(){}};
- vm.createContext(ctx);vm.runInContext(functionSource(html,'applyMood'),ctx);
- for(let i=0;i<5;i++){Object.assign(ctx.S,{hue:120,sat:.1,light:.3,contrast:1.8});ctx.applyMood(i);for(const key of Object.keys(expected[i]))assert.equal(ctx.S[key],expected[i][key],model.MOODS[i].id+' '+key);assert.equal(ctx.S.ground,model.MOODS[i].id);assert.equal(ctx.placements[0].touchActive,false);assert.equal(ctx.placements[0].scaleTween,null);assert.equal(synced.length,(i+1)*4);}
+ const ctx=moodSwitchSandbox();
+ for(let i=0;i<5;i++){Object.assign(ctx.S,{hue:120,sat:.1,light:.3,contrast:1.8});ctx.applyMood(i);for(const key of Object.keys(expected[i]))assert.equal(ctx.S[key],expected[i][key],model.MOODS[i].id+' '+key);assert.equal(ctx.S.ground,model.MOODS[i].id);assert.equal(ctx.placements[0].touchActive,false);assert.equal(ctx.placements[0].scaleTween,null);assert.equal(ctx.synced.length,(i+1)*4);}
  const returned=model.defaultsFor('joy');returned.sat=0;assert.equal(model.defaultsFor('joy').sat,1.26);
+});
+test('every mood change clears prior selections and touch motion, selecting only its first subtype at baseline size',()=>{
+ for(const count of [0,1,2,3])for(let mood=0;mood<5;mood++){
+  const ctx=moodSwitchSandbox();ctx.chosen=[4,3,2].slice(0,count);ctx.placements=ctx.chosen.map((_,i)=>({sizeRole:2-i,tj:1.1,cs:1.2,tx:.8,ty:.7,x:.6,y:.5,touchActive:true,scaleTween:{from:1,t0:10},touchMove:{x:.6,y:.5,t0:10},touchAt:10,shakeMotion:{active:true}}));
+  const previous=ctx.placements;ctx.leaving=[{idx:1,pl:{cs:.2}}];ctx.applyMood(mood);
+  assert.deepEqual([...ctx.chosen],[0]);assert.equal(ctx.placements.length,1);assert.equal(ctx.leaving.length,0);assert.ok(!previous.includes(ctx.placements[0]));
+  const pl=ctx.placements[0];assert.equal(pl.x,.56);assert.equal(pl.y,.63);assert.equal(pl.tx,.56);assert.equal(pl.ty,.63);assert.equal(pl.cs,ctx.S.szL);assert.equal(pl.sizeRole,0);assert.equal(pl.tj,1);assert.equal(pl.touchActive,false);assert.equal(pl.scaleTween,null);assert.equal(pl.touchMove,null);assert.ok(!pl.shakeMotion);
+  assert.equal(ctx.moodIdx,mood);assert.equal(ctx.S.combo.paletteId,model.MOODS[mood].palettes[0].id);assert.deepEqual(Array.from(ctx.tiles,t=>t.combo.paletteId),model.MOODS[mood].palettes.map(p=>p.id));
+  const call=ctx.placementCalls.at(-1);assert.equal(call.role,0);assert.equal(call.others.length,0);assert.deepEqual([...call.jitter],[1,1]);
+ }
+ const ctx=moodSwitchSandbox();ctx.moodIdx=4;ctx.chosen=[2,3,4];ctx.placements=[{touchActive:true,touchMove:{}},{},{}];ctx.cycleColors();assert.equal(ctx.moodIdx,0);assert.deepEqual([...ctx.chosen],[0]);assert.equal(ctx.S.combo.paletteId,'joy.red');assert.equal(ctx.placements[0].touchMove,null);
+});
+test('invalid mood indices leave selections, active touch and settings unchanged',()=>{
+ const ctx=moodSwitchSandbox();ctx.chosen=[2,4];ctx.placements=[{touchActive:true,touchMove:{x:.2,y:.3},scaleTween:{from:1}},{}];ctx.leaving=[{idx:1}];
+ const before=JSON.stringify({chosen:ctx.chosen,placements:ctx.placements,leaving:ctx.leaving,settings:ctx.S,mood:ctx.moodIdx,tiles:ctx.tiles});
+ for(const index of [-1,5,1.5,NaN,undefined,'1']){ctx.applyMood(index);assert.equal(JSON.stringify({chosen:ctx.chosen,placements:ctx.placements,leaving:ctx.leaving,settings:ctx.S,mood:ctx.moodIdx,tiles:ctx.tiles}),before);assert.equal(ctx.placementCalls.length,0);assert.equal(ctx.synced.length,0);}
 });
 
 test('approved defaults keep labels; large changes are measured relative to each mood default',()=>{

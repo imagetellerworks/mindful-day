@@ -1306,7 +1306,9 @@ const $=id=>document.getElementById(id);
 function cycleColors(){applyMood((moodIdx+1)%MOODS.length);}
 function applyMood(index){
  if(!Number.isInteger(index)||!MOODS[index])return;
- placements.forEach(pl=>{pl.touchActive=false;pl.scaleTween=null;});
+ // Each mood begins with its first subtype and a fresh, unexpanded orb.
+ chosen=[0];leaving=[];
+ placements=[Object.assign(mkPl(0,[],[1,1]),{x:.56,y:.63,tx:.56,ty:.63,cs:S.szL,touchActive:false,scaleTween:null,touchMove:null})];
  moodIdx=index;const m=MOODS[index];S.ground=m.background.id;renderGround();
  KEY=KEY_BY_HUE[Math.floor(rgb2hsl(hex2rgb(m.palettes[0].variants[0].colors[1]))[0]/30)%12];
  // A new mood starts with its authored colors; custom hue/contrast cannot leak
