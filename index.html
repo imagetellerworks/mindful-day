@@ -260,7 +260,7 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
       <div class="sheet" id="sheet" hidden>
         <div class="sheet-prev" id="sheetPrev"></div>
         <p class="sheet-msg" id="sheetMsg"></p>
-        <div class="sheet-btns"><button type="button" class="btn sm primary" id="shShare">공유하기 (인스타그램 등)</button><button type="button" class="btn sm" id="shSave">파일로 저장</button><button type="button" class="btn sm" id="shClose">닫기</button></div>
+        <div class="sheet-btns"><button type="button" class="btn sm primary" id="shShare">사진첩에 저장</button><button type="button" class="btn sm" id="shClose">닫기</button></div>
       </div>
       </div>
     </section>
@@ -690,7 +690,12 @@ const say=t=>{statusEl.textContent=t;};
 const saveErr=err=>err&&err.code==='declined'?'저장을 취소했어요.':err&&err.code==='rate_limited'?'저장 창이 이미 떠 있어요. 잠시 후 다시 눌러 주세요.':'저장하지 못했어요. 다시 눌러 주세요.';
 function download(blob,filename){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);}
 
-const sheet=$('sheet'), sheetPrev=$('sheetPrev'), sheetMsg=$('sheetMsg'), shShare=$('shShare'), shSave=$('shSave');
+const sheet=$('sheet'), sheetPrev=$('sheetPrev'), sheetMsg=$('sheetMsg'), shShare=$('shShare');
+const applePhotos=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function saveMenuHint(kind){
+  if(applePhotos)return `아래 버튼을 누른 뒤 ‘${kind==='image'?'이미지':'비디오'} 저장’을 선택하세요. 저장한 결과는 사진 앱에서 확인해 주세요.`;
+  return '아래 버튼을 누른 뒤 저장할 앱을 선택하세요. 기기에 따라 저장 메뉴가 다를 수 있어요.';
+}
 let sheetFile=null, sheetURL='';
 function closeSheet(){sheet.hidden=true;sheetPrev.innerHTML='';sheetFile=null;if(sheetURL){URL.revokeObjectURL(sheetURL);sheetURL='';}}
 function openSheet(blob,filename,kind,mode){
@@ -698,14 +703,13 @@ function openSheet(blob,filename,kind,mode){
   if(kind==='image'||mode==='link'){
     const fr=new FileReader();fr.onload=()=>{const img=new Image();img.src=fr.result;img.alt='저장할 포스터';sheetPrev.appendChild(img);};fr.readAsDataURL(blob);
   }else{sheetURL=URL.createObjectURL(blob);const v=document.createElement('video');v.src=sheetURL;v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.controls=true;sheetPrev.appendChild(v);}
-  if(mode==='link'){shShare.hidden=true;shSave.hidden=true;
+  if(mode==='link'){shShare.hidden=true;
     sheetMsg.textContent='이미지를 길게 눌러 ‘사진 앱에 저장’을 고르세요. 컴퓨터에서는 오른쪽 클릭 후 ‘이미지를 다른 이름으로 저장’을 고르세요.';}
-  else{shShare.hidden=false;shSave.hidden=false;sheetMsg.textContent=`${kind==='image'?'이미지':'영상'}가 준비됐어요. 공유하기에서 인스타그램을 고르거나 파일로 저장하세요.`;}
+  else{shShare.hidden=false;sheetMsg.textContent=saveMenuHint(kind);}
   sheet.hidden=false;}
 shShare.addEventListener('click',async()=>{if(!sheetFile)return;
-  try{await navigator.share({files:[new File([sheetFile.blob],sheetFile.filename,{type:sheetFile.blob.type})],title:'mindful day'});say('공유 창을 열었어요.');}
-  catch(err){say(err&&err.name==='AbortError'?'공유를 취소했어요.':'공유하지 못했어요. 파일로 저장해 주세요.');}});
-shSave.addEventListener('click',()=>{if(!sheetFile)return;download(sheetFile.blob,sheetFile.filename);say('파일로 저장했어요.');});
+  try{await navigator.share({files:[new File([sheetFile.blob],sheetFile.filename,{type:sheetFile.blob.type})],title:'mindful day'});say('사진 앱이나 선택한 앱에서 저장 결과를 확인해 주세요.');}
+  catch(err){say(err&&err.name==='AbortError'?'저장 메뉴를 닫았어요.':'저장 메뉴를 열지 못했어요. 다시 눌러 주세요.');}});
 $('shClose').addEventListener('click',closeSheet);
 
 async function deliver(blob,filename,kind){
@@ -765,7 +769,7 @@ vidBtn.addEventListener('click',()=>{if(vstate==='rec')stopRec();else if(vstate=
 //       모든 빛망울이 지금 코드의 음만 연주 → 불협 없이 안정적으로 흐름. 포스터를 누르면 다음 코드로.
 // 색 = 악기: 빨강 따뜻한 현 · 노랑 첼레스타 · 녹색 마림바 · 파랑 유리 일렉트릭 피아노 · 보라 합창 패드
 // 크기 → 음량(약하게), 가로 → 좌우, 세로 → 맑기·잔향. 음은 미끄러지지 않고 정확한 음높이로만 울림
-let AC=null,AU=null;
+let AC=null,AU=null,audioSuspendTimer=0,audioRetryTimer=0,audioNeedsReset=false;
 const mtof=m=>440*Math.pow(2,(m-69)/12);
 const KEY_BY_HUE=[0,7,2,9,4,11,6,1,8,3,10,5];
 // 조성은 배색 세트(색 버튼)가 바뀔 때만 바뀜. 포스터를 눌러 색이 바뀌어도 같은 조 안에서 코드만 진행
@@ -784,6 +788,7 @@ function impulse(ac,sec){const n=Math.round(ac.sampleRate*sec),b=ac.createBuffer
   for(let c=0;c<2;c++){const d=b.getChannelData(c);let lp=0;for(let i=0;i<n;i++){const t=i/n;lp+=((Math.random()*2-1)-lp)*(.55-.4*t);d[i]=lp*Math.pow(1-t,2.2)*(i<ac.sampleRate*.012?0:1);}}return b;}
 function initAudio(){
   const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return false;
+  try{
   AC=new Ctx();const master=AC.createGain();master.gain.value=0;
   const comp=AC.createDynamicsCompressor();comp.threshold.value=-20;comp.ratio.value=2.5;comp.attack.value=.02;master.connect(comp);comp.connect(AC.destination);
   const recDest=AC.createMediaStreamDestination?AC.createMediaStreamDestination():null;if(recDest)comp.connect(recDest);
@@ -793,7 +798,14 @@ function initAudio(){
   const echoIn=AC.createGain();echoIn.gain.value=.2;echoIn.connect(echo);echo.connect(elp);elp.connect(fb);fb.connect(echo);elp.connect(conv);
   // 따뜻한 현 파형: 톱니에 가까운 배음 1/n
   const re=new Float32Array(18),im=new Float32Array(18);for(let n=1;n<18;n++)im[n]=1/n;const saw=AC.createPeriodicWave(re,im);
-  AU={master,send,echoIn,recDest,saw,drone:null,ci:-1,chordT:0,loops:[],started:false};return true;}
+  AU={master,send,echoIn,recDest,saw,drone:null,ci:-1,chordT:0,loops:[],started:false};
+  const ctx=AC;ctx.addEventListener('statechange',()=>{
+    if(ctx!==AC)return;
+    if(ctx.state==='running')audioRunning(ctx);
+    else if(AU)AU.started=false;
+    soundUI();
+  });return true;
+  }catch(err){resetAudio();return false;}}
 // 지금 코드 정보
 function harmony(){const i0=chosen[0];let h=300,s=.7,l=.5;
   if(i0!=null){[h,s,l]=rgb2hsl(tf(tiles[i0].to.layers[1].col));}
@@ -854,21 +866,68 @@ function updateAudio(){if(!AC||!AU||AC.state!=='running')return;const t=AC.curre
     for(let k=0;k<3;k++){const id=i*3+k;let lp=AU.loops[id];if(!lp||lp.fam!==v.fam){lp=AU.loops[id]={fam:v.fam,next:t+.3+Math.random()*per[k]*dens*.5,n:0};}
       if(lp.next<=t+.05){play(v.fam,Math.max(lp.next,t),chordNote(v,H,k+lp.n),v,clamp(.75+.12*v.size,.75,1.05)/Math.max(1,chosen.length*.75));lp.n++;lp.next=Math.max(lp.next,t)+per[k]*dens;}}});
   for(let id=chosen.length*3;id<AU.loops.length;id++)AU.loops[id]=null;}
-function soundUI(){const on=S.sound;
-  const mb=$('soundBtn');mb.setAttribute('aria-pressed',String(on));mb.setAttribute('aria-label',on?'소리 끄기':'소리 켜기');mb.querySelector('.ic').innerHTML=on?ICON_ON:ICON_OFF;
-  const db=$('soundBtnD');db.setAttribute('aria-pressed',String(on));db.innerHTML=(on?ICON_ON:ICON_OFF)+'<span>'+(on?'소리 끄기':'소리 켜기')+'</span>';}
-function setSound(on){
-  if(on&&!AC&&!initAudio()){say('이 브라우저에서는 소리를 낼 수 없어요.');S.sound=false;soundUI();return;}
-  S.sound=on;
-  if(AC){if(on)AC.resume();const t=AC.currentTime;AU.master.gain.cancelScheduledValues(t);AU.master.gain.setTargetAtTime(on?S.vol:0,t,.6);
-    if(!on)setTimeout(()=>{if(!S.sound&&AC)AC.suspend();},2500);}
-  soundUI();updateFormats();}
-// 소리는 켜진 상태로 시작. 브라우저 정책상 첫 터치·클릭·키 입력 때 실제로 울리기 시작함
-function unlockAudio(){if(S.sound&&(!AC||AC.state!=='running'))setSound(true);}
-['pointerdown','touchend','click','keydown'].forEach(ev=>document.addEventListener(ev,unlockAudio,{capture:true,passive:true}));
-$('soundBtn').addEventListener('click',e=>{if(curSheet)closeMSheet();setSound(!(S.sound&&AC&&AC.state==='running'));});
-$('soundBtnD').addEventListener('click',()=>setSound(!(S.sound&&AC&&AC.state==='running')));
-document.addEventListener('visibilitychange',()=>{if(!AC)return;if(document.hidden)AC.suspend();else if(S.sound)AC.resume();});
+function soundUI(){const on=!!(S.sound&&AC&&AC.state==='running'&&!document.hidden);
+  const label=on?'소리 끄기':S.sound&&AC?'소리 다시 켜기':'소리 켜기';
+  const mb=$('soundBtn');mb.setAttribute('aria-pressed',String(on));mb.setAttribute('aria-label',label);mb.querySelector('.ic').innerHTML=on?ICON_ON:ICON_OFF;
+  const db=$('soundBtnD');db.setAttribute('aria-pressed',String(on));db.innerHTML=(on?ICON_ON:ICON_OFF)+'<span>'+label+'</span>';}
+function audioSession(on){
+  // 지원하는 Safari에서는 음악 재생 세션을 사용. 미지원 브라우저는 기존 Web Audio 경로를 사용.
+  try{if(navigator.audioSession)navigator.audioSession.type=on?'playback':'auto';}catch(err){}
+}
+function resetAudio(){const old=AC;AC=null;AU=null;audioNeedsReset=false;
+  clearTimeout(audioRetryTimer);clearTimeout(audioSuspendTimer);
+  if(old&&old.state!=='closed'){try{Promise.resolve(old.close()).catch(()=>{});}catch(err){}}
+}
+function audioRunning(ctx){
+  if(ctx!==AC||!AU||!S.sound||document.hidden||ctx.state!=='running')return;
+  clearTimeout(audioRetryTimer);audioNeedsReset=false;
+  const t=ctx.currentTime;AU.master.gain.cancelScheduledValues(t);AU.master.gain.setTargetAtTime(S.vol,t,.15);
+  // 첫 소리가 무작위 음표 타이머를 기다리지 않도록 재생 성공 직후 화음을 시작.
+  if(!AU.started){AU.started=true;AU.loops=[];strum();}
+  soundUI();
+}
+function setSound(on,fromGesture=true,feedback=false){
+  clearTimeout(audioSuspendTimer);clearTimeout(audioRetryTimer);S.sound=on;
+  if(!on){audioSession(false);const ctx=AC;
+    if(ctx&&AU){const t=ctx.currentTime;AU.master.gain.cancelScheduledValues(t);AU.master.gain.setTargetAtTime(0,t,.1);
+      audioSuspendTimer=setTimeout(()=>{if(ctx===AC&&!S.sound&&ctx.state!=='closed')Promise.resolve(ctx.suspend()).catch(()=>{});},400);}
+    soundUI();updateFormats();return;
+  }
+  // 실패한 context는 다음 실제 터치에서만 재생성. 녹화 중에는 연결된 오디오 트랙을 유지.
+  if(AC&&(AC.state==='closed'||audioNeedsReset&&fromGesture&&!['prep','rec','making'].includes(vstate)))resetAudio();
+  audioSession(true);
+  if(!AC&&!initAudio()){S.sound=false;audioSession(false);soundUI();say('이 브라우저에서는 소리를 시작할 수 없어요.');return;}
+  const ctx=AC;
+  try{
+    // resume와 짧은 버퍼 시작을 같은 사용자 입력 안에서 실행해 iOS 오디오 출력을 깨움.
+    const resumed=ctx.resume();
+    if(fromGesture){const prime=ctx.createBufferSource();prime.buffer=ctx.createBuffer(1,1,ctx.sampleRate);prime.connect(ctx.destination);prime.onended=()=>prime.disconnect();prime.start();}
+    Promise.resolve(resumed).then(()=>audioRunning(ctx)).catch(()=>{
+      if(ctx!==AC||!S.sound)return;audioNeedsReset=true;soundUI();
+      if(feedback)say('소리 켜기를 한 번 더 눌러 주세요.');
+    });
+    if(ctx.state==='running')audioRunning(ctx);
+    else audioRetryTimer=setTimeout(()=>{if(ctx===AC&&S.sound&&ctx.state!=='running'){
+      audioNeedsReset=true;soundUI();if(feedback)say('소리 켜기를 한 번 더 눌러 주세요.');
+    }},1800);
+  }catch(err){audioNeedsReset=true;soundUI();if(feedback)say('소리 켜기를 한 번 더 눌러 주세요.');}
+  soundUI();updateFormats();
+}
+// 전역 자동 시작은 소리 버튼을 제외. 같은 탭에서 켰다가 다시 꺼지는 이벤트 충돌을 방지.
+function unlockAudio(e){
+  if(e.target?.closest?.('#soundBtn,#soundBtnD')||e.type==='keydown'&&e.repeat)return;
+  if(S.sound&&(!AC||AC.state!=='running'||audioNeedsReset))setSound(true);
+}
+['pointerup','touchend','click','keydown'].forEach(ev=>document.addEventListener(ev,unlockAudio,{capture:true,passive:true}));
+function toggleSound(){setSound(!(S.sound&&AC&&AC.state==='running'),true,true);}
+$('soundBtn').addEventListener('click',()=>{if(curSheet)closeMSheet();toggleSound();});
+$('soundBtnD').addEventListener('click',toggleSound);
+document.addEventListener('visibilitychange',()=>{
+  if(!AC)return;
+  if(document.hidden){clearTimeout(audioRetryTimer);if(AU)AU.started=false;Promise.resolve(AC.suspend()).catch(()=>{});soundUI();}
+  else if(S.sound)setSound(true,false);
+});
+addEventListener('pageshow',()=>{if(AC&&S.sound&&!document.hidden)setSound(true,false);});
 
 // ================= 코드 복사: 지금 포스터를 떠다니는 루프로 재생하는 HTML 한 장 =================
 const RUNTIME=String.raw`
@@ -930,7 +989,7 @@ ${RUNTIME.trim().replace('FOOTER_SRC',footer.toString()+'\n'+drawHeader.toString
 </html>
 `;}
 function showCode(code){closeSheet();const ta=document.createElement('textarea');ta.className='codebox';ta.readOnly=true;ta.value=code;ta.setAttribute('aria-label','포스터 코드');
-  sheetPrev.appendChild(ta);shShare.hidden=true;shSave.hidden=true;sheetMsg.textContent='자동 복사가 막혀 있어요. 코드를 전체 선택해 복사해 주세요.';sheet.hidden=false;ta.focus();ta.select();}
+  sheetPrev.appendChild(ta);shShare.hidden=true;sheetMsg.textContent='자동 복사가 막혀 있어요. 코드를 전체 선택해 복사해 주세요.';sheet.hidden=false;ta.focus();ta.select();}
 $('copyCode').addEventListener('click',()=>{const code=buildCode(),done='코드를 복사했어요. 빈 .html 파일에 붙여 넣고 열면 지금 포스터가 떠다니며 재생돼요.';
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(()=>{closeSheet();say(done);},()=>showCode(code));}else showCode(code);});
 
