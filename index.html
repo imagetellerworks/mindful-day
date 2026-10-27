@@ -17,8 +17,8 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
 
 .shake-coach{position:absolute;z-index:8;left:50%;bottom:14%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);padding:15px 34px 15px 18px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.92);color:var(--ink);box-shadow:0 8px 28px rgba(29,27,38,.1);text-align:center;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
 .shake-coach p{margin:0;font-size:13px;line-height:1.55;word-break:keep-all}.shake-coach strong,.shake-coach p span{display:block}.shake-coach .btn{margin-top:10px}.shake-close{position:absolute;top:5px;right:5px;border:0;background:none;padding:4px;cursor:pointer;font-size:18px;line-height:1}
-.language-toggle{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:max(16px,calc((100vw - 1040px)/2));z-index:30;display:flex;align-items:center;gap:6px;min-height:34px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.5);font:500 12px var(--f-body);cursor:pointer}
-.language-toggle [data-lang]{opacity:.45}.language-toggle .active{opacity:1;font-weight:700}
+.language-toggle{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:max(16px,calc((100vw - 1040px)/2));z-index:30;display:flex;align-items:center;gap:6px;min-height:34px;padding:6px 10px;border:0;border-radius:0;background:transparent;font:500 12px var(--f-body);cursor:pointer}
+.language-toggle{padding:4px 0;color:#808080}.language-toggle [data-lang]{opacity:1;color:#808080}.language-toggle .active{color:var(--ui-ink);font-weight:700}
 html[lang="en"] .is-story .savebtns .btn{font-size:12px}
 .site-head{max-width:1040px;margin:0 auto;padding-block:18px 14px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
 .brand{margin:0;font:900 26px/1.1 var(--f-body);letter-spacing:-.02em}
@@ -201,8 +201,6 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .is-story .savebtns .btn .dot{width:7px;height:7px}
 .is-story .formats{font-size:11px;line-height:1.45}
 .is-story .status:empty{display:none}
-.is-story .sheet{position:absolute;left:0;right:0;bottom:calc(100% + 8px);z-index:6;box-shadow:0 -6px 28px rgba(29,27,38,.18)}
-.is-story .image-choices{position:absolute;left:0;right:0;bottom:calc(100% + 8px);z-index:5;box-shadow:0 -6px 28px rgba(29,27,38,.18)}
 @media (prefers-reduced-motion:reduce){.tap-hint{transition:none}}
 /* 기본 메뉴: 처음에는 숨기고 햄버거 버튼으로 오버레이 표시 */
 .menu-toggle{display:none}
@@ -231,10 +229,42 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .is-story.customizing #more .more-body{height:calc(50vh - var(--customize-head,70px));height:calc(50dvh - var(--customize-head,70px));min-height:0;overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .is-story.customizing .customize-close{position:absolute;right:10px;top:8px;display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:10px;background:transparent;color:var(--ink);font:400 26px var(--f-body);cursor:pointer}
 @media (prefers-reduced-motion:reduce){.more>summary .chev{transition:none}}
+
+/* Scene-aware glass controls. */
+body{--ui-ink:#000;--ui-muted:#45414f;--ui-inverse:#fff;--control-glass:rgba(255,255,255,.2);--panel-bg:rgba(255,255,255,.6);--popup-bg:rgba(255,255,255,.96)}
+body.dark-ground{color-scheme:dark;--paper:#121019;--card:#201d28;--white:#24212b;--ink:#fff;--muted:#fff;--line:rgba(255,255,255,.25);--ui-ink:#fff;--ui-muted:#fff;--ui-inverse:#000;--control-glass:rgba(18,16,25,.2);--panel-bg:rgba(18,16,25,.6);--popup-bg:rgba(24,21,32,.96)}
+.is-story .menu-overlay{bottom:calc(16px + env(safe-area-inset-bottom,0px));padding:34px 8px 8px;gap:6px;max-height:calc(100dvh - 100px)}
+.is-story.menu-open #menuToggle{position:absolute;top:4px;right:5px;bottom:auto;width:28px;height:28px;border:0;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;z-index:2}
+.is-story .dock-tools .rbtn{max-width:58px;padding:3px 0;gap:1px}
+.is-story .savebtns .btn{min-height:40px;padding:8px 4px;background:var(--control-glass);color:var(--ui-ink);border-color:var(--line)}
+.is-story .savebtns .btn.recording{background:var(--rec);color:#fff}
+.is-story .menu-overlay .more:not([open]){background:var(--control-glass);color:var(--ui-ink)}
+.is-story .more>summary{padding:9px 12px;font-size:14px}
+.more .sum-hint,.more .ctl label{color:var(--ui-muted)}
+.more,.more h3,.more .ctl output{color:var(--ui-ink)}
+.more[open],.is-story.customizing #more{background:var(--panel-bg)}
+.more .chip{background:var(--control-glass);color:var(--ui-ink);border-color:var(--line)}
+.more .chip[aria-pressed="true"]{background:var(--ui-ink);color:var(--ui-inverse)}
+.is-story.customizing .menu-overlay{padding:0;background:transparent}
+.is-story.customizing #more>summary{padding:14px 60px 14px 18px}
+.is-story.customizing #more .more-body{padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+.menu-guide{position:fixed;right:16px;bottom:82px;z-index:33;max-width:270px;padding:14px 32px 14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel-bg);color:var(--ui-ink);box-shadow:0 6px 22px rgba(0,0,0,.1);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.menu-guide p{margin:0;font-size:13px;line-height:1.6}.menu-guide strong,.menu-guide p span{display:block}
+.menu-guide::after{content:'';position:absolute;right:17px;bottom:-7px;width:12px;height:12px;transform:rotate(45deg);background:var(--panel-bg);border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.export-layer{position:fixed;inset:0;z-index:70;pointer-events:none}
+.export-layer.has-popup::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.25);pointer-events:auto}
+.export-layer .image-choices,.export-layer .sheet{position:absolute;left:50%;top:50%;bottom:auto;right:auto;transform:translate(-50%,-50%);width:min(360px,calc(100vw - 32px));max-height:calc(100dvh - 40px);overflow:auto;pointer-events:auto;background:var(--popup-bg);color:var(--ui-ink);border-color:var(--line);box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.export-layer .sheet-prev img,.export-layer .sheet-prev video{width:auto;max-width:100%;max-height:42dvh;margin-inline:auto}
+.export-layer .btn{color:var(--ui-ink)}
+.export-layer .codebox{color:var(--ui-ink)}
+
+.export-layer .status{position:absolute;top:calc(82px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--popup-bg);color:var(--ui-ink);font-size:12px;line-height:1.5;pointer-events:none}
+.export-layer .status:empty{display:none}
 </style>
 
 <button type="button" class="language-toggle" id="langBtn" aria-label="Switch to English"><span data-lang="en">EN</span><span aria-hidden="true">/</span><span data-lang="ko" class="active">KR</span></button>
 <button type="button" class="menu-toggle" id="menuToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="menuOverlay"></button>
+<aside class="menu-guide" id="menuGuide" aria-live="polite" hidden><p><strong>오른쪽 아래 패널을 열어보세요.</strong><span>더 다양한 무드를 연출해보세요.</span></p><button type="button" class="shake-close" id="menuGuideClose" aria-label="패널 안내 닫기">×</button></aside>
 <canvas id="mobileBackdrop" aria-hidden="true"></canvas>
 
 <header class="site-head">
@@ -300,8 +330,6 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
         <button type="button" class="btn" id="savePosterImg">포스터 스타일</button>
         <button type="button" class="btn" id="saveBackgroundImg">배경 이미지만</button>
       </div>
-      <ol class="vsteps" id="vsteps" hidden aria-label="영상 저장 진행 상태"><li data-s="prep">준비</li><li data-s="rec">녹화 중</li><li data-s="done">완료</li></ol>
-      <p class="formats" id="formats"></p>
       <p class="status" id="status" role="status"></p>
       <div class="sheet" id="sheet" hidden>
         <div class="sheet-prev" id="sheetPrev"></div>
@@ -321,7 +349,6 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
         <div class="group"><h3>모양</h3><div class="sliders" id="slForm"></div></div>
         <div class="group"><h3>소리</h3><div class="sliders" id="slSound"></div></div>
         <div class="group"><h3>움직임 세부</h3><div class="sliders" id="slMotion"></div>
-          <div class="btnrow"><button type="button" class="btn sm" id="pause">움직임 멈추기</button><button type="button" class="btn sm" id="relayout">자리 다시 배치</button><button type="button" class="btn sm" id="rerollSel">고른 빛망울 새로 뽑기</button><button type="button" class="btn sm" id="reroll">모든 빛망울 새로 뽑기</button></div>
         </div>
       </div>
     </details>
@@ -334,6 +361,7 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
   <span class="mail">(jiin.imageteller@gmail.com)</span>
 </footer>
 
+<div class="export-layer" id="exportLayer"></div>
 <script>
 // ================= 언어 =================
 let lang="ko";
@@ -463,7 +491,10 @@ const UI_EN={
   "메뉴 열기": "Open menu",
   "메뉴 닫기": "Close menu",
   "포스터 메뉴": "Poster menu",
-  "오른쪽 아래 메뉴로 색도 바꿔보세요.": "Open the bottom-right menu to explore colors."
+  "오른쪽 아래 메뉴로 색도 바꿔보세요.": "Open the bottom-right menu to explore colors.",
+  "오른쪽 아래 패널을 열어보세요.": "Open the panel at the bottom right.",
+  "더 다양한 무드를 연출해보세요.": "Explore more ways to create your mood.",
+  "패널 안내 닫기": "Dismiss panel tip"
 };
 const UI_KO=Object.fromEntries(Object.entries(UI_EN).map(([ko,en])=>[en,ko]));
 const originalUI=text=>UI_KO[text]||text;
@@ -489,7 +520,6 @@ function setLanguage(next,persist=true){
   document.querySelectorAll('.slider-name').forEach(el=>{el.textContent=tr(el.dataset.label);});
   Object.keys(FMT).forEach(syncSlider);updateColorUI();renderPresets();renderGround();refreshTiles();soundUI();
   imgBtn.textContent=tr(imageBusy?'이미지 만드는 중…':'이미지로 저장');setV(vstate);updateFormats();
-  document.getElementById('pause').textContent=tr(S.paused?'움직임 다시 켜기':'움직임 멈추기');
   statusEl.textContent=tr(statusEl.textContent);sheetMsg.textContent=tr(sheetMsg.textContent);document.getElementById('toast').textContent=tr(document.getElementById('toast').textContent);
   document.querySelectorAll('.sheet-prev [aria-label],.sheet-prev img').forEach(el=>{if(el.hasAttribute('aria-label'))el.setAttribute('aria-label',tr(el.getAttribute('aria-label')));if(el.alt)el.alt=tr(el.alt);});
   if(persist)try{localStorage.setItem('mindful-day-language',lang);}catch(err){}
@@ -684,14 +714,12 @@ function footer(ctx,W,H,pad,fz,fnt,left,names){const y=H-pad*.85, gap=W*.05;
   ctx.font=fnt(fz);ctx.fillText(left,pad,y);ctx.textAlign='right';
   if(fits){ctx.font=fnt(sz);ctx.fillText(names,W-pad,y);}else{ctx.font=fnt(fz);ctx.fillText(names,W-pad,y-fz*1.6);}
   ctx.textAlign='left';ctx.globalAlpha=1;}
-// 모바일 헤더는 두 줄 모두 왼쪽 정렬. PC는 제목 왼쪽·작은 문구 오른쪽, 불투명도 70%.
-function drawHeader(ctx,W,pad,tf2,sf,title,sub,ink,leftAligned=false){const tsz=W*.0675,ssz=W*.0322,y=pad*1.2+tsz*.82,max=W-pad*2;
-  ctx.save();ctx.globalAlpha=.7;ctx.fillStyle=ink;ctx.textBaseline='alphabetic';
-  ctx.font=tf2(tsz);let tw=ctx.measureText(title).width,tz=tsz;if(tw>max){tz=tsz*max/tw;ctx.font=tf2(tz);tw=max;}
-  ctx.textAlign='left';ctx.fillText(title,pad,y);
-  if(sub){ctx.font=sf(ssz);const sw=ctx.measureText(sub).width;
-    if(leftAligned){ctx.textAlign='left';ctx.fillText(sub,pad,y+ssz*1.7);}
-    else{ctx.textAlign='right';if(tw+sw+W*.04<=max)ctx.fillText(sub,W-pad,y);else ctx.fillText(sub,W-pad,y+ssz*1.7);}}
+// 제목과 작은 문구를 두 줄로 가운데 정렬. 화면과 저장 결과에 동일하게 적용.
+function drawHeader(ctx,W,pad,tf2,sf,title,sub,ink){const tsz=W*.0675,ssz=W*.0322,y=pad*1.2+tsz*.82,max=W-pad*2;
+  ctx.save();ctx.globalAlpha=.7;ctx.fillStyle=ink;ctx.textBaseline='alphabetic';ctx.textAlign='center';
+  ctx.font=tf2(tsz);const tw=ctx.measureText(title).width;if(tw>max)ctx.font=tf2(tsz*max/tw);
+  ctx.fillText(title,W/2,y);
+  if(sub){ctx.font=sf(ssz);const sw=ctx.measureText(sub).width;if(sw>max)ctx.font=sf(ssz*max/sw);ctx.fillText(sub,W/2,y+ssz*1.9);}
   ctx.restore();}
 function stampText(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}.${p(d.getMonth()+1)}.${p(d.getDate())}  ${p(d.getHours())}:${p(d.getMinutes())}`;}
 // 색과 배치를 감정 언어에 연결하는 연상 규칙. 심리 진단이 아닌 표현을 위한 선택 가중치.
@@ -1452,7 +1480,7 @@ function drawSceneOrbs(ctx,W,H){const T=reduce?0:clock*S.speed;
 function drawPosterText(ctx,W,H,G){
   drawFeeling(ctx,W,H);
   const pad=W*.07;
-  drawHeader(ctx,W,pad,z=>fontStr(S.ft,'t',z),z=>fontStr(S.fs,'s',z),S.title||'',S.sub||'',G.ink,document.body.classList.contains('is-story'));
+  drawHeader(ctx,W,pad,z=>fontStr(S.ft,'t',z),z=>fontStr(S.fs,'s',z),S.title||'',S.sub||'',G.ink);
   ctx.fillStyle=G.ink;ctx.textBaseline='top';ctx.textAlign='left';
   // 아래 푸터: 날짜 · 시간 (왼쪽), 색 이름 (오른쪽)
   const fz=W*.026;ctx.font=fontStr(S.fs,'s',fz);ctx.globalAlpha=.8;ctx.textBaseline='alphabetic';
@@ -1487,7 +1515,7 @@ function resize(){const d=Math.min(devicePixelRatio||1,2);
   if(document.body.classList.contains('is-story')&&st){
     const customizing=document.body.classList.contains('customizing');
     if(customizing)$('more').style.setProperty('--customize-head',$('more').querySelector('summary').offsetHeight+'px');
-    const availH=Math.max(300,window.innerHeight-48),normalW=Math.min(st.clientWidth,availH*9/16),scale=customizing?Math.min(.7,(innerHeight*.5-20)/(normalW*16/9)):1;
+    const availH=Math.max(300,window.innerHeight-48),normalW=Math.min(st.clientWidth,availH*9/16),scale=customizing?Math.min(.7,(innerHeight*.5-20)/(normalW*16/9)):document.body.classList.contains('menu-open')?Math.min(.7,Math.max(160,$('menuOverlay').getBoundingClientRect().top-20)/(normalW*16/9)):1;
     const w=Math.max(1,Math.floor(normalW*scale)),h=Math.floor(w*16/9);
     slot.style.width=w+'px';slot.style.height=h+'px';st.style.height=h+'px';}
   else if(slot){slot.style.width='';slot.style.height='';if(st){st.style.height='';}}
@@ -1562,7 +1590,7 @@ $('presets').addEventListener('click',e=>{const b=e.target.closest('[data-id]');
 const GROUNDS=[['white','흰색','#ffffff','#1d1b26'],['dark','어두운 밤','#121019','#f2f0f3']];
 function groundColors(){const g=GROUNDS.find(x=>x[0]===S.ground)||GROUNDS[0];
   return{bg:g[2],ink:g[3],dark:g[0]==='dark'};}
-function renderGround(){const sw=document.getElementById('bgSwatch');if(sw){sw.style.background=groundColors().bg;}
+function renderGround(){document.body.classList.toggle('dark-ground',groundColors().dark);const sw=document.getElementById('bgSwatch');if(sw){sw.style.background=groundColors().bg;}
   $('guide').style.setProperty('--guide-ink',groundColors().dark?'#ffffff':'#333333');
   document.body.style.setProperty('--mobile-ink',groundColors().ink);
   $('ground').innerHTML=GROUNDS.map(([v,n])=>`<button type="button" class="chip" data-v="${v}" aria-pressed="${S.ground===v}">${tr(n)}</button>`).join('');}
@@ -1584,10 +1612,6 @@ Object.entries(SLIDERS).forEach(([box,list])=>{
       if(['szL','szM','szS','hue','sat','light','contrast','soft','speed','drift'].includes(k))queueFeelingUpdate();
       if(k==='vol'&&AC&&S.sound)AU.master.gain.setTargetAtTime(S.vol,AC.currentTime,.1);});});});
 function syncSlider(k){const el=$('r-'+k);if(el){el.value=S[k];$('o-'+k).textContent=FMT[k](S[k]);}}
-$('pause').addEventListener('click',e=>{S.paused=!S.paused;e.currentTarget.textContent=tr(S.paused?'움직임 다시 켜기':'움직임 멈추기');});
-$('relayout').addEventListener('click',()=>{relayout();queueFeelingUpdate();});
-$('rerollSel').addEventListener('click',()=>{chosen.forEach(i=>retarget(tiles[i]));queueFeelingUpdate();});
-$('reroll').addEventListener('click',()=>{tiles.forEach(t=>retarget(t));queueFeelingUpdate();});
 
 // 실제 화면 좌표에서 가장 가까운 빛망울 하나를 터치 지점으로 이동.
 function nearestOrb(x,y,width,height){let hit=-1,best=Infinity;
@@ -1613,16 +1637,17 @@ function touchPoster(e){
 pc.addEventListener('pointerdown',touchPoster);
 document.addEventListener('pointerdown',e=>{
   if(!document.body.classList.contains('is-story')||e.target===pc)return;
-  if(e.target?.closest?.('button,input,select,textarea,summary,a,video,#dock,#storyBar,#more,#menuOverlay,#menuToggle,footer'))return;
+  if(e.target?.closest?.('button,input,select,textarea,summary,a,video,#dock,#storyBar,#more,#menuOverlay,#menuToggle,#menuGuide,#exportLayer,footer'))return;
   touchPoster(e);
 });
 
 // ================= 저장 =================
 const IMG_W=1080, IMG_H=1920, VID_W=720, VID_H=1280, VID_MAX=30;
-const imgBtn=$('saveImg'), vidBtn=$('saveVid'), vidLabel=$('vidLabel'), statusEl=$('status'), formatsEl=$('formats'), vstepsEl=$('vsteps');
-const imageChoices=$('imageChoices'),imageChoiceBtns=[$('savePosterImg'),$('saveBackgroundImg')];
+const imgBtn=$('saveImg'), vidBtn=$('saveVid'), vidLabel=$('vidLabel'), statusEl=$('status');
+const imageChoices=$('imageChoices'),imageChoiceBtns=[$('savePosterImg'),$('saveBackgroundImg')],exportLayer=$('exportLayer');
+function syncExportLayer(){exportLayer.classList.toggle('has-popup',!imageChoices.hidden||!sheet.hidden);}
 let imageBusy=false;
-function closeImageChoices(){imageChoices.hidden=true;imgBtn.setAttribute('aria-expanded','false');}
+function closeImageChoices(){imageChoices.hidden=true;imgBtn.setAttribute('aria-expanded','false');syncExportLayer();}
 function syncImageButtons(){const locked=imageBusy||['prep','rec','making'].includes(vstate);
   imgBtn.disabled=locked;imageChoiceBtns.forEach(b=>b.disabled=locked);
 }
@@ -1636,13 +1661,7 @@ const dlP=inClaude?Promise.race([window.claude.use('downloads').catch(()=>null),
 dlP.then(d=>{dl=d;dlReady=true;updateFormats();});
 function env(){return dl?'claude':(inClaude?(dlReady?'claude-link':'pending'):'web');}
 function vidAllowed(){return canRecord&&!!mime&&env()!=='claude-link';}
-function updateFormats(){
-  let t=L(`이미지는 PNG(${IMG_W}×${IMG_H})로 저장돼요.`,`Images are saved as PNG (${IMG_W}×${IMG_H}).`);
-  if(!canRecord||!mime)t+=L(' 이 브라우저는 영상 저장을 지원하지 않아요.',' This browser does not support video export.');
-  else if(env()==='claude-link')t+=L(' 이 링크에서는 영상을 파일로 받을 수 없어요. 이미지는 길게 눌러 저장할 수 있어요.',' Video download is not available from this link. Touch and hold an image to save it.');
-  else t+=L(` 영상은 ${vext.toUpperCase()}(${VID_W}×${VID_H})로 최대 ${VID_MAX}초까지 담겨요.`,` Videos are saved as ${vext.toUpperCase()} (${VID_W}×${VID_H}), up to ${VID_MAX} seconds.`)+(vext==='webm'?L(' 인스타그램에 올리려면 MP4로 바꿔야 할 수 있어요.',' You may need to convert to MP4 for Instagram.'):'')+(S.sound?L(' 소리가 켜져 있으면 영상에 소리도 담겨요.',' Sound is included when enabled.'):'');
-  formatsEl.textContent=t;
-  if(vstate==='idle')vidBtn.disabled=imageBusy||!vidAllowed();}
+function updateFormats(){if(vstate==='idle')vidBtn.disabled=imageBusy||!vidAllowed();}
 const stamp=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;};
 const say=t=>{statusEl.textContent=tr(t);};
 const saveErr=err=>err&&err.code==='declined'?'저장을 취소했어요.':err&&err.code==='rate_limited'?'저장 창이 이미 떠 있어요. 잠시 후 다시 눌러 주세요.':'저장하지 못했어요. 다시 눌러 주세요.';
@@ -1655,7 +1674,7 @@ function saveMenuHint(kind){
   return tr('아래 버튼을 누른 뒤 저장할 앱을 선택하세요. 기기에 따라 저장 메뉴가 다를 수 있어요.');
 }
 let sheetFile=null, sheetURL='';
-function closeSheet(){sheet.hidden=true;sheetPrev.innerHTML='';sheetFile=null;if(sheetURL){URL.revokeObjectURL(sheetURL);sheetURL='';}}
+function closeSheet(){sheet.hidden=true;sheetPrev.innerHTML='';sheetFile=null;statusEl.textContent='';if(sheetURL){URL.revokeObjectURL(sheetURL);sheetURL='';}syncExportLayer();}
 function openSheet(blob,filename,kind,mode){
   closeSheet();sheetFile={blob,filename,kind};
   if(kind==='image'||mode==='link'){
@@ -1664,7 +1683,7 @@ function openSheet(blob,filename,kind,mode){
   if(mode==='link'){shShare.hidden=true;
     sheetMsg.textContent=tr('이미지를 길게 눌러 ‘사진 앱에 저장’을 고르세요. 컴퓨터에서는 오른쪽 클릭 후 ‘이미지를 다른 이름으로 저장’을 고르세요.');}
   else{shShare.hidden=false;sheetMsg.textContent=saveMenuHint(kind);}
-  sheet.hidden=false;}
+  sheet.hidden=false;syncExportLayer();}
 shShare.addEventListener('click',async()=>{if(!sheetFile)return;
   try{await navigator.share({files:[new File([sheetFile.blob],sheetFile.filename,{type:sheetFile.blob.type})],title:'mindful day'});say('사진 앱이나 선택한 앱에서 저장 결과를 확인해 주세요.');}
   catch(err){say(err&&err.name==='AbortError'?'저장 메뉴를 닫았어요.':'저장 메뉴를 열지 못했어요. 다시 눌러 주세요.');}});
@@ -1682,7 +1701,7 @@ async function deliver(blob,filename,kind){
 // 왼쪽은 글자 포함 포스터, 오른쪽은 빛망울과 배경만. 화면/녹화와 별도 캔버스로 PNG 생성.
 imgBtn.addEventListener('click',()=>{
   if(imgBtn.disabled)return;closeSheet();const open=imageChoices.hidden;
-  imageChoices.hidden=!open;imgBtn.setAttribute('aria-expanded',String(open));
+  imageChoices.hidden=!open;imgBtn.setAttribute('aria-expanded',String(open));syncExportLayer();
 });
 async function saveImage(backgroundOnly=false){
   if(imageBusy||imgBtn.disabled)return;imageBusy=true;syncImageButtons();vidBtn.disabled=true;
@@ -1700,20 +1719,19 @@ async function saveImage(backgroundOnly=false){
 $('savePosterImg').addEventListener('click',()=>saveImage(false));
 $('saveBackgroundImg').addEventListener('click',()=>saveImage(true));
 document.addEventListener('pointerdown',e=>{if(!imageChoices.hidden&&!e.target?.closest?.('#imageChoices,#saveImg'))closeImageChoices();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeImageChoices();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(!imageChoices.hidden||!sheet.hidden)){e.preventDefault();e.stopPropagation();closeImageChoices();closeSheet();}});
+exportLayer.addEventListener('pointerdown',e=>{if(e.target===exportLayer){closeImageChoices();closeSheet();}});
 
 // 영상: 준비 → 녹화 중(다시 누르면 끝, 최대 30초) → 완료. 진행 중에는 중복 실행 막음
 let vstate='idle', rec=null, chunks=[], recStart=0, recTimer=0;
-function setV(s){vstate=s;vstepsEl.hidden=s==='idle';
-  const order=['prep','rec','done'], cur=s==='making'?'rec':s;
-  vstepsEl.querySelectorAll('li').forEach(li=>{const i=order.indexOf(li.dataset.s),c=order.indexOf(cur);li.className=i<c||s==='done'?'done':i===c?'on':'';});
+function setV(s){vstate=s;
   vidBtn.classList.toggle('recording',s==='rec');
   vidBtn.disabled=imageBusy||s==='prep'||s==='making'||(s==='idle'||s==='done')&&!vidAllowed();
   syncImageButtons();
   vidLabel.textContent=s==='rec'?tr('끝내기')+' '+mss(recStart?(performance.now()-recStart)/1000:0):tr({idle:'영상으로 저장',prep:'준비 중…',making:'만드는 중…',done:'영상 다시 저장'}[s]);}
 const mss=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 async function startRec(){
-  setV('prep');closeImageChoices();closeSheet();say('녹화를 준비하고 있어요.');
+  setV('prep');closeImageChoices();closeSheet();say('');
   await warmFonts();
   lockSize=true;pc.width=VID_W;pc.height=VID_H;fit=null;drawPoster();
   let stream;
@@ -1730,9 +1748,9 @@ async function startRec(){
     const blob=new Blob(chunks,{type:recMime.split(';')[0]});
     if(!blob.size){setV('idle');say('영상을 만들지 못했어요. 다시 시도해 주세요.');return;}
     await deliver(blob,`mindfulday-${stamp()}.${recMime.includes('mp4')?'mp4':'webm'}`,'video');setV('done');};
-  rec.start(250);recStart=performance.now();setV('rec');say('녹화 중이에요. 다시 누르면 끝나요. 포스터를 눌러 변화를 담아도 좋아요.');
+  rec.start(250);recStart=performance.now();setV('rec');say('');
   recTimer=setInterval(()=>{const s=(performance.now()-recStart)/1000;vidLabel.textContent=tr('끝내기')+' '+mss(s);if(s>=VID_MAX)stopRec();},250);}
-function stopRec(){if(vstate!=='rec'||!rec)return;setV('making');say('영상을 만들고 있어요.');rec.stop();}
+function stopRec(){if(vstate!=='rec'||!rec)return;setV('making');say('');rec.stop();}
 vidBtn.addEventListener('click',()=>{if(vstate==='rec')stopRec();else if(vstate==='idle'||vstate==='done')startRec();});
 
 // ================= 소리: 빛망울로 만드는 명상적 앰비언트 =================
@@ -1920,7 +1938,7 @@ function orb(o,cx,cy,size){var steps=o.trail>.01?18:1,tx=Math.cos(o.ta)*o.trail,
     x.fillStyle=g;x.beginPath();x.arc(px,py,rad,0,TAU);x.fill();}});}
 function draw(now){var W=c.width,H=c.height,T=(now-t0)/1000*D.speed;x.fillStyle=D.bg;x.fillRect(0,0,W,H);
   D.orbs.forEach(function(o){var p=o.p,a=p.amp*D.drift,px=p.x+Math.sin(T*p.f1*TAU+p.ph1)*a,py=p.y+Math.cos(T*p.f2*TAU+p.ph2)*a,s=p.s*(1+.04*D.drift*Math.sin(T*.8+p.ph3));orb(o,px*W,py*H,s*W);});
-  var pad=W*.07;drawHeader(x,W,pad,function(z){return font(D.ft,z);},function(z){return font(D.fs,z);},D.title,D.sub,D.ink,D.headerLeft);x.fillStyle=D.ink;x.textBaseline='top';x.textAlign='left';
+  var pad=W*.07;drawHeader(x,W,pad,function(z){return font(D.ft,z);},function(z){return font(D.fs,z);},D.title,D.sub,D.ink);x.fillStyle=D.ink;x.textBaseline='top';x.textAlign='left';
   if(D.feel){var fs2=W*.15;x.save();x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';var fw=x.measureText(D.feel[0]).width;if(fw>W*.84){fs2*=W*.84/fw;x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';}
     x.globalAlpha=.7;x.fillStyle=D.feelInk||'#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(D.feel[0],W/2,H/2);if(D.feel[1]){x.font='400 '+(W*.034)+'px "Pretendard",sans-serif';x.fillText(D.feel[1],W/2,H/2+fs2*.55+W*.031);}x.restore();x.fillStyle=D.ink;x.textAlign='left';x.textBaseline='top';}
   var fz=W*.026;x.font=font(D.fs,fz);x.globalAlpha=.8;x.textBaseline='alphabetic';footer(x,W,H,pad,fz,function(z){return font(D.fs,z);},D.foot[0],D.foot[1]);
@@ -1932,7 +1950,7 @@ size();requestAnimationFrame(draw);
 function buildCode(){
   const r3=v=>+(+v).toFixed(4), G=groundColors(), bg=G.bg;
   const ft=fontOf(S.ft), fs=fontOf(S.fs);
-  const D={title:S.title||'',sub:S.sub||'',feel:feel?[feel.text,lang==='ko'?(FEEL_KO[feel.text]||''):'']:null,foot:[stampText(),colorNames()],bg,ink:G.ink,feelInk:feelingInk(),headerLeft:document.body.classList.contains('is-story'),drift:r3(S.drift),speed:r3(S.speed),
+  const D={title:S.title||'',sub:S.sub||'',feel:feel?[feel.text,lang==='ko'?(FEEL_KO[feel.text]||''):'']:null,foot:[stampText(),colorNames()],bg,ink:G.ink,feelInk:feelingInk(),drift:r3(S.drift),speed:r3(S.speed),
     ft:{fam:ft.fam,w:ft.tw},fs:{fam:fs.fam,w:fs.sw},
     orbs:chosen.map((idx,i)=>{const o=tiles[idx].cur,pl=placements[i];return{trail:r3(o.trail),ta:r3(o.trailAng),
       p:{x:r3(pl.tx),y:r3(pl.ty),s:r3(SZ()[i]*pl.tj),ph1:r3(pl.ph1),ph2:r3(pl.ph2),ph3:r3(pl.ph3),f1:r3(pl.f1),f2:r3(pl.f2),amp:r3(pl.amp)},
@@ -1960,7 +1978,7 @@ ${RUNTIME.trim().replace('FOOTER_SRC',footer.toString()+'\n'+drawHeader.toString
 </html>
 `;}
 function showCode(code){closeSheet();const ta=document.createElement('textarea');ta.className='codebox';ta.readOnly=true;ta.value=code;ta.setAttribute('aria-label',tr('포스터 코드'));
-  sheetPrev.appendChild(ta);shShare.hidden=true;sheetMsg.textContent=tr('자동 복사가 막혀 있어요. 코드를 전체 선택해 복사해 주세요.');sheet.hidden=false;ta.focus();ta.select();}
+  sheetPrev.appendChild(ta);shShare.hidden=true;sheetMsg.textContent=tr('자동 복사가 막혀 있어요. 코드를 전체 선택해 복사해 주세요.');sheet.hidden=false;syncExportLayer();ta.focus();ta.select();}
 $('copyCode').addEventListener('click',()=>{const code=buildCode(),done='코드를 복사했어요. 빈 .html 파일에 붙여 넣고 열면 지금 포스터가 떠다니며 재생돼요.';
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(()=>{closeSheet();say(done);},()=>showCode(code));}else showCode(code);});
 
@@ -1988,13 +2006,23 @@ let guideGone=false;
 function hideGuide(){guideGone=true;const guide=$('guide');guide.classList.add('gone');guide.setAttribute('aria-hidden','true');}
 // 모바일 첫 안내는 포스터를 처음 터치할 때까지 유지. 첫 터치도 바로 작품에 반영.
 
+let menuTipShown=false,menuTipTimer=0,menuTipHideTimer=0;
+function dismissMenuGuide(){clearTimeout(menuTipTimer);clearTimeout(menuTipHideTimer);$('menuGuide').hidden=true;}
+function offerMenuGuide(){if(menuTipShown||menuOpen||!mq.matches||document.hidden)return;menuTipShown=true;
+  menuTipTimer=setTimeout(()=>{if(menuOpen||document.hidden)return;$('menuGuide').hidden=false;menuTipHideTimer=setTimeout(dismissMenuGuide,9000);},450);
+}
+$('menuGuideClose').addEventListener('click',dismissMenuGuide);
+
 // 모바일 기본 조작은 오른쪽 아래 버튼으로 여닫는 오버레이.
-let menuOpen=false;
+let menuOpen=false;const menuToggleHome=document.createComment('menu-toggle-home');$('menuToggle').before(menuToggleHome);
 function updateMenuToggle(){const button=$('menuToggle');button.setAttribute('aria-expanded',String(menuOpen));button.setAttribute('aria-label',tr(menuOpen?'메뉴 닫기':'메뉴 열기'));
   button.innerHTML=menuOpen?'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>':'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
 }
-function setMenuOpen(open){menuOpen=!!open;document.body.classList.toggle('menu-open',menuOpen);updateMenuToggle();
+function setMenuOpen(open){menuOpen=!!open;document.body.classList.toggle('menu-open',menuOpen);
+  if(menuOpen){menuTipShown=true;dismissMenuGuide();$('menuOverlay').prepend($('menuToggle'));}else menuToggleHome.after($('menuToggle'));
+  updateMenuToggle();
   if(!menuOpen){if($('more').open){$('more').open=false;syncCustomizePanel();}closeMSheet();closeImageChoices();closeSheet();}
+  resize();drawPoster();drawMobileBackdrop();
 }
 $('menuToggle').addEventListener('click',()=>setMenuOpen(!menuOpen));
 addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen&&!customPanelOpen){e.preventDefault();setMenuOpen(false);$('menuToggle').focus({preventScroll:true});}});
@@ -2033,7 +2061,7 @@ function updateShakeCoach(){
   const button=$('shakeEnable');button.hidden=shake.enabled||shake.denied;button.disabled=shake.busy;
   button.textContent=tr(shake.busy?'연결 중…':'흔들기 켜기');
 }
-function dismissShakeCoach(){shake.hidden=true;clearTimeout(shake.offerTimer);clearTimeout(shake.hideTimer);$('shakeCoach').hidden=true;}
+function dismissShakeCoach(){shake.hidden=true;clearTimeout(shake.offerTimer);clearTimeout(shake.hideTimer);$('shakeCoach').hidden=true;if(shake.offered)offerMenuGuide();}
 function showShakeCoach(){if(shake.hidden||document.hidden)return;updateShakeCoach();$('shakeCoach').hidden=false;
   if(shake.enabled){clearTimeout(shake.hideTimer);shake.hideTimer=setTimeout(dismissShakeCoach,9000);}
 }
@@ -2051,7 +2079,7 @@ async function enableShake(){
   finally{shake.busy=false;updateShakeCoach();}
 }
 function offerShakeAfterTouch(){
-  if(shake.offered||!mobileMotionAvailable())return;shake.offered=true;
+  if(shake.offered)return;shake.offered=true;if(!mobileMotionAvailable()){setTimeout(offerMenuGuide,1800);return;}
   // iPhone의 권한 요청은 안내의 명시적인 버튼 탭 안에서만 실행.
   if(typeof window.DeviceMotionEvent.requestPermission!=='function')connectShake();
   shake.offerTimer=setTimeout(showShakeCoach,1200);
@@ -2125,6 +2153,7 @@ $('shakeClose').addEventListener('click',dismissShakeCoach);
 document.addEventListener('visibilitychange',()=>{shake.peak=null;shake.gravity=null;shake.inputAt=null;if(document.hidden){shake.activeUntil=0;placements.forEach(pl=>{if(pl.shakeMotion){pl.shakeMotion=null;pl.tx=pl.x;pl.ty=pl.y;}});clearTimeout(shake.offerTimer);$('shakeCoach').hidden=true;}});
 
 // ================= 시작 =================
+exportLayer.append(imageChoices,sheet,statusEl);
 relocate();updateMenuToggle();
 updateColorUI();renderPresets();renderGround();refreshTiles();setV('idle');updateFormats();soundUI();
 captureLanguageNodes();
