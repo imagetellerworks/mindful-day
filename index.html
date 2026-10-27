@@ -17,7 +17,7 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
 
 .shake-coach{position:absolute;z-index:8;left:50%;bottom:14%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);padding:15px 34px 15px 18px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.92);color:var(--ink);box-shadow:0 8px 28px rgba(29,27,38,.1);text-align:center;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
 .shake-coach p{margin:0;font-size:13px;line-height:1.55;word-break:keep-all}.shake-coach strong,.shake-coach p span{display:block}.shake-coach .btn{margin-top:10px}.shake-close{position:absolute;top:5px;right:5px;border:0;background:none;padding:4px;cursor:pointer;font-size:18px;line-height:1}
-.language-toggle{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:max(16px,calc((100vw - 1040px)/2));z-index:30;display:flex;align-items:center;gap:6px;min-height:34px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--white);font:500 12px var(--f-body);cursor:pointer}
+.language-toggle{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:max(16px,calc((100vw - 1040px)/2));z-index:30;display:flex;align-items:center;gap:6px;min-height:34px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.5);font:500 12px var(--f-body);cursor:pointer}
 .language-toggle [data-lang]{opacity:.45}.language-toggle .active{opacity:1;font-weight:700}
 html[lang="en"] .is-story .savebtns .btn{font-size:12px}
 .site-head{max-width:1040px;margin:0 auto;padding-block:18px 14px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
@@ -204,13 +204,18 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .is-story .sheet{position:absolute;left:0;right:0;bottom:calc(100% + 8px);z-index:6;box-shadow:0 -6px 28px rgba(29,27,38,.18)}
 .is-story .image-choices{position:absolute;left:0;right:0;bottom:calc(100% + 8px);z-index:5;box-shadow:0 -6px 28px rgba(29,27,38,.18)}
 @media (prefers-reduced-motion:reduce){.tap-hint{transition:none}}
-/* 모바일: 포스터가 화면 밖으로 나가면 오른쪽 위에 작은 미리보기가 따라옴 */
-.mini{position:fixed;z-index:20;top:calc(env(safe-area-inset-top,0px) + 54px);right:max(10px,env(safe-area-inset-right,0px));width:86px;aspect-ratio:9/16;padding:0;border:1px solid var(--line);border-radius:7px;background:#f2f0f3;cursor:pointer;overflow:hidden;
-  box-shadow:0 2px 6px rgba(29,27,38,.12),0 10px 26px rgba(29,27,38,.18);opacity:0;transform:translateY(-8px) scale(.95);pointer-events:none;transition:opacity .2s,transform .2s}
-.mini.show{opacity:1;transform:none;pointer-events:auto}
-.mini canvas{display:block;width:100%;height:100%}
-@media (min-width:860px){.mini{display:none}}
-@media (prefers-reduced-motion:reduce){.more>summary .chev,.mini{transition:none}}
+/* 모바일 Customize 하단 패널 */
+.customize-close{display:none}
+.is-story.customizing{position:fixed;inset:0;overflow:hidden;height:100dvh;overscroll-behavior:none}
+.is-story.customizing .story{position:fixed;top:10px;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));padding-top:0;gap:0;align-items:center}
+.is-story.customizing .story-stage{width:100%}
+.is-story.customizing #dock,.is-story.customizing #storyBar,.is-story.customizing footer.site,.is-story.customizing #guide,.is-story.customizing #shakeCoach{display:none}
+.is-story.customizing #more{position:fixed;inset:auto 0 0;height:50vh;height:50dvh;z-index:40;margin:0;border-radius:18px 18px 0 0;display:block;overflow:hidden;box-shadow:0 -8px 32px rgba(29,27,38,.12)}
+.is-story.customizing #more>summary{flex:none;padding:16px 62px 16px 20px;min-height:60px;cursor:pointer}
+.is-story.customizing #more>summary .chev{display:none}
+.is-story.customizing #more .more-body{height:calc(50vh - var(--customize-head,70px));height:calc(50dvh - var(--customize-head,70px));min-height:0;overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.is-story.customizing .customize-close{position:absolute;right:10px;top:8px;display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:10px;background:transparent;color:var(--ink);font:400 26px var(--f-body);cursor:pointer}
+@media (prefers-reduced-motion:reduce){.more>summary .chev{transition:none}}
 </style>
 
 <button type="button" class="language-toggle" id="langBtn" aria-label="Switch to English"><span data-lang="en">EN</span><span aria-hidden="true">/</span><span data-lang="ko" class="active">KR</span></button>
@@ -247,7 +252,6 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
     <aside class="shake-coach" id="shakeCoach" hidden aria-live="polite"><p><strong id="shakeLead">휴대폰을 가볍게 흔들어보세요.</strong><span id="shakeSub">새로운 무드를 만나보세요.</span></p><button type="button" class="btn sm" id="shakeEnable">흔들기 켜기</button><button type="button" class="shake-close" id="shakeClose" aria-label="흔들기 안내 닫기">×</button></aside>
     <p class="preview-hint">터치한 곳으로 빛망울이 이동하며 새로운 감정 표현이 나타나요.</p>
   </section>
-  <button type="button" class="mini" id="mini" aria-label="포스터로 돌아가기" tabindex="-1"><canvas id="miniCv"></canvas></button>
 
   <div class="editor">
 
@@ -290,7 +294,8 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 
     <details class="more" id="more">
       <summary>더 꾸미기 <span class="sum-hint">배경 · 크기 · 색 · 소리 · 움직임 세부 조정</span><span class="chev" aria-hidden="true"></span></summary>
-      <div class="more-body">
+      <button type="button" class="customize-close" id="customizeClose" aria-label="커스터마이즈 닫기">×</button>
+      <div class="more-body" tabindex="0" role="region" aria-label="커스터마이즈 설정">
         <div class="group"><h3 id="bgLbl">배경</h3><div class="chipwrap" id="ground" role="group" aria-labelledby="bgLbl"></div></div>
         <div class="group"><h3>빛망울 크기</h3><div class="sliders" id="slSize"></div></div>
         <div class="group"><h3>색 다듬기</h3><div class="sliders" id="slColor"></div></div>
@@ -433,7 +438,9 @@ const UI_EN={
   "흔들기 권한이 꺼져 있어요.": "Motion access is off.",
   "‘색 바꾸기’로 새로운 무드를 만나보세요.": "Tap “Colors” to discover a new mood.",
   "연결 중…": "Connecting…",
-  "빛망울을 1~3개 골라 주세요": "Choose 1–3 orbs"
+  "빛망울을 1~3개 골라 주세요": "Choose 1–3 orbs",
+  "커스터마이즈 닫기": "Close Customize",
+  "커스터마이즈 설정": "Customize settings"
 };
 const UI_KO=Object.fromEntries(Object.entries(UI_EN).map(([ko,en])=>[en,ko]));
 const originalUI=text=>UI_KO[text]||text;
@@ -590,7 +597,7 @@ function mkPl(i,others,jr){const b=place(i,others,jr);
 function relayout(only=-1,jr=[.9,1.1]){
   chosen.forEach((_,i)=>{if(only>=0&&i!==only)return;
     const others=placements.filter((p,k)=>k!==i&&(only>=0||k<i)), b=place(i,others,jr);
-    Object.assign(placements[i],{tx:b.tx,ty:b.ty,tj:b.tj,s:b.s,touchMove:null,touchAt:null});});}
+    Object.assign(placements[i],{tx:b.tx,ty:b.ty,tj:b.tj,s:b.s,touchMove:null,touchAt:null,shakeMotion:null});});}
 // 첫 화면 예시: 빛망울 1개를 화면 아래쪽 가운데에
 // 해제한 빛망울은 작아지며 사라질 때까지 따로 그림
 let leaving=[];
@@ -654,13 +661,14 @@ function footer(ctx,W,H,pad,fz,fnt,left,names){const y=H-pad*.85, gap=W*.05;
   ctx.font=fnt(fz);ctx.fillText(left,pad,y);ctx.textAlign='right';
   if(fits){ctx.font=fnt(sz);ctx.fillText(names,W-pad,y);}else{ctx.font=fnt(fz);ctx.fillText(names,W-pad,y-fz*1.6);}
   ctx.textAlign='left';ctx.globalAlpha=1;}
-// 제목 묶음: 왼쪽 큰 제목, 오른쪽 작은 문구를 같은 기준선에 양쪽 정렬, 70% 투명도. 한 줄에 안 들어가면 문구를 다음 줄 오른쪽으로
-function drawHeader(ctx,W,pad,tf2,sf,title,sub,ink){const tsz=W*.0675,ssz=W*.0322,y=pad*1.2+tsz*.82,max=W-pad*2;
+// 모바일 헤더는 두 줄 모두 왼쪽 정렬. PC는 제목 왼쪽·작은 문구 오른쪽, 불투명도 70%.
+function drawHeader(ctx,W,pad,tf2,sf,title,sub,ink,leftAligned=false){const tsz=W*.0675,ssz=W*.0322,y=pad*1.2+tsz*.82,max=W-pad*2;
   ctx.save();ctx.globalAlpha=.7;ctx.fillStyle=ink;ctx.textBaseline='alphabetic';
   ctx.font=tf2(tsz);let tw=ctx.measureText(title).width,tz=tsz;if(tw>max){tz=tsz*max/tw;ctx.font=tf2(tz);tw=max;}
   ctx.textAlign='left';ctx.fillText(title,pad,y);
-  if(sub){ctx.font=sf(ssz);const sw=ctx.measureText(sub).width;ctx.textAlign='right';
-    if(tw+sw+W*.04<=max)ctx.fillText(sub,W-pad,y);else ctx.fillText(sub,W-pad,y+ssz*1.7);}
+  if(sub){ctx.font=sf(ssz);const sw=ctx.measureText(sub).width;
+    if(leftAligned){ctx.textAlign='left';ctx.fillText(sub,pad,y+ssz*1.7);}
+    else{ctx.textAlign='right';if(tw+sw+W*.04<=max)ctx.fillText(sub,W-pad,y);else ctx.fillText(sub,W-pad,y+ssz*1.7);}}
   ctx.restore();}
 function stampText(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}.${p(d.getMonth()+1)}.${p(d.getDate())}  ${p(d.getHours())}:${p(d.getMinutes())}`;}
 // 색과 배치를 감정 언어에 연결하는 연상 규칙. 심리 진단이 아닌 표현을 위한 선택 가중치.
@@ -1414,14 +1422,14 @@ function drawSceneOrbs(ctx,W,H){const T=reduce?0:clock*S.speed;
   chosen.forEach((idx,i)=>{const pl=placements[i];if(!pl)return;
     const drift=reduce?0:pl.touchAt==null?1:clamp((performance.now()-pl.touchAt-TOUCH_MOVE_MS-TOUCH_HOLD_MS)/700);
     const a=pl.amp*S.drift*drift, x=pl.x+Math.sin(T*pl.f1*TAU+pl.ph1)*a, y=pl.y+Math.cos(T*pl.f2*TAU+pl.ph2)*a;
-    const sc=(pl.cs??SZ()[i]*pl.tj)*(1+.04*S.drift*Math.sin(T*.8+pl.ph3)),jolt=shakeOffset(i);
-    pl.lx=x+jolt.x;pl.ly=y+jolt.y;pl.lr=sc*.38;
-    drawOrb(ctx,tiles[idx].cur,pl.lx*W,pl.ly*H,sc*W);});
+    const sc=(pl.cs??SZ()[i]*pl.tj)*(1+.04*S.drift*Math.sin(T*.8+pl.ph3));
+    pl.lx=x;pl.ly=y;pl.lr=sc*.38;
+    drawOrb(ctx,tiles[idx].cur,x*W,y*H,sc*W);});
 }
 function drawPosterText(ctx,W,H,G){
   drawFeeling(ctx,W,H);
   const pad=W*.07;
-  drawHeader(ctx,W,pad,z=>fontStr(S.ft,'t',z),z=>fontStr(S.fs,'s',z),S.title||'',S.sub||'',G.ink);
+  drawHeader(ctx,W,pad,z=>fontStr(S.ft,'t',z),z=>fontStr(S.fs,'s',z),S.title||'',S.sub||'',G.ink,document.body.classList.contains('is-story'));
   ctx.fillStyle=G.ink;ctx.textBaseline='top';ctx.textAlign='left';
   // 아래 푸터: 날짜 · 시간 (왼쪽), 색 이름 (오른쪽)
   const fz=W*.026;ctx.font=fontStr(S.fs,'s',fz);ctx.globalAlpha=.8;ctx.textBaseline='alphabetic';
@@ -1448,14 +1456,17 @@ function drawMobileBackdrop(){
 }
 
 // ================= 크기 맞추기 (저장 중에는 저장용 해상도를 유지) =================
-let lockSize=false;
+let lockSize=false,mobileRows=180;
 function resize(){const d=Math.min(devicePixelRatio||1,2);
   // 모바일 스토리형: 무대 크기 안에서 9:16을 유지하도록 포스터 틀 크기를 직접 정함
   const st=document.getElementById('storyStage'), slot=document.getElementById('posterSlot');
   // 모바일: 포스터 + 빛망울 줄 + 도구 줄 + 저장 버튼이 한 화면에 들어가도록 포스터 크기를 정함 (펼침 창은 아래로 열림)
   if(document.body.classList.contains('is-story')&&st){
-    const rows=$('dockTiles').offsetHeight+$('dockTools').offsetHeight+document.querySelector('.savebtns').offsetHeight;
-    const availH=Math.max(300,window.innerHeight-rows-10-3*10-8), w=Math.floor(Math.min(st.clientWidth,availH*9/16)), h=Math.floor(w*16/9);
+    const customizing=document.body.classList.contains('customizing');
+    if(customizing)$('more').style.setProperty('--customize-head',$('more').querySelector('summary').offsetHeight+'px');
+    if(!customizing)mobileRows=$('dockTiles').offsetHeight+$('dockTools').offsetHeight+document.querySelector('.savebtns').offsetHeight;
+    const availH=Math.max(300,window.innerHeight-mobileRows-10-3*10-8),normalW=Math.min(st.clientWidth,availH*9/16),scale=customizing?Math.min(.7,(innerHeight*.5-20)/(normalW*16/9)):1;
+    const w=Math.max(1,Math.floor(normalW*scale)),h=Math.floor(w*16/9);
     slot.style.width=w+'px';slot.style.height=h+'px';st.style.height=h+'px';}
   else if(slot){slot.style.width='';slot.style.height='';if(st){st.style.height='';}}
   tiles.forEach(t=>{t.w=Math.max(1,Math.round(t.cv.clientWidth*d));t.h=Math.max(1,Math.round(t.cv.clientHeight*d));t.cv.width=t.w;t.cv.height=t.h;t.size=Math.min(t.w,t.h);t.dirty=true;});
@@ -1475,7 +1486,8 @@ function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;
       t.ctx.clearRect(0,0,t.w,t.h);drawOrb(t.ctx,t.cur,t.w/2,t.h/2,t.size);t.dirty=false;}}
   const e=reduce?1:.06, sz=SZ();
   placements.forEach((pl,i)=>{
-    if(pl.touchMove){const k=reduce?1:clamp((now-pl.touchMove.t0)/TOUCH_MOVE_MS),v=touchEase(k);
+    if(pl.shakeMotion){stepShakeMotion(pl,dt);}
+    else if(pl.touchMove){const k=reduce?1:clamp((now-pl.touchMove.t0)/TOUCH_MOVE_MS),v=touchEase(k);
       pl.x=lerp(pl.touchMove.x,pl.tx,v);pl.y=lerp(pl.touchMove.y,pl.ty,v);if(k>=1)pl.touchMove=null;
     }else{pl.x+=(pl.tx-pl.x)*e;pl.y+=(pl.ty-pl.y)*e;}
     const tg=sz[i]*pl.tj;pl.cs=pl.cs==null?tg:pl.cs+(tg-pl.cs)*e;
@@ -1484,18 +1496,7 @@ function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;
   drawPoster();
   drawMobileBackdrop();
   if(S.sound)updateAudio();
-  if(miniOn){mcx.clearRect(0,0,miniCv.width,miniCv.height);mcx.drawImage(pc,0,0,miniCv.width,miniCv.height);}
   requestAnimationFrame(frame);}
-// 작은 미리보기: 포스터가 거의 안 보일 때만 켜고, 누르면 포스터로 돌아감
-const mini=document.getElementById('mini'), miniCv=document.getElementById('miniCv'), mcx=miniCv.getContext('2d');
-let miniOn=false;
-function sizeMini(){const d=Math.min(devicePixelRatio||1,2);miniCv.width=Math.round(86*d);miniCv.height=Math.round(86*16/9*d);}
-sizeMini();
-if(window.IntersectionObserver){new IntersectionObserver(([en])=>{
-  const small=matchMedia('(max-width:859px)').matches;miniOn=small&&en.intersectionRatio<.3;
-  mini.classList.toggle('show',miniOn);mini.tabIndex=miniOn?0:-1;},{threshold:[0,.3,.6]}).observe(pc);}
-mini.addEventListener('click',()=>pc.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'}));
-
 // ================= 기본 화면 UI =================
 const $=id=>document.getElementById(id);
 
@@ -1571,7 +1572,7 @@ function nearestOrb(x,y,width,height){let hit=-1,best=Infinity;
   placements.forEach((pl,i)=>{const d=Math.hypot((x-(pl.lx??pl.x))*width,(y-(pl.ly??pl.y))*height);
     if(d<best){best=d;hit=i;}});return hit;}
 function moveOrbToTouch(i,x,y){const pl=placements[i];if(!pl)return;
-  pl.x=pl.lx??pl.x;pl.y=pl.ly??pl.y;pl.tx=clamp(x);pl.ty=clamp(y);pl.touchAt=performance.now();
+  pl.shakeMotion=null;pl.x=pl.lx??pl.x;pl.y=pl.ly??pl.y;pl.tx=clamp(x);pl.ty=clamp(y);pl.touchAt=performance.now();
   pl.touchMove={x:pl.x,y:pl.y,t0:pl.touchAt};
 }
 function touchPoster(e){
@@ -1897,7 +1898,7 @@ function orb(o,cx,cy,size){var steps=o.trail>.01?18:1,tx=Math.cos(o.ta)*o.trail,
     x.fillStyle=g;x.beginPath();x.arc(px,py,rad,0,TAU);x.fill();}});}
 function draw(now){var W=c.width,H=c.height,T=(now-t0)/1000*D.speed;x.fillStyle=D.bg;x.fillRect(0,0,W,H);
   D.orbs.forEach(function(o){var p=o.p,a=p.amp*D.drift,px=p.x+Math.sin(T*p.f1*TAU+p.ph1)*a,py=p.y+Math.cos(T*p.f2*TAU+p.ph2)*a,s=p.s*(1+.04*D.drift*Math.sin(T*.8+p.ph3));orb(o,px*W,py*H,s*W);});
-  var pad=W*.07;drawHeader(x,W,pad,function(z){return font(D.ft,z);},function(z){return font(D.fs,z);},D.title,D.sub,D.ink);x.fillStyle=D.ink;x.textBaseline='top';x.textAlign='left';
+  var pad=W*.07;drawHeader(x,W,pad,function(z){return font(D.ft,z);},function(z){return font(D.fs,z);},D.title,D.sub,D.ink,D.headerLeft);x.fillStyle=D.ink;x.textBaseline='top';x.textAlign='left';
   if(D.feel){var fs2=W*.15;x.save();x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';var fw=x.measureText(D.feel[0]).width;if(fw>W*.84){fs2*=W*.84/fw;x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';}
     x.globalAlpha=.7;x.fillStyle=D.feelInk||'#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(D.feel[0],W/2,H/2);if(D.feel[1]){x.font='400 '+(W*.034)+'px "Pretendard",sans-serif';x.fillText(D.feel[1],W/2,H/2+fs2*.55+W*.031);}x.restore();x.fillStyle=D.ink;x.textAlign='left';x.textBaseline='top';}
   var fz=W*.026;x.font=font(D.fs,fz);x.globalAlpha=.8;x.textBaseline='alphabetic';footer(x,W,H,pad,fz,function(z){return font(D.fs,z);},D.foot[0],D.foot[1]);
@@ -1909,7 +1910,7 @@ size();requestAnimationFrame(draw);
 function buildCode(){
   const r3=v=>+(+v).toFixed(4), G=groundColors(), bg=G.bg;
   const ft=fontOf(S.ft), fs=fontOf(S.fs);
-  const D={title:S.title||'',sub:S.sub||'',feel:feel?[feel.text,lang==='ko'?(FEEL_KO[feel.text]||''):'']:null,foot:[stampText(),colorNames()],bg,ink:G.ink,feelInk:feelingInk(),drift:r3(S.drift),speed:r3(S.speed),
+  const D={title:S.title||'',sub:S.sub||'',feel:feel?[feel.text,lang==='ko'?(FEEL_KO[feel.text]||''):'']:null,foot:[stampText(),colorNames()],bg,ink:G.ink,feelInk:feelingInk(),headerLeft:document.body.classList.contains('is-story'),drift:r3(S.drift),speed:r3(S.speed),
     ft:{fam:ft.fam,w:ft.tw},fs:{fam:fs.fam,w:fs.sw},
     orbs:chosen.map((idx,i)=>{const o=tiles[idx].cur,pl=placements[i];return{trail:r3(o.trail),ta:r3(o.trailAng),
       p:{x:r3(pl.tx),y:r3(pl.ty),s:r3(SZ()[i]*pl.tj),ph1:r3(pl.ph1),ph2:r3(pl.ph2),ph3:r3(pl.ph3),f1:r3(pl.f1),f2:r3(pl.f2),amp:r3(pl.amp)},
@@ -1959,15 +1960,29 @@ document.querySelectorAll('.rbtn[data-sheet]').forEach(b=>b.addEventListener('cl
 $('bgBtn').addEventListener('click',()=>{if(curSheet)closeMSheet();const i=GROUNDS.findIndex(g=>g[0]===S.ground);S.ground=GROUNDS[(i+1)%GROUNDS.length][0];renderGround();if(feel)showFeeling(chosen.includes(feel.idx)?feel.idx:chosen[0]);});
 function relocate(){const m=mq.matches;document.body.classList.toggle('is-story',m);
   MOVES.forEach(([el,dest])=>{if(m)$(dest).appendChild(el);else el._home.after(el);});
-  if(!m)closeMSheet();resize();}
+  if(!m)closeMSheet();syncCustomizePanel();resize();}
 if(mq.addEventListener)mq.addEventListener('change',relocate);else mq.addListener(relocate);
 let guideGone=false;
 function hideGuide(){guideGone=true;const guide=$('guide');guide.classList.add('gone');guide.setAttribute('aria-hidden','true');}
 // 모바일 첫 안내는 포스터를 처음 터치할 때까지 유지. 첫 터치도 바로 작품에 반영.
 
+// 모바일 Customize는 하단 절반의 독립 스크롤 패널.
+let customPanelOpen=false;
+function syncCustomizePanel(){const open=mq.matches&&$('more').open;if(open===customPanelOpen)return;
+  customPanelOpen=open;
+  if(open){closeMSheet();closeImageChoices();closeSheet();}
+  document.body.classList.toggle('customizing',open);window.scrollTo(0,0);resize();drawPoster();drawMobileBackdrop();
+  if(open)$('customizeClose').focus({preventScroll:true});
+  else $('more').querySelector('summary').focus({preventScroll:true});
+}
+$('more').addEventListener('toggle',syncCustomizePanel);
+$('customizeClose').addEventListener('click',()=>{$('more').open=false;syncCustomizePanel();});
+$('more').querySelector('summary').addEventListener('click',e=>{if(!mq.matches)return;e.preventDefault();$('more').open=!$('more').open;syncCustomizePanel();});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&customPanelOpen){e.preventDefault();$('more').open=false;syncCustomizePanel();}});
+
 // ================= 흔들어서 새 무드 =================
-const shake={enabled:false,busy:false,denied:false,offered:false,hidden:false,offerTimer:0,hideTimer:0,peak:null,gravity:null,last:-Infinity,start:-Infinity,strength:0};
-const SHAKE_MS=1450,SHAKE_COOLDOWN=2300;
+const shake={enabled:false,busy:false,denied:false,offered:false,hidden:false,offerTimer:0,hideTimer:0,peak:null,gravity:null,last:-Infinity,activeUntil:0,inputAt:null};
+const SHAKE_COOLDOWN=2300;
 function mobileMotionAvailable(){return typeof window.DeviceMotionEvent!=='undefined'&&((navigator.maxTouchPoints||0)>0||matchMedia('(pointer:coarse)').matches);}
 function updateShakeCoach(){
   $('shakeLead').textContent=tr(shake.denied?'흔들기 권한이 꺼져 있어요.':'휴대폰을 가볍게 흔들어보세요.');
@@ -2007,31 +2022,64 @@ function motionVector(event){
   shake.gravity=shake.gravity.map((v,i)=>v*.85+raw[i]*.15);
   return raw.map((v,i)=>v-shake.gravity[i]);
 }
+function screenAcceleration([x,y,z],angle=Number(window.screen?.orientation?.angle??window.orientation??0)){
+  const r=angle*Math.PI/180,c=Math.cos(r),s=Math.sin(r);
+  // 센서의 y축은 위쪽이 양수, 캔버스는 아래쪽이 양수. 가로 화면도 같은 방향으로 보정.
+  return{x:x*c+y*s,y:x*s-y*c+z*.35};
+}
+const SHAKE_DRAG=2.7;
+function orbMobility(slot){return clamp(1.12/(.7+Math.sqrt(SZ()[slot])),.45,1.1);}
+function forecastShakeRest(pl){const m=pl.shakeMotion;if(!m)return;
+  pl.tx=clamp(pl.x+m.vx/SHAKE_DRAG,.05,.95);pl.ty=clamp(pl.y+m.vy/SHAKE_DRAG,.08,.92);
+}
+function beginOrbInertia(pl){if(pl.shakeMotion)return pl.shakeMotion;
+  pl.x=pl.lx??pl.x;pl.y=pl.ly??pl.y;pl.touchMove=null;pl.touchAt=performance.now();
+  return pl.shakeMotion={vx:0,vy:0};
+}
+function kickShakeOrbs(vector,force){const a=screenAcceleration(vector),length=Math.hypot(a.x,a.y);if(length<.1)return;
+  const strength=clamp(force/20,.55,1);
+  placements.forEach((pl,i)=>{const m=beginOrbInertia(pl),impulse=.85*strength*orbMobility(i);
+    m.vx=clamp(m.vx-a.x/length*impulse,-1.1,1.1);m.vy=clamp(m.vy-a.y/length*impulse*.5625,-.7,.7);
+    forecastShakeRest(pl);
+    if(reduce){pl.x=pl.tx;pl.y=pl.ty;pl.shakeMotion=null;}
+  });
+}
+function driveShakeOrbs(vector,dt){if(reduce)return;const a=screenAcceleration(vector);
+  placements.forEach((pl,i)=>{const m=beginOrbInertia(pl),response=.13*orbMobility(i)*dt;
+    m.vx=clamp(m.vx-a.x*response,-1.1,1.1);m.vy=clamp(m.vy-a.y*response*.5625,-.7,.7);forecastShakeRest(pl);
+  });
+}
+function stepShakeMotion(pl,dt){const m=pl.shakeMotion;if(!m)return;
+  const decay=Math.exp(-SHAKE_DRAG*dt),travel=(1-decay)/SHAKE_DRAG;
+  pl.x+=m.vx*travel;pl.y+=m.vy*travel;m.vx*=decay;m.vy*=decay;
+  // 가장자리에서는 약하게 튕겨 화면 밖으로 완전히 사라지지 않음.
+  if(pl.x<.05||pl.x>.95){pl.x=clamp(pl.x,.05,.95);m.vx*=-.28;}
+  if(pl.y<.08||pl.y>.92){pl.y=clamp(pl.y,.08,.92);m.vy*=-.28;}
+  forecastShakeRest(pl);
+  if(Math.hypot(m.vx,m.vy)<.004){pl.tx=pl.x;pl.ty=pl.y;pl.shakeMotion=null;}
+}
 function handleDeviceShake(event){
   if(!shake.enabled||document.hidden)return;
-  const v=motionVector(event);if(!v)return;const now=performance.now(),m=Math.hypot(...v);
+  const v=motionVector(event);if(!v)return;const now=performance.now(),m=Math.hypot(...v),dt=clamp((now-(shake.inputAt??now-16))/1000,.008,.04);shake.inputAt=now;
+  const blocked=imageBusy||vstate==='prep'||vstate==='making';
+  // 무드 전환 횟수와 별개로, 인식된 흔들기의 연속 입력은 실제 위치·속도에 계속 전달.
+  if(!blocked&&now<shake.activeUntil&&m>1.3){driveShakeOrbs(v,dt);if(m>6)shake.activeUntil=Math.max(shake.activeUntil,now+400);}
   if(now-shake.last<SHAKE_COOLDOWN)return;
   if(m<8.5){if(shake.peak&&now-shake.peak.time>750)shake.peak=null;return;}
   const peak=shake.peak;
   if(peak&&now-peak.time>=90&&now-peak.time<=750&&v.reduce((s,n,i)=>s+n*peak.v[i],0)<-.15*m*peak.m){
-    shake.peak=null;if(imageBusy||vstate==='prep'||vstate==='making')return;
-    shake.last=now;randomShakeMood(Math.max(m,peak.m));
+    shake.peak=null;if(blocked)return;shake.last=now;randomShakeMood(Math.max(m,peak.m),v);
   }else if(!peak||now-peak.time>750)shake.peak={v,m,time:now};
 }
-function randomShakeMood(force=12){
+function randomShakeMood(force=12,vector=[12,0,0]){
   if(!chosen.length)toggle(0);
-  shake.start=performance.now();shake.strength=clamp(force/20,.55,1);
-  const choices=MOODS.map((_,i)=>i).filter(i=>i!==moodIdx);applyMood(pick(choices));
-  dismissShakeCoach();
-}
-function shakeOffset(slot,now=performance.now()){
-  const t=(now-shake.start)/SHAKE_MS;if(reduce||t<0||t>=1)return{x:0,y:0};
-  const envelope=Math.sin(Math.PI*t)*(1-t)*shake.strength,phase=slot*1.1;
-  return{x:Math.sin(t*Math.PI*10+phase)*.065*envelope,y:Math.sin(t*Math.PI*8+phase+.6)*.035*envelope};
+  shake.activeUntil=performance.now()+1700;kickShakeOrbs(vector,force);
+  S.ground=S.ground==='white'?'dark':'white';renderGround();
+  const choices=MOODS.map((_,i)=>i).filter(i=>i!==moodIdx);applyMood(pick(choices));dismissShakeCoach();
 }
 $('shakeEnable').addEventListener('click',enableShake);
 $('shakeClose').addEventListener('click',dismissShakeCoach);
-document.addEventListener('visibilitychange',()=>{shake.peak=null;shake.gravity=null;if(document.hidden){clearTimeout(shake.offerTimer);$('shakeCoach').hidden=true;}});
+document.addEventListener('visibilitychange',()=>{shake.peak=null;shake.gravity=null;shake.inputAt=null;if(document.hidden){shake.activeUntil=0;placements.forEach(pl=>{if(pl.shakeMotion){pl.shakeMotion=null;pl.tx=pl.x;pl.ty=pl.y;}});clearTimeout(shake.offerTimer);$('shakeCoach').hidden=true;}});
 
 // ================= 시작 =================
 relocate();
