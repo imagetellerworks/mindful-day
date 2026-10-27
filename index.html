@@ -107,6 +107,7 @@ input[type=text]{width:100%;min-width:0;font:16px/1.4 var(--f-body);padding:10px
 .more>summary .sum-hint{font-size:12px;font-weight:500;color:var(--muted);flex:1;min-width:0}
 .more>summary .chev{flex:none;width:10px;height:10px;border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(45deg) translateY(-3px);transition:transform .2s}
 .more[open]>summary .chev{transform:rotate(-135deg) translateY(-2px)}
+.reset-settings{flex:none;margin-top:8px;background:var(--control-glass);color:var(--ui-ink);border-color:var(--line)}
 .more-body{padding:4px 16px 18px;display:flex;flex-direction:column;gap:20px;border-top:1px solid var(--line)}
 .group{display:flex;flex-direction:column;gap:10px;min-width:0;padding-top:14px}
 .group h3{margin:0;font-size:13px;font-weight:700}
@@ -182,6 +183,7 @@ html[lang="en"] .guide-copy-en{display:block}
 .rbtn .rl{font-size:11px;font-weight:700;color:var(--ink);white-space:nowrap}
 .rbtn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
 .rbtn[aria-pressed="true"] .ic,.rbtn[aria-pressed="true"] .rl{color:var(--paper)}
+.is-story .rbtn[aria-pressed="true"] .ic,.is-story .rbtn[aria-pressed="true"] .rl{color:var(--ink)}
 #soundBtn[aria-pressed="true"]{background:var(--white);border-color:var(--line)}
 #soundBtn[aria-pressed="true"] .ic,#soundBtn[aria-pressed="true"] .rl{color:var(--ink)}
 .msheet{border:1px solid var(--line);border-radius:12px;background:var(--white);padding:10px;display:flex;flex-direction:column;gap:10px}
@@ -388,6 +390,7 @@ body.about-open{overflow:hidden}
         <div class="group"><h3>소리</h3><div class="sliders" id="slSound"></div></div>
         <div class="group"><h3>움직임 세부</h3><div class="sliders" id="slMotion"></div>
         </div>
+        <button type="button" class="btn reset-settings" id="resetSettings"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.4 6M20 4v7h-7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>초기 설정값으로</span></button>
       </div>
     </details>
   </div>
@@ -418,7 +421,14 @@ body.about-open{overflow:hidden}
 <div class="export-layer" id="exportLayer"></div>
 <script>
 // ================= 언어 =================
-let lang="ko";
+let lang="ko",languagePreference=null;
+function deviceLanguage(){
+  const preferred=(navigator.languages||[]).find(value=>typeof value==='string'&&value.trim())||navigator.language||'en';
+  return /^ko(?:[-_]|$)/i.test(preferred)?'ko':'en';
+}
+function readLanguagePreference(){
+  try{const value=localStorage.getItem('mindful-day-language');return value==='ko'||value==='en'?value:null;}catch(err){return null;}
+}
 const UI_EN={
   "화면을 터치해 오늘의 감정과 가장 닮은 표현을 찾아보세요.": "Tap the screen to find a word that feels like you today.",
   "‘색 바꾸기’를 누르면 색 조합과 분위기가 달라져요.": "Tap “Colors” to explore different palettes and moods.",
@@ -455,6 +465,8 @@ const UI_EN={
   "사진첩에 저장": "Save to Photos",
   "닫기": "Close",
   "더 꾸미기": "Customize",
+  "초기 설정값으로": "Reset to defaults",
+  "초기 설정값으로 돌아왔어요.": "Restored the default settings.",
   "배경 · 크기 · 색 · 소리 · 움직임 세부 조정": "Background, size, color, sound and motion",
   "배경": "Background",
   "빛망울 크기": "Orb size",
@@ -581,7 +593,7 @@ function setLanguage(next,persist=true){
   imgBtn.textContent=tr(imageBusy?'이미지 만드는 중…':'이미지로 저장');setV(vstate);updateFormats();
   statusEl.textContent=tr(statusEl.textContent);sheetMsg.textContent=tr(sheetMsg.textContent);document.getElementById('toast').textContent=tr(document.getElementById('toast').textContent);
   document.querySelectorAll('.sheet-prev [aria-label],.sheet-prev img').forEach(el=>{if(el.hasAttribute('aria-label'))el.setAttribute('aria-label',tr(el.getAttribute('aria-label')));if(el.alt)el.alt=tr(el.alt);});
-  if(persist)try{localStorage.setItem('mindful-day-language',lang);}catch(err){}
+  if(persist){languagePreference=lang;try{localStorage.setItem('mindful-day-language',lang);}catch(err){}}
   updateShakeCoach();updateMenuToggle();updateAboutLanguage();fit=null;resize();drawPoster();drawMobileBackdrop();
 }
 
@@ -1719,7 +1731,7 @@ function syncExportLayer(){exportLayer.classList.toggle('has-popup',!imageChoice
 let imageBusy=false;
 function closeImageChoices(){imageChoices.hidden=true;imgBtn.setAttribute('aria-expanded','false');syncExportLayer();}
 function syncImageButtons(){const locked=imageBusy||['prep','rec','making'].includes(vstate);
-  imgBtn.disabled=locked;imageChoiceBtns.forEach(b=>b.disabled=locked);
+  imgBtn.disabled=locked;imageChoiceBtns.forEach(b=>b.disabled=locked);$('resetSettings').disabled=locked;
 }
 const canRecord=!!(window.MediaRecorder&&pc.captureStream);
 const mime=!canRecord?'':['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(m=>{try{return MediaRecorder.isTypeSupported(m);}catch(e){return false;}})||'';
@@ -1733,7 +1745,8 @@ function env(){return dl?'claude':(inClaude?(dlReady?'claude-link':'pending'):'w
 function vidAllowed(){return canRecord&&!!mime&&env()!=='claude-link';}
 function updateFormats(){if(vstate==='idle')vidBtn.disabled=imageBusy||!vidAllowed();}
 const stamp=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;};
-const say=t=>{statusEl.textContent=tr(t);};
+let statusTimer=0;
+const say=(t,duration=0)=>{clearTimeout(statusTimer);statusEl.textContent=tr(t);if(duration)statusTimer=setTimeout(()=>{statusEl.textContent='';statusTimer=0;},duration);};
 const saveErr=err=>err&&err.code==='declined'?'저장을 취소했어요.':err&&err.code==='rate_limited'?'저장 창이 이미 떠 있어요. 잠시 후 다시 눌러 주세요.':'저장하지 못했어요. 다시 눌러 주세요.';
 function download(blob,filename){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);}
 
@@ -2050,7 +2063,7 @@ ${RUNTIME.trim().replace('FOOTER_SRC',footer.toString()+'\n'+drawHeader.toString
 function showCode(code){closeSheet();const ta=document.createElement('textarea');ta.className='codebox';ta.readOnly=true;ta.value=code;ta.setAttribute('aria-label',tr('포스터 코드'));
   sheetPrev.appendChild(ta);shShare.hidden=true;sheetMsg.textContent=tr('자동 복사가 막혀 있어요. 코드를 전체 선택해 복사해 주세요.');sheet.hidden=false;syncExportLayer();ta.focus();ta.select();}
 $('copyCode').addEventListener('click',()=>{const code=buildCode(),done='코드를 복사했어요. 빈 .html 파일에 붙여 넣고 열면 지금 포스터가 떠다니며 재생돼요.';
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(()=>{closeSheet();say(done);},()=>showCode(code));}else showCode(code);});
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(()=>{closeSheet();say(done,7000);},()=>showCode(code));}else showCode(code);});
 
 // ================= 모바일 스토리형 배치 =================
 // 같은 조작 요소를 화면 폭에 따라 옮겨 씀 (PC: 단계 카드 / 모바일: 레일·시트·아래 막대)
@@ -2234,14 +2247,33 @@ $('aboutClose').addEventListener('click',()=>aboutDialog.close());
 aboutDialog.addEventListener('close',()=>document.body.classList.remove('about-open'));
 aboutDialog.addEventListener('click',e=>{if(e.target!==aboutDialog)return;const r=aboutDialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)aboutDialog.close();});
 
+// ================= 설정 초기화 =================
+const initialScene=JSON.parse(JSON.stringify({settings:S,chosen,placements,mood:moodIdx,key:KEY,tiles:tiles.map(t=>({combo:t.combo,palette:t.cur}))}));
+function resetSceneSettings(){
+  if(imageBusy||['prep','rec','making'].includes(vstate))return;
+  const defaults=JSON.parse(JSON.stringify(initialScene));
+  Object.assign(S,defaults.settings);chosen=defaults.chosen;placements=defaults.placements;leaving=[];moodIdx=defaults.mood;KEY=defaults.key;
+  tiles.forEach((tile,i)=>{const saved=defaults.tiles[i];tile.combo=saved.combo;tile.cur=tile.from=tile.to=saved.palette;tile.t0=0;tile.dur=0;tile.eo=false;tile.dirty=true;});
+  S.combo=tiles[chosen[0]].combo;clock=0;acc=0;last=performance.now();
+  clearTimeout(feelingTimer);feel=null;prevFeel=null;feelingHistory.length=0;
+  shake.peak=null;shake.gravity=null;shake.inputAt=null;shake.activeUntil=0;shake.last=-Infinity;
+  closeMSheet();closeImageChoices();closeSheet();statusEl.textContent='';setV('idle');
+  Object.keys(FMT).forEach(syncSlider);refreshTiles();updateColorUI();renderGround();renderPresets();
+  if(AU){AU.started=false;AU.loops=[];AU.ci=-1;AU.chordT=0;}
+  setSound(S.sound,true);resize();drawPoster();drawMobileBackdrop();showToast('초기 설정값으로 돌아왔어요.');
+}
+$('resetSettings').addEventListener('click',resetSceneSettings);
+
 // ================= 시작 =================
 exportLayer.append(imageChoices,sheet,statusEl);
 relocate();updateMenuToggle();
 updateColorUI();renderPresets();renderGround();refreshTiles();setV('idle');updateFormats();soundUI();
 captureLanguageNodes();
 $('langBtn').addEventListener('click',()=>setLanguage(lang==='ko'?'en':'ko'));
-let savedLanguage='ko';try{savedLanguage=localStorage.getItem('mindful-day-language')||'ko';}catch(err){}
-setLanguage(savedLanguage,false);warmFonts();
+languagePreference=readLanguagePreference();
+setLanguage(languagePreference||deviceLanguage(),false);
+addEventListener('languagechange',()=>{if(!languagePreference)setLanguage(deviceLanguage(),false);});
+warmFonts();
 (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{fit=null;requestAnimationFrame(frame);});
 </script>
 
