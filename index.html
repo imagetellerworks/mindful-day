@@ -1,7 +1,7 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>mindful day</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@500;900&family=Nanum+Myeongjo:wght@400;800&family=Gowun+Batang:wght@400;700&family=Hahmlet:wght@400;800&family=Song+Myung&family=Black+Han+Sans&family=Gothic+A1:wght@500;900&family=IBM+Plex+Sans+KR:wght@500;700&family=Cormorant+Garamond:ital,wght@1,500&family=Jost:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@500;900&family=Nanum+Myeongjo:wght@400;800&family=Gowun+Batang:wght@400;700&family=Hahmlet:wght@400;800&family=Song+Myung&family=Black+Han+Sans&family=Gothic+A1:wght@500;900&family=IBM+Plex+Sans+KR:wght@500;700&family=Cormorant+Garamond:ital,wght@1,500&family=Jost:wght@300;400;500&display=swap">
 <style>
 /* Layout: 포스터 미리보기 → 1 문구 → 2 분위기 → 3 저장 → 더 꾸미기(접힘). 모바일 한 열, PC는 포스터(고정) | 편집 */
 :root{
@@ -271,9 +271,11 @@ body.about-open{overflow:hidden}
 .dark-ground .about-dialog{background:rgba(18,16,25,.3)}
 .about-dialog::backdrop{background:rgba(0,0,0,.3)}
 .about-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none;padding:18px 18px 14px 22px;border-bottom:1px solid var(--line)}
-.about-header h2{margin:0;font-size:clamp(18px,2.4vw,24px);line-height:1.3;font-weight:700}
+.about-header h2{margin:0;font-family:"Futura","Futura PT","Jost",sans-serif;font-size:clamp(18px,2.4vw,24px);line-height:1.3;font-weight:400}.about-title-light{font-weight:300}.about-title-regular{font-weight:400}
 .about-close{flex:none;display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:transparent;color:inherit;font:400 26px/1 var(--f-body);cursor:pointer}
 .about-scroll{flex:1;min-height:0;padding:4px 22px 24px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;font-size:15px;line-height:1.85;word-break:keep-all;overflow-wrap:anywhere}
+.about-close:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:2px}
+.about-scroll:focus{outline:none}
 .about-scroll p{margin:18px 0}.about-scroll a{color:inherit;text-underline-offset:3px}
 .about-scroll .about-credit{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;line-height:1.7}
 @media (max-width:520px){.about-header{padding:12px 12px 10px 16px}.about-scroll{padding:0 16px 20px;font-size:14px;line-height:1.8}}
@@ -286,14 +288,14 @@ body.about-open{overflow:hidden}
 
 <header class="site-head">
   <h1 class="brand">mindful day</h1>
-  <p class="tagline">화면을 톡 터치해, 오늘의 기분과 가장 닮은 표현을 찾아보세요.<span class="tagline-sub">‘색 바꾸기’를 누르면 색 조합과 분위기가 달라져요.</span></p>
+  <p class="tagline">화면을 터치해 오늘의 감정과 가장 닮은 표현을 찾아보세요.<span class="tagline-sub">‘색 바꾸기’를 누르면 색 조합과 분위기가 달라져요.</span></p>
 </header>
 
 <main class="app">
   <section class="story" id="story" aria-label="포스터 만들기">
     <div class="story-stage" id="storyStage">
       <div class="poster-slot" id="posterSlot"></div>
-      <div class="guide" id="guide"><p>화면을 톡 터치해<br>오늘의 기분과 가장 닮은<br>표현을 찾아보세요<small>오른쪽 아래 메뉴로 색도 바꿔보세요.</small></p></div>
+      <div class="guide" id="guide"><p>화면을 터치해<br>오늘의 감정과 가장 닮은<br>표현을 찾아보세요.<small>오른쪽 아래 메뉴로 색도 바꿔보세요.</small></p></div>
       <p class="toast" id="toast" aria-live="polite"></p>
     </div>
     <div class="menu-overlay" id="menuOverlay" role="region" aria-label="포스터 메뉴">
@@ -375,13 +377,13 @@ body.about-open{overflow:hidden}
 <footer class="site"><button type="button" class="about-link" id="aboutOpen" aria-haspopup="dialog" aria-controls="aboutDialog">About</button></footer>
 
 <dialog class="about-dialog" id="aboutDialog" aria-labelledby="aboutTitle">
-  <header class="about-header"><h2 id="aboutTitle">About Mindful Day</h2><button type="button" class="about-close" id="aboutClose" aria-label="About 닫기">×</button></header>
+  <header class="about-header"><h2 id="aboutTitle"><span class="about-title-light">About</span> <span class="about-title-regular">Mindful Day</span></h2><button type="button" class="about-close" id="aboutClose" aria-label="About 닫기">×</button></header>
   <div class="about-scroll" tabindex="0" role="region" aria-label="About 내용">
     <section data-about-lang="ko" lang="ko">
-      <p>Mindful Day는 색과 소리를 통해 지금 나의 기분을 탐색하고 표현하는 오디오비주얼 인터랙티브 웹앱입니다.</p>
+      <p>Mindful Day는 색과 소리를 통해 지금 느끼는 감정을 탐색하고 표현하는 오디오비주얼 인터랙티브 웹앱입니다.</p>
       <p>미술과 영상을 전공한 안지인은 오랫동안 사랑해 온 추상미술가와 음악가들에게 보내는 작은 오마주로 이 작업을 시작했습니다. 힐마 아프 클린트의 추상화, 제임스 터렐의 빛, 브라이언 이노의 제너러티브 음악에서 받은 영감을 자신만의 방식으로 시각화해 보고 싶었습니다.</p>
       <p>화가가 캔버스 위에서 색을 찾아가고 음악가가 소리를 쌓아가듯, 누구나 이 작은 화면 안에서 자신만의 색과 분위기를 만들어 볼 수 있기를 바랍니다. 그 과정에서 창작자들이 느끼는 순수한 즐거움과 호기심, 그리고 자신을 탐색하는 시간을 잠시나마 경험할 수 있다면 좋겠습니다.</p>
-      <p>지금 나의 기분을 표현할 꼭 맞는 단어를 찾기 어려울 때, 화면을 천천히 터치해 보세요. 움직이는 빛과 색, 소리 사이에서 나를 표현할 감각과 언어를 발견할지도 모릅니다. 손끝의 아주 작은 움직임이 잠깐의 명상 같은 시간이 되기를 바랍니다.</p>
+      <p>감정을 표현할 꼭 맞는 단어를 찾기 어려울 때, 화면을 천천히 터치해 보세요. 움직이는 빛과 색, 소리 사이에서 나를 표현할 감각과 언어를 발견할지도 모릅니다. 손끝의 아주 작은 움직임이 잠깐의 명상 같은 시간이 되기를 바랍니다.</p>
     </section>
     <section data-about-lang="en" lang="en" hidden>
       <p>Mindful Day is an interactive audiovisual web app that invites you to explore and express how you feel through color and sound.</p>
@@ -399,11 +401,11 @@ body.about-open{overflow:hidden}
 // ================= 언어 =================
 let lang="ko";
 const UI_EN={
-  "화면을 톡 터치해, 오늘의 기분과 가장 닮은 표현을 찾아보세요.": "Tap the screen to find a word that feels like you today.",
+  "화면을 터치해 오늘의 감정과 가장 닮은 표현을 찾아보세요.": "Tap the screen to find a word that feels like you today.",
   "‘색 바꾸기’를 누르면 색 조합과 분위기가 달라져요.": "Tap “Colors” to explore different palettes and moods.",
-  "화면을 톡 터치해": "Tap the screen to find",
-  "오늘의 기분과 가장 닮은": "a word that feels",
-  "표현을 찾아보세요": "like you today",
+  "화면을 터치해": "Tap the screen to find",
+  "오늘의 감정과 가장 닮은": "a word that feels",
+  "표현을 찾아보세요.": "like you today.",
   "‘색 바꾸기’로 분위기도 바꿔보세요": "Try “Colors” to change the mood.",
   "포스터 만들기": "Create a poster",
   "색 조합 바꾸기": "Change color palette",
@@ -2194,7 +2196,7 @@ function updateAboutLanguage(){
   document.querySelectorAll('[data-about-lang]').forEach(section=>{section.hidden=section.dataset.aboutLang!==lang;});
   aboutDialog.setAttribute('lang',lang);
 }
-$('aboutOpen').addEventListener('click',()=>{updateAboutLanguage();aboutDialog.showModal();document.body.classList.add('about-open');aboutDialog.querySelector('.about-scroll').scrollTop=0;});
+$('aboutOpen').addEventListener('click',()=>{updateAboutLanguage();aboutDialog.showModal();document.body.classList.add('about-open');aboutDialog.querySelector('.about-scroll').scrollTop=0;aboutDialog.querySelector('.about-scroll').focus({preventScroll:true});});
 $('aboutClose').addEventListener('click',()=>aboutDialog.close());
 aboutDialog.addEventListener('close',()=>document.body.classList.remove('about-open'));
 aboutDialog.addEventListener('click',e=>{if(e.target!==aboutDialog)return;const r=aboutDialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)aboutDialog.close();});
