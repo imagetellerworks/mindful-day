@@ -138,7 +138,7 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .is-story .site-head{display:none}
 #mobileBackdrop{display:none}
 .is-story #mobileBackdrop{display:block;position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:0;pointer-events:none}
-.is-story .app{position:relative;z-index:1;gap:14px}
+.is-story .app{position:relative;z-index:1;gap:14px;display:block}.is-story .editor{display:none}
 .is-story footer.site{position:fixed;z-index:2;left:max(16px,env(safe-area-inset-left,0px));right:calc(max(16px,env(safe-area-inset-right,0px)) + 64px);bottom:calc(10px + env(safe-area-inset-bottom,0px));max-width:none;margin:0;padding:0;border:0;gap:2px;font-size:11px;line-height:1.4;color:var(--mobile-ink,var(--muted))}
 .is-story footer.site{bottom:calc(16px + env(safe-area-inset-bottom,0px));font-size:12px}
 .is-story footer.site a{color:inherit}
@@ -254,6 +254,30 @@ body.dark-ground{color-scheme:dark;--paper:#121019;--card:#201d28;--white:#24212
 .export-layer .status{position:absolute;top:calc(82px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--popup-bg);color:var(--ui-ink);font-size:12px;line-height:1.5;pointer-events:none}
 .export-layer .status:empty{display:none}
 
+/* Wide scenes use a right-hand panel; the entire control stack scrolls together. */
+.menu-scroll{display:contents}.menu-scroll:focus{outline:none}
+.wide-scene .app{position:static;max-width:none}
+.wide-scene .story{position:fixed;inset:0;padding:0;gap:0}
+.wide-scene .story-stage{width:var(--scene-width,100vw);justify-content:flex-start}
+.wide-scene .menu-overlay{left:auto;right:16px;top:16px;bottom:16px;width:min(380px,30vw);max-height:none;min-height:0;padding:38px 0 0;gap:0;overflow:hidden;background:var(--panel-bg)}
+.wide-scene .menu-scroll{display:flex;flex-direction:column;gap:14px;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding:8px 12px 14px;scrollbar-gutter:stable}
+.wide-scene .menu-scroll>*{flex:none}
+.wide-scene .more{background:transparent}
+.wide-scene .more>summary{display:block;cursor:default;padding:12px;font-size:14px}
+.wide-scene .more>summary .sum-hint{display:block;margin-top:5px;font-size:11px;line-height:1.5}
+.wide-scene .more>summary .chev{display:none}
+.wide-scene .more-body{padding:0 12px 14px;gap:16px}
+.wide-scene .guide p{font-size:18px;max-width:24em}
+.wide-scene .guide small{font-size:12px}
+.wide-scene .language-toggle{right:24px}
+.wide-scene.menu-open .language-toggle{right:calc(min(380px,30vw) + 32px)}
+@media (min-width:860px) and (max-width:1060px) and (orientation:landscape){
+ .wide-scene #railTiles .tiles{gap:4px}
+ .wide-scene .dock-tools .rbtn{max-width:48px}
+ .wide-scene .rbtn .rl{font-size:10px}
+ .wide-scene .savebtns{grid-template-columns:1fr}
+}
+
 .about-link{align-self:flex-start;min-width:48px;min-height:48px;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 body.about-open{overflow:hidden}
 .about-dialog{width:min(80vw,1040px);height:80vh;height:80dvh;max-width:80vw;max-height:80dvh;margin:auto;padding:0;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.3);color:var(--ui-ink);box-shadow:0 16px 60px rgba(0,0,0,.2);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px)}
@@ -289,6 +313,7 @@ body.about-open{overflow:hidden}
       <p class="toast" id="toast" aria-live="polite"></p>
     </div>
     <div class="menu-overlay" id="menuOverlay" role="region" aria-label="포스터 메뉴">
+    <div class="menu-scroll" role="region" aria-label="모든 설정" tabindex="-1">
     <div class="dock" id="dock">
       <div class="dock-tiles" id="dockTiles"><div id="railTiles"></div></div>
       <div class="dock-tools" id="dockTools">
@@ -303,6 +328,7 @@ body.about-open{overflow:hidden}
     </div>
     <div class="story-bar" id="storyBar"></div>
     <div id="menuCustomizeSlot"></div>
+    </div>
     </div>
   </section>
   <section class="preview" aria-label="포스터 미리보기">
@@ -517,6 +543,7 @@ const UI_EN={
   "메뉴 열기": "Open menu",
   "메뉴 닫기": "Close menu",
   "포스터 메뉴": "Poster menu",
+  "모든 설정": "All settings",
   "오른쪽 아래 메뉴로 색도 바꿔보세요.": "Open the bottom-right menu to explore colors.",
   "오른쪽 아래 패널을 열어보세요.": "Open the panel at the bottom right.",
   "더 다양한 무드를 연출해보세요.": "Explore more ways to create your mood.",
@@ -1488,7 +1515,7 @@ function feelGlyph(ctx,W,H,text,alpha,sc){let sz=W*.15;const ff=z=>`italic 500 $
   const tw=ctx.measureText(text).width;if(tw>W*.84){sz*=W*.84/tw;ctx.font=ff(sz);}
   ctx.save();ctx.globalAlpha=.7*clamp(alpha);ctx.fillStyle=feelingInk();ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.translate(W/2,H/2);ctx.scale(sc,sc);ctx.fillText(text,0,0);
-  const ko=lang==='ko'?FEEL_KO[text]:'';if(ko){const ksz=W*10.7/Math.max(1,pc.clientWidth||W);ctx.font=`400 ${ksz}px "Pretendard","Noto Sans KR",sans-serif`;ctx.fillText(ko,0,sz*.55+ksz*.9);}
+  const ko=lang==='ko'?FEEL_KO[text]:'';if(ko){const ksz=document.body.classList.contains('wide-scene')?W*.035:W*10.7/Math.max(1,pc.clientWidth||W);ctx.font=`400 ${ksz}px "Pretendard","Noto Sans KR",sans-serif`;ctx.fillText(ko,0,sz*.55+ksz*.9);}
   ctx.restore();}
 function drawFeeling(ctx,W,H){const now=performance.now();
   if(prevFeel){const e=(now-prevFeel.t0)/1000;if(e>.4)prevFeel=null;else feelGlyph(ctx,W,H,prevFeel.text,1-e/.4,1);}
@@ -1496,14 +1523,14 @@ function drawFeeling(ctx,W,H){const now=performance.now();
 if(document.fonts)document.fonts.load('italic 500 40px "Cormorant Garamond"','passionate').catch(()=>{});
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let clock=0;
-function drawSceneOrbs(ctx,W,H){const T=reduce?0:clock*S.speed;
-  leaving.forEach(l=>{const pl=l.pl,a=pl.amp*S.drift,x=pl.x+Math.sin(T*pl.f1*TAU+pl.ph1)*a,y=pl.y+Math.cos(T*pl.f2*TAU+pl.ph2)*a;drawOrb(ctx,tiles[l.idx].cur,x*W,y*H,Math.max(0,pl.cs)*W);});
+function drawSceneOrbs(ctx,W,H,orbWidth=W){const T=reduce?0:clock*S.speed;
+  leaving.forEach(l=>{const pl=l.pl,a=pl.amp*S.drift,x=pl.x+Math.sin(T*pl.f1*TAU+pl.ph1)*a,y=pl.y+Math.cos(T*pl.f2*TAU+pl.ph2)*a;drawOrb(ctx,tiles[l.idx].cur,x*W,y*H,Math.max(0,pl.cs)*orbWidth);});
   chosen.forEach((idx,i)=>{const pl=placements[i];if(!pl)return;
     const drift=reduce?0:pl.touchAt==null?1:clamp((performance.now()-pl.touchAt-TOUCH_MOVE_MS-TOUCH_HOLD_MS)/700);
     const a=pl.amp*S.drift*drift, x=pl.x+Math.sin(T*pl.f1*TAU+pl.ph1)*a, y=pl.y+Math.cos(T*pl.f2*TAU+pl.ph2)*a;
     const sc=(pl.cs??SZ()[i]*pl.tj)*(1+.04*S.drift*Math.sin(T*.8+pl.ph3));
     pl.lx=x;pl.ly=y;pl.lr=sc*.38;
-    drawOrb(ctx,tiles[idx].cur,x*W,y*H,sc*W);});
+    drawOrb(ctx,tiles[idx].cur,x*W,y*H,sc*orbWidth);});
 }
 function drawPosterText(ctx,W,H,G){
   drawFeeling(ctx,W,H);
@@ -1530,7 +1557,14 @@ function drawMobileBackdrop(){
   mobilePx.setTransform(d,0,0,d,0,0);mobilePx.globalAlpha=1;
   mobilePx.fillStyle=G.bg;mobilePx.fillRect(0,0,innerWidth,innerHeight);
   mobilePx.save();mobilePx.translate(r.left,r.top);
-  drawSceneOrbs(mobilePx,r.width,r.height);drawPosterText(mobilePx,r.width,r.height,G);
+  if(document.body.classList.contains('wide-scene')){
+    drawSceneOrbs(mobilePx,r.width,r.height,Math.min(r.width,r.height*9/16));
+    const tw=Math.min(r.width*.8,480),pad=tw*.07;
+    mobilePx.save();mobilePx.translate((r.width-tw)/2,0);drawFeeling(mobilePx,tw,r.height);
+    mobilePx.translate(0,10);drawHeader(mobilePx,tw,pad,z=>fontStr(S.ft,'t',z),z=>fontStr(S.fs,'s',z),S.title||'',S.sub||'',G.ink);mobilePx.restore();
+    mobilePx.fillStyle=G.ink;mobilePx.font=fontStr(S.fs,'s',12);mobilePx.globalAlpha=.8;mobilePx.textBaseline='alphabetic';
+    footer(mobilePx,r.width,r.height-50,24,12,z=>fontStr(S.fs,'s',z),stampText(),colorNames());
+  }else{drawSceneOrbs(mobilePx,r.width,r.height);drawPosterText(mobilePx,r.width,r.height,G);}
   mobilePx.restore();
 }
 
@@ -1540,7 +1574,11 @@ function resize(){const d=Math.min(devicePixelRatio||1,2);
   // 모바일 스토리형: 무대 크기 안에서 9:16을 유지하도록 포스터 틀 크기를 직접 정함
   const st=document.getElementById('storyStage'), slot=document.getElementById('posterSlot');
   // 모바일: 포스터 + 빛망울 줄 + 도구 줄 + 저장 버튼이 한 화면에 들어가도록 포스터 크기를 정함 (펼침 창은 아래로 열림)
-  if(document.body.classList.contains('is-story')&&st){
+  if(document.body.classList.contains('wide-scene')&&st){
+    const panel=menuOpen?$('menuOverlay').getBoundingClientRect().width+32:0,w=Math.max(1,innerWidth-panel),h=Math.max(1,innerHeight);
+    document.body.style.setProperty('--scene-width',w+'px');slot.style.width=w+'px';slot.style.height=h+'px';st.style.height=h+'px';
+  }else if(document.body.classList.contains('is-story')&&st){
+    document.body.style.removeProperty('--scene-width');
     const creditTop=document.querySelector('footer.site').getBoundingClientRect().top;
     const availH=Math.max(160,Math.min(window.innerHeight-48,creditTop-24)),normalW=Math.min(st.clientWidth,availH*9/16),scale=document.body.classList.contains('menu-open')?Math.min(.7,Math.max(160,$('menuOverlay').getBoundingClientRect().top-20)/(normalW*16/9)):1;
     const w=Math.max(1,Math.floor(normalW*scale)),h=Math.floor(w*16/9);
@@ -1550,7 +1588,7 @@ function resize(){const d=Math.min(devicePixelRatio||1,2);
   if(document.body.classList.contains('is-story')){mobileBackdrop.width=Math.max(2,Math.round(innerWidth*d));mobileBackdrop.height=Math.max(2,Math.round(innerHeight*d));}
   else{mobileBackdrop.width=1;mobileBackdrop.height=1;}
   alignLanguageToggle();if(lockSize)return;
-  const W=Math.max(2,Math.round(pc.clientWidth*d));pc.width=W;pc.height=Math.round(W*16/9);fit=null;}
+  const W=Math.max(2,Math.round((document.body.classList.contains('wide-scene')?Math.min(pc.clientWidth,pc.clientHeight*9/16):pc.clientWidth)*d));pc.width=W;pc.height=Math.round(W*16/9);fit=null;}
 addEventListener('resize',resize);
 if(window.ResizeObserver){let rq=0;const ro=new ResizeObserver(()=>{cancelAnimationFrame(rq);rq=requestAnimationFrame(resize);});ro.observe(pc);ro.observe(tilesBox);ro.observe(document.getElementById('storyStage'));ro.observe(document.querySelector('footer.site'));}
 
@@ -2012,7 +2050,7 @@ $('copyCode').addEventListener('click',()=>{const code=buildCode(),done='코드�
 
 // ================= 모바일 스토리형 배치 =================
 // 같은 조작 요소를 화면 폭에 따라 옮겨 씀 (PC: 단계 카드 / 모바일: 레일·시트·아래 막대)
-const mq=matchMedia('(max-width:859px)');
+const mq=matchMedia('(min-width:0px)'),wideScene=matchMedia('(min-width:860px) and (orientation:landscape)');
 const MOVES=[[pc,'posterSlot'],[$('shakeCoach'),'storyStage'],[tilesBox,'railTiles'],[$('fPreset'),'sbMotion'],[$('saveBox'),'storyBar'],[$('more'),'menuCustomizeSlot']];
 MOVES.forEach(([el])=>{const ph=document.createComment('home');el.before(ph);el._home=ph;});
 let curSheet=null;
@@ -2020,16 +2058,18 @@ let curSheet=null;
 function openMSheet(k){if(curSheet===k){closeMSheet();return;}curSheet=k;const ms=$('msheet');ms.hidden=false;document.body.classList.add('sheet-open');
   document.querySelectorAll('.msheet-b').forEach(b=>b.classList.toggle('on',b.dataset.body===k));
   document.querySelectorAll('.rbtn[data-sheet]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sheet===k)));
-  requestAnimationFrame(()=>{const r=ms.getBoundingClientRect();if(r.bottom>innerHeight)window.scrollBy({top:r.bottom-innerHeight+10,behavior:reduce?'auto':'smooth'});});
+  requestAnimationFrame(()=>{const r=ms.getBoundingClientRect();if(wideScene.matches){ms.scrollIntoView({block:'nearest',behavior:reduce?'auto':'smooth'});return;}if(r.bottom>innerHeight)window.scrollBy({top:r.bottom-innerHeight+10,behavior:reduce?'auto':'smooth'});});
 }
 addEventListener('keydown',e=>{if(e.key==='Escape'&&curSheet)closeMSheet();});
 function closeMSheet(){curSheet=null;$('msheet').hidden=true;document.body.classList.remove('sheet-open');document.querySelectorAll('.rbtn[data-sheet]').forEach(b=>b.setAttribute('aria-pressed','false'));}
 document.querySelectorAll('.rbtn[data-sheet]').forEach(b=>b.addEventListener('click',()=>openMSheet(b.dataset.sheet)));
 $('bgBtn').addEventListener('click',()=>{if(curSheet)closeMSheet();cycleGround();if(feel)showFeeling(chosen.includes(feel.idx)?feel.idx:chosen[0]);});
-function relocate(){const m=mq.matches;document.body.classList.toggle('is-story',m);
+function relocate(){const m=mq.matches,wide=wideScene.matches,wasWide=document.body.classList.contains('wide-scene');document.body.classList.toggle('is-story',m);document.body.classList.toggle('wide-scene',wide);
   MOVES.forEach(([el,dest])=>{if(m)$(dest).appendChild(el);else el._home.after(el);});
+  if(wide!==wasWide){$('more').open=wide;}
+  const summary=$('more').querySelector('summary');summary.tabIndex=wide?-1:0;summary.setAttribute('aria-disabled',String(wide));document.querySelector('.menu-scroll').tabIndex=wide?0:-1;
   if(!m)closeMSheet();syncCustomizePanel();resize();}
-if(mq.addEventListener)mq.addEventListener('change',relocate);else mq.addListener(relocate);
+if(mq.addEventListener){mq.addEventListener('change',relocate);wideScene.addEventListener('change',relocate);}else{mq.addListener(relocate);wideScene.addListener(relocate);}
 let guideGone=false;
 function hideGuide(){guideGone=true;const guide=$('guide');guide.classList.add('gone');guide.setAttribute('aria-hidden','true');}
 // 모바일 첫 안내는 포스터를 처음 터치할 때까지 유지. 첫 터치도 바로 작품에 반영.
@@ -2049,14 +2089,14 @@ function updateMenuToggle(){const button=$('menuToggle');button.setAttribute('ar
 function setMenuOpen(open){menuOpen=!!open;document.body.classList.toggle('menu-open',menuOpen);
   if(menuOpen){menuTipShown=true;dismissMenuGuide();$('menuOverlay').prepend($('menuToggle'));}else menuToggleHome.after($('menuToggle'));
   updateMenuToggle();
-  if(!menuOpen){if($('more').open){$('more').open=false;syncCustomizePanel();}closeMSheet();closeImageChoices();closeSheet();}
+  if(!menuOpen){if($('more').open&&!wideScene.matches){$('more').open=false;syncCustomizePanel();}closeMSheet();closeImageChoices();closeSheet();}
   resize();drawPoster();drawMobileBackdrop();
 }
 $('menuToggle').addEventListener('click',()=>{if(customPanelOpen){$('more').open=false;syncCustomizePanel();}else setMenuOpen(!menuOpen);});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen&&!customPanelOpen){e.preventDefault();setMenuOpen(false);$('menuToggle').focus({preventScroll:true});}});
 function alignLanguageToggle(){const button=$('langBtn');if(!button)return;let center;
   if(document.body.classList.contains('is-story')){
-    const r=pc.getBoundingClientRect(),size=r.width*.0675,baseline=r.top+r.width*.07*1.2+size*.82;
+    const r=pc.getBoundingClientRect(),wide=document.body.classList.contains('wide-scene'),tw=wide?Math.min(r.width*.8,480):r.width,size=tw*.0675,baseline=r.top+(wide?10:0)+tw*.07*1.2+size*.82;
     px.save();px.font=fontStr(S.ft,'t',size);const metric=px.measureText(S.title||'Mindful Day');px.restore();
     const ascent=metric.actualBoundingBoxAscent??size*.75,descent=metric.actualBoundingBoxDescent??size*.2;
     center=baseline+(descent-ascent)/2;
@@ -2067,7 +2107,7 @@ addEventListener('scroll',alignLanguageToggle,{passive:true});
 
 // 모바일 Customize는 기본 메뉴와 같은 프레임 안에서 독립 스크롤.
 let customPanelOpen=false;
-function syncCustomizePanel(){const open=mq.matches&&$('more').open;if(open===customPanelOpen)return;
+function syncCustomizePanel(){const open=mq.matches&&!wideScene.matches&&$('more').open;if(open===customPanelOpen)return;
   customPanelOpen=open;
   if(open){setMenuOpen(true);closeMSheet();closeImageChoices();closeSheet();}
   document.body.classList.toggle('customizing',open);updateMenuToggle();window.scrollTo(0,0);resize();drawPoster();drawMobileBackdrop();
@@ -2075,7 +2115,7 @@ function syncCustomizePanel(){const open=mq.matches&&$('more').open;if(open===cu
   else $('more').querySelector('summary').focus({preventScroll:true});
 }
 $('more').addEventListener('toggle',syncCustomizePanel);
-$('more').querySelector('summary').addEventListener('click',e=>{if(!mq.matches)return;e.preventDefault();$('more').open=!$('more').open;syncCustomizePanel();});
+$('more').querySelector('summary').addEventListener('click',e=>{if(!mq.matches)return;e.preventDefault();if(wideScene.matches)return;$('more').open=!$('more').open;syncCustomizePanel();});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&customPanelOpen){e.preventDefault();$('more').open=false;syncCustomizePanel();}});
 
 // ================= 흔들어서 새 무드 =================
