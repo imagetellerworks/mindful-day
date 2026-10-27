@@ -73,7 +73,6 @@ input[type=text]{width:100%;min-width:0;font:16px/1.4 var(--f-body);padding:10px
 /* 저장 */
 .savebtns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .btn{min-height:46px;border:1px solid var(--ink);border-radius:10px;background:var(--white);padding:10px 14px;font:600 14px/1.3 var(--f-body);display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;cursor:pointer;font-variant-numeric:tabular-nums}
-.btn.primary{background:var(--ink);color:var(--paper)}
 .btn.recording{background:var(--rec);border-color:var(--rec);color:var(--white)}
 .btn:disabled{opacity:.45;cursor:default}
 .btn .dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--rec)}
@@ -91,6 +90,10 @@ input[type=text]{width:100%;min-width:0;font:16px/1.4 var(--f-body);padding:10px
 .codebox{display:block;width:100%;height:150px;resize:vertical;font:11px/1.45 var(--f-mono);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px}
 .sheet-msg{margin:0;font-size:13px;line-height:1.55}
 .sheet-btns{display:flex;flex-wrap:wrap;gap:8px}
+.savebox{position:relative}
+.image-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--white)}
+.image-choices[hidden]{display:none}
+.image-choices .btn{font-size:13px;padding:10px 6px}
 
 /* 더 꾸미기 */
 .more{border:1px solid var(--line);border-radius:14px;background:var(--card);min-width:0}
@@ -172,6 +175,8 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .rbtn .rl{font-size:11px;font-weight:700;color:var(--ink);white-space:nowrap}
 .rbtn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
 .rbtn[aria-pressed="true"] .ic,.rbtn[aria-pressed="true"] .rl{color:var(--paper)}
+#soundBtn[aria-pressed="true"]{background:var(--white);border-color:var(--line)}
+#soundBtn[aria-pressed="true"] .ic,#soundBtn[aria-pressed="true"] .rl{color:var(--ink)}
 .msheet{border:1px solid var(--line);border-radius:12px;background:var(--white);padding:10px;display:flex;flex-direction:column;gap:10px}
 .msheet[hidden]{display:none}
 /* 펼침 창이 열려 있는 동안은 저장 줄 자리를 창이 씀 */
@@ -194,6 +199,7 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .is-story .formats{font-size:11px;line-height:1.45}
 .is-story .status:empty{display:none}
 .is-story .sheet{position:absolute;left:0;right:0;bottom:calc(100% + 8px);z-index:6;box-shadow:0 -6px 28px rgba(29,27,38,.18)}
+.is-story .image-choices{position:absolute;left:0;right:0;bottom:calc(100% + 8px);z-index:5;box-shadow:0 -6px 28px rgba(29,27,38,.18)}
 @media (prefers-reduced-motion:reduce){.tap-hint{transition:none}}
 /* 모바일: 포스터가 화면 밖으로 나가면 오른쪽 위에 작은 미리보기가 따라옴 */
 .mini{position:fixed;z-index:20;top:calc(env(safe-area-inset-top,0px) + 10px);right:max(10px,env(safe-area-inset-right,0px));width:86px;aspect-ratio:9/16;padding:0;border:1px solid var(--line);border-radius:7px;background:#f2f0f3;cursor:pointer;overflow:hidden;
@@ -258,9 +264,13 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
       <h2 class="step-h" id="s3"><span class="step-no">2</span>포스터 저장하기</h2>
       <div class="savebox" id="saveBox">
       <div class="savebtns">
-        <button type="button" class="btn primary" id="saveImg">이미지로 저장</button>
+        <button type="button" class="btn" id="saveImg" aria-expanded="false" aria-controls="imageChoices">이미지로 저장</button>
         <button type="button" class="btn" id="saveVid"><span class="dot" aria-hidden="true"></span><span id="vidLabel">영상으로 저장</span></button>
         <button type="button" class="btn" id="copyCode">코드 복사</button>
+      </div>
+      <div class="image-choices" id="imageChoices" role="group" aria-label="이미지 저장 방식" hidden>
+        <button type="button" class="btn" id="savePosterImg">포스터 스타일</button>
+        <button type="button" class="btn" id="saveBackgroundImg">배경 이미지만</button>
       </div>
       <ol class="vsteps" id="vsteps" hidden aria-label="영상 저장 진행 상태"><li data-s="prep">준비</li><li data-s="rec">녹화 중</li><li data-s="done">완료</li></ol>
       <p class="formats" id="formats"></p>
@@ -268,7 +278,7 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
       <div class="sheet" id="sheet" hidden>
         <div class="sheet-prev" id="sheetPrev"></div>
         <p class="sheet-msg" id="sheetMsg"></p>
-        <div class="sheet-btns"><button type="button" class="btn sm primary" id="shShare">사진첩에 저장</button><button type="button" class="btn sm" id="shClose">닫기</button></div>
+        <div class="sheet-btns"><button type="button" class="btn sm" id="shShare">사진첩에 저장</button><button type="button" class="btn sm" id="shClose">닫기</button></div>
       </div>
       </div>
     </section>
@@ -392,7 +402,7 @@ function toggle(i){
     chosen.push(i);const np=mkPl(chosen.length-1,placements,[.9,1.1]);np.cs=0;placements.push(np);
   }
   if(chosen.length)S.combo=tiles[chosen[0]].combo;
-  refreshTiles();if(typeof tileSound==='function')tileSound(i);if(typeof updateColorUI==='function')updateColorUI();
+  queueFeelingUpdate();refreshTiles();if(typeof tileSound==='function')tileSound(i);if(typeof updateColorUI==='function')updateColorUI();
 }
 function refreshTiles(){clearTimeout(warnT);
   tiles.forEach((t,j)=>t.el.setAttribute('aria-pressed',String(chosen.includes(j))));
@@ -495,35 +505,739 @@ function drawHeader(ctx,W,pad,tf2,sf,title,sub,ink){const tsz=W*.0675,ssz=W*.032
     if(tw+sw+W*.04<=max)ctx.fillText(sub,W-pad,y);else ctx.fillText(sub,W-pad,y+ssz*1.7);}
   ctx.restore();}
 function stampText(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}.${p(d.getMonth()+1)}.${p(d.getDate())}  ${p(d.getHours())}:${p(d.getMinutes())}`;}
-// 터치할 때마다 가운데 떠오르는 감정 형용사: 누른 빛망울의 (새) 색 계열 × 톤으로 고름
+// 색과 배치를 감정 언어에 연결하는 연상 규칙. 심리 진단이 아닌 표현을 위한 선택 가중치.
 const FEELINGS={
-  red:{vivid:['passionate','alive','ardent','fearless'],deep:['yearning','intense','longing'],calm:['tender','warm','gentle']},
-  pink:{vivid:['affectionate','playful','sweet'],deep:['devoted','aching'],calm:['tender','soft','loving']},
-  yellow:{vivid:['joyful','radiant','hopeful','sunny'],deep:['nostalgic','wistful','sentimental'],calm:['content','carefree','glad']},
-  green:{vivid:['fresh','renewed','curious','uplifted'],deep:['grounded','steady','rooted'],calm:['peaceful','at ease','rested']},
-  blue:{vivid:['free','open','clear-headed','light'],deep:['pensive','reflective','quiet','lonely'],calm:['serene','calm','still']},
-  purple:{vivid:['dreamy','enchanted','inspired'],deep:['introspective','mysterious','unsettled'],calm:['wistful','hazy','tender']}};
-const FEEL_KO={passionate:'열정적인',alive:'살아 있는',ardent:'뜨거운',fearless:'두려움 없는',yearning:'그리운',intense:'강렬한',longing:'애틋한',tender:'다정한',warm:'따뜻한',gentle:'온화한',
-  affectionate:'애정 어린',playful:'장난스러운',sweet:'달콤한',devoted:'한결같이 아끼는',aching:'아릿한',soft:'부드러운',loving:'사랑이 넘치는',
-  joyful:'기쁜',radiant:'빛나는',hopeful:'희망찬',sunny:'해맑은',nostalgic:'향수 어린',wistful:'아련한',sentimental:'마음이 촉촉한',content:'만족스러운',carefree:'걱정 없는',glad:'반가운',
-  fresh:'상쾌한',renewed:'새로워진',curious:'궁금한',uplifted:'기운이 차오르는',grounded:'단단한',steady:'한결같은',rooted:'뿌리내린',peaceful:'평화로운','at ease':'홀가분한',rested:'푹 쉰',
-  free:'자유로운',open:'열린','clear-headed':'머리가 맑은',light:'가벼운',pensive:'생각에 잠긴',reflective:'돌아보는',quiet:'고요한',lonely:'외로운',serene:'평온한',calm:'차분한',still:'잔잔한',
-  dreamy:'꿈꾸는 듯한',enchanted:'매혹된',inspired:'영감이 떠오른',introspective:'마음을 들여다보는',mysterious:'신비로운',unsettled:'뒤숭숭한',hazy:'몽롱한'};
+  "red": {
+    "vivid": [
+      "passionate",
+      "alive",
+      "ardent",
+      "fearless",
+      "fervent",
+      "fiery",
+      "exuberant",
+      "daring",
+      "resolute",
+      "driven",
+      "spirited",
+      "energized"
+    ],
+    "deep": [
+      "yearning",
+      "intense",
+      "longing",
+      "burning",
+      "fierce",
+      "consumed",
+      "smoldering",
+      "anguished",
+      "wounded",
+      "agitated",
+      "impassioned",
+      "aching"
+    ],
+    "calm": [
+      "tender",
+      "warm",
+      "gentle",
+      "accepting",
+      "reassuring",
+      "forgiving",
+      "caring",
+      "cherished",
+      "compassionate",
+      "generous",
+      "sincere",
+      "patient"
+    ]
+  },
+  "pink": {
+    "vivid": [
+      "affectionate",
+      "playful",
+      "sweet",
+      "delighted",
+      "flirtatious",
+      "giddy",
+      "tickled",
+      "sparkling",
+      "amused",
+      "captivated",
+      "fond",
+      "buoyant"
+    ],
+    "deep": [
+      "devoted",
+      "aching",
+      "lovesick",
+      "vulnerable",
+      "heartsore",
+      "bittersweet",
+      "smitten",
+      "enamored",
+      "bereft",
+      "touched",
+      "unguarded",
+      "deeply moved"
+    ],
+    "calm": [
+      "tender",
+      "soft",
+      "loving",
+      "soothed",
+      "comforted",
+      "embraced",
+      "safe",
+      "held",
+      "nurtured",
+      "trusting",
+      "cherishing",
+      "grateful"
+    ]
+  },
+  "yellow": {
+    "vivid": [
+      "joyful",
+      "radiant",
+      "hopeful",
+      "sunny",
+      "cheerful",
+      "elated",
+      "jubilant",
+      "optimistic",
+      "effervescent",
+      "enthusiastic",
+      "eager",
+      "gleeful"
+    ],
+    "deep": [
+      "nostalgic",
+      "wistful",
+      "sentimental",
+      "homesick",
+      "melancholic",
+      "poignant",
+      "regretful",
+      "reflective",
+      "moved",
+      "appreciative",
+      "reminiscent",
+      "wistfully hopeful"
+    ],
+    "calm": [
+      "content",
+      "carefree",
+      "glad",
+      "satisfied",
+      "mellow",
+      "relaxed",
+      "reassured",
+      "easygoing",
+      "unhurried",
+      "pleased",
+      "relieved",
+      "unworried"
+    ]
+  },
+  "green": {
+    "vivid": [
+      "fresh",
+      "renewed",
+      "curious",
+      "uplifted",
+      "refreshed",
+      "invigorated",
+      "adventurous",
+      "awakened",
+      "receptive",
+      "growing",
+      "lively",
+      "enlivened"
+    ],
+    "deep": [
+      "grounded",
+      "steady",
+      "rooted",
+      "resilient",
+      "secure",
+      "steadfast",
+      "centered",
+      "anchored",
+      "assured",
+      "composed",
+      "determined",
+      "sustained"
+    ],
+    "calm": [
+      "peaceful",
+      "at ease",
+      "rested",
+      "balanced",
+      "settled",
+      "restored",
+      "tranquil",
+      "untroubled",
+      "whole",
+      "harmonious",
+      "replenished",
+      "patient"
+    ]
+  },
+  "blue": {
+    "vivid": [
+      "free",
+      "open",
+      "clear-headed",
+      "light",
+      "liberated",
+      "expansive",
+      "lucid",
+      "alert",
+      "weightless",
+      "unbound",
+      "bright-eyed",
+      "unburdened"
+    ],
+    "deep": [
+      "pensive",
+      "reflective",
+      "quiet",
+      "lonely",
+      "contemplative",
+      "distant",
+      "withdrawn",
+      "solemn",
+      "desolate",
+      "wistful",
+      "brooding",
+      "forlorn"
+    ],
+    "calm": [
+      "serene",
+      "calm",
+      "still",
+      "clear",
+      "composed",
+      "attentive",
+      "meditative",
+      "hushed",
+      "unruffled",
+      "collected",
+      "measured",
+      "placid"
+    ]
+  },
+  "purple": {
+    "vivid": [
+      "dreamy",
+      "enchanted",
+      "inspired",
+      "imaginative",
+      "fascinated",
+      "awestruck",
+      "visionary",
+      "spellbound",
+      "entranced",
+      "wonderstruck",
+      "inventive",
+      "rapt"
+    ],
+    "deep": [
+      "introspective",
+      "mysterious",
+      "unsettled",
+      "conflicted",
+      "ambivalent",
+      "uneasy",
+      "restless",
+      "uncertain",
+      "troubled",
+      "apprehensive",
+      "disquieted",
+      "guarded"
+    ],
+    "calm": [
+      "wistful",
+      "hazy",
+      "tender",
+      "drowsy",
+      "languid",
+      "ethereal",
+      "drifting",
+      "suspended",
+      "cocooned",
+      "inward",
+      "consoled",
+      "self-contained"
+    ]
+  }
+};
+const FEEL_CONTEXT={
+  "connected": [
+    "connected",
+    "supported",
+    "understood",
+    "belonging",
+    "in tune",
+    "attuned"
+  ],
+  "separated": [
+    "detached",
+    "isolated",
+    "independent",
+    "remote",
+    "reserved",
+    "self-reliant"
+  ],
+  "harmony": [
+    "harmonious",
+    "balanced",
+    "aligned",
+    "reconciled",
+    "at one",
+    "integrated",
+    "unified"
+  ],
+  "tension": [
+    "torn",
+    "charged",
+    "turbulent",
+    "divided",
+    "on edge",
+    "overwhelmed"
+  ],
+  "expansive": [
+    "bold",
+    "confident",
+    "assertive",
+    "unrestrained",
+    "uncontained",
+    "expansive"
+  ],
+  "delicate": [
+    "delicate",
+    "tentative",
+    "fragile",
+    "hesitant",
+    "timid",
+    "cautious"
+  ],
+  "rising": [
+    "aspiring",
+    "expectant",
+    "hopeful",
+    "floating",
+    "lighthearted",
+    "upward-looking"
+  ],
+  "anchored": [
+    "anchored",
+    "settled",
+    "steadfast",
+    "grounded",
+    "rooted",
+    "assured"
+  ],
+  "heavy": [
+    "heavy-hearted",
+    "weighed down",
+    "burdened",
+    "solemn",
+    "brooding",
+    "consumed"
+  ],
+  "centered": [
+    "centered",
+    "collected",
+    "composed",
+    "self-possessed",
+    "present",
+    "focused"
+  ],
+  "edge": [
+    "guarded",
+    "exposed",
+    "watchful",
+    "withdrawn",
+    "distant",
+    "uncertain"
+  ],
+  "soft": [
+    "soft",
+    "soothed",
+    "mellow",
+    "gentle",
+    "unhurried",
+    "rested"
+  ],
+  "luminous": [
+    "radiant",
+    "optimistic",
+    "clear",
+    "renewed",
+    "bright-eyed",
+    "buoyant"
+  ],
+  "shadow": [
+    "introspective",
+    "contemplative",
+    "hushed",
+    "solemn",
+    "wistful",
+    "guarded"
+  ]
+};
+const FEEL_KO={
+  "passionate": "열정적인",
+  "alive": "살아 있는",
+  "ardent": "뜨거운",
+  "fearless": "두려움 없는",
+  "fervent": "열렬한",
+  "fiery": "불같은",
+  "exuberant": "활기가 넘치는",
+  "daring": "과감한",
+  "resolute": "결연한",
+  "driven": "의욕에 찬",
+  "spirited": "기백 있는",
+  "energized": "힘이 솟는",
+  "yearning": "그리운",
+  "intense": "강렬한",
+  "longing": "애틋한",
+  "burning": "타오르는",
+  "fierce": "맹렬한",
+  "consumed": "마음을 온통 빼앗긴",
+  "smoldering": "속으로 타오르는",
+  "anguished": "애타는",
+  "wounded": "상처받은",
+  "agitated": "동요하는",
+  "impassioned": "격정적인",
+  "aching": "아릿한",
+  "tender": "다정한",
+  "warm": "따뜻한",
+  "gentle": "온화한",
+  "accepting": "받아들이는",
+  "reassuring": "든든한",
+  "forgiving": "너그러운",
+  "caring": "살뜰한",
+  "cherished": "소중히 여겨지는",
+  "compassionate": "마음을 헤아리는",
+  "generous": "마음이 넉넉한",
+  "sincere": "진심 어린",
+  "patient": "느긋이 기다리는",
+  "affectionate": "애정 어린",
+  "playful": "장난스러운",
+  "sweet": "달콤한",
+  "delighted": "기쁨에 찬",
+  "flirtatious": "설레며 다가가는",
+  "giddy": "들뜬",
+  "tickled": "즐겁고 간지러운",
+  "sparkling": "반짝이는",
+  "amused": "재미를 느끼는",
+  "captivated": "마음을 사로잡힌",
+  "fond": "정다운",
+  "buoyant": "마음이 가뿐한",
+  "devoted": "한결같이 아끼는",
+  "lovesick": "사랑에 애타는",
+  "vulnerable": "마음이 여린",
+  "heartsore": "마음이 시린",
+  "bittersweet": "달면서도 쓸쓸한",
+  "smitten": "푹 빠진",
+  "enamored": "사랑에 매료된",
+  "bereft": "상실감에 잠긴",
+  "touched": "마음이 뭉클한",
+  "unguarded": "마음의 빗장을 푼",
+  "deeply moved": "깊이 감동한",
+  "soft": "부드러운",
+  "loving": "사랑이 넘치는",
+  "soothed": "마음이 가라앉은",
+  "comforted": "위로받은",
+  "embraced": "포근히 안긴",
+  "safe": "안심되는",
+  "held": "누군가에게 기대는",
+  "nurtured": "보살핌을 받는",
+  "trusting": "마음을 믿고 여는",
+  "cherishing": "소중히 아끼는",
+  "grateful": "고마운",
+  "joyful": "기쁜",
+  "radiant": "빛나는",
+  "hopeful": "희망찬",
+  "sunny": "해맑은",
+  "cheerful": "명랑한",
+  "elated": "기쁨에 벅찬",
+  "jubilant": "환희에 찬",
+  "optimistic": "낙관적인",
+  "effervescent": "생기가 톡톡 솟는",
+  "enthusiastic": "열의에 찬",
+  "eager": "기대하며 바라는",
+  "gleeful": "신이 난",
+  "nostalgic": "향수 어린",
+  "wistful": "아련한",
+  "sentimental": "마음이 촉촉한",
+  "homesick": "집이 그리운",
+  "melancholic": "서글픈",
+  "poignant": "가슴이 저릿한",
+  "regretful": "아쉬운",
+  "reflective": "돌아보는",
+  "moved": "감동한",
+  "appreciative": "소중함을 느끼는",
+  "reminiscent": "추억에 잠긴",
+  "wistfully hopeful": "아련한 희망을 품은",
+  "content": "만족스러운",
+  "carefree": "걱정 없는",
+  "glad": "반가운",
+  "satisfied": "흡족한",
+  "mellow": "편안하고 느긋한",
+  "relaxed": "긴장이 풀린",
+  "reassured": "안도하는",
+  "easygoing": "마음이 느긋한",
+  "unhurried": "서두르지 않는",
+  "pleased": "흐뭇한",
+  "relieved": "한숨 놓은",
+  "unworried": "근심 없는",
+  "fresh": "상쾌한",
+  "renewed": "새로워진",
+  "curious": "궁금한",
+  "uplifted": "기운이 차오르는",
+  "refreshed": "기분이 개운한",
+  "invigorated": "생기를 되찾은",
+  "adventurous": "모험하고 싶은",
+  "awakened": "깨어나는",
+  "receptive": "기꺼이 받아들이는",
+  "growing": "자라나는",
+  "lively": "생기 있는",
+  "enlivened": "마음에 활기가 도는",
+  "grounded": "단단한",
+  "steady": "한결같은",
+  "rooted": "뿌리내린",
+  "resilient": "다시 일어서는",
+  "secure": "안정된",
+  "steadfast": "흔들림 없는",
+  "centered": "중심이 잡힌",
+  "anchored": "마음의 닻을 내린",
+  "assured": "확신하는",
+  "composed": "침착한",
+  "determined": "굳게 마음먹은",
+  "sustained": "꾸준히 버티는",
+  "peaceful": "평화로운",
+  "at ease": "홀가분한",
+  "rested": "푹 쉰",
+  "balanced": "균형 잡힌",
+  "settled": "마음이 자리 잡은",
+  "restored": "회복된",
+  "tranquil": "평안한",
+  "untroubled": "근심 없이 잔잔한",
+  "whole": "온전한",
+  "harmonious": "조화로운",
+  "replenished": "다시 채워진",
+  "free": "자유로운",
+  "open": "열린",
+  "clear-headed": "머리가 맑은",
+  "light": "가벼운",
+  "liberated": "해방된",
+  "expansive": "마음이 넓게 트인",
+  "lucid": "명료한",
+  "alert": "또렷이 깨어 있는",
+  "weightless": "무게 없이 가벼운",
+  "unbound": "매이지 않는",
+  "bright-eyed": "눈빛이 생생한",
+  "unburdened": "마음의 짐을 내려놓은",
+  "pensive": "생각에 잠긴",
+  "quiet": "고요한",
+  "lonely": "외로운",
+  "contemplative": "깊이 사색하는",
+  "distant": "멀어진 듯한",
+  "withdrawn": "마음을 거둔",
+  "solemn": "숙연한",
+  "desolate": "적막한",
+  "brooding": "깊은 생각에 잠긴",
+  "forlorn": "쓸쓸한",
+  "serene": "평온한",
+  "calm": "차분한",
+  "still": "잔잔한",
+  "clear": "맑은",
+  "attentive": "마음을 기울이는",
+  "meditative": "명상에 잠긴",
+  "hushed": "숨죽인 듯 고요한",
+  "unruffled": "흔들림 없이 잔잔한",
+  "collected": "마음을 추스른",
+  "measured": "차분히 헤아리는",
+  "placid": "물결 없이 평온한",
+  "dreamy": "꿈꾸는 듯한",
+  "enchanted": "매혹된",
+  "inspired": "영감이 떠오른",
+  "imaginative": "상상이 피어나는",
+  "fascinated": "깊이 흥미를 느끼는",
+  "awestruck": "경이로움에 사로잡힌",
+  "visionary": "미래를 그리는",
+  "spellbound": "넋을 빼앗긴",
+  "entranced": "황홀한",
+  "wonderstruck": "경이로운",
+  "inventive": "새로움을 떠올리는",
+  "rapt": "몰입한",
+  "introspective": "마음을 들여다보는",
+  "mysterious": "신비로운",
+  "unsettled": "뒤숭숭한",
+  "conflicted": "갈등하는",
+  "ambivalent": "마음이 엇갈리는",
+  "uneasy": "마음이 놓이지 않는",
+  "restless": "안절부절못하는",
+  "uncertain": "확신이 서지 않는",
+  "troubled": "마음이 어지러운",
+  "apprehensive": "염려하는",
+  "disquieted": "심란한",
+  "guarded": "마음을 조심히 지키는",
+  "hazy": "몽롱한",
+  "drowsy": "나른한",
+  "languid": "느슨하고 나른한",
+  "ethereal": "아득한",
+  "drifting": "유유히 흐르는",
+  "suspended": "잠시 멈춰 떠 있는",
+  "cocooned": "포근히 감싸인",
+  "inward": "마음 안으로 향하는",
+  "consoled": "위안을 얻은",
+  "self-contained": "스스로 충만한",
+  "connected": "연결된",
+  "supported": "지지받는",
+  "understood": "이해받는",
+  "belonging": "함께 속한",
+  "in tune": "마음이 통하는",
+  "attuned": "마음이 맞닿은",
+  "detached": "거리감 있는",
+  "isolated": "동떨어진",
+  "independent": "홀로 선",
+  "remote": "멀게 느껴지는",
+  "reserved": "마음을 아끼는",
+  "self-reliant": "스스로 기대는",
+  "aligned": "조화를 이룬",
+  "reconciled": "화해한",
+  "at one": "하나가 된",
+  "integrated": "어우러진",
+  "unified": "하나로 모인",
+  "torn": "갈피가 나뉜",
+  "charged": "긴장이 감도는",
+  "turbulent": "마음이 요동치는",
+  "divided": "마음이 갈라진",
+  "on edge": "신경이 곤두선",
+  "overwhelmed": "압도된",
+  "bold": "대담한",
+  "confident": "자신감 있는",
+  "assertive": "자기 뜻이 분명한",
+  "unrestrained": "거리낌 없는",
+  "uncontained": "마음이 넘쳐나는",
+  "delicate": "섬세한",
+  "tentative": "조심스러운",
+  "fragile": "여린",
+  "hesitant": "망설이는",
+  "timid": "수줍은",
+  "cautious": "신중한",
+  "aspiring": "더 나아가고 싶은",
+  "expectant": "기대에 찬",
+  "floating": "두둥실 뜬",
+  "lighthearted": "마음이 가벼운",
+  "upward-looking": "앞을 바라보는",
+  "heavy-hearted": "마음이 무거운",
+  "weighed down": "마음이 눌리는",
+  "burdened": "짐을 진 듯한",
+  "self-possessed": "자신을 잃지 않는",
+  "present": "지금에 머무는",
+  "focused": "마음이 모인",
+  "exposed": "고스란히 드러난",
+  "watchful": "경계하는"
+};
 let feel=null,prevFeel=null;
-// 색 계열은 빛망울 색에서, 톤은 '보이는 화면'에서: 빛망울 몸통·바깥 번짐·배경을 빛망울이 덮는 정도만큼 섞어 밝기·채도를 구함
-function sceneTone(idx,i){const lay=tiles[idx].to.layers,body=tf(lay[1].col),halo=tf(lay[0].col),bg=hex2rgb(groundColors().bg);
-  const size=(placements[i]?.tj??1)*SZ()[i]??1, w=clamp(.35+.18*size,.35,.8);
-  const mixc=body.map((v,k)=>v*w*.65+halo[k]*w*.35+bg[k]*(1-w)), [,s,l]=rgb2hsl(mixc), [,,bgL]=rgb2hsl(bg);
-  // 어두운 배경(저녁·밤)은 화면 전체가 진지하고 깊어지므로 항상 '깊은' 톤의 단어로
-  return bgL<.3||l<.36?'deep':s<.6||l>.84?'calm':'vivid';}
-function feelingFor(rgb,tone){const [h,s,l]=rgb2hsl(rgb);
-  const fam=s<.12?'purple':(h<18||h>=345)?'red':h>=300?'pink':h<75?'yellow':h<165?'green':h<255?'blue':'purple';
-  tone=tone||(l<.38?'deep':s<.45||l>.68?'calm':'vivid');const list=FEELINGS[fam][tone];
-  let w=pick(list);if(feel&&w===feel.text&&list.length>1)w=list[(list.indexOf(w)+1)%list.length];return w;}
-function showFeeling(idx){if(idx==null)return;const i=Math.max(0,chosen.indexOf(idx));if(feel)prevFeel={text:feel.text,t0:performance.now()};
-  feel={text:feelingFor(tf(tiles[idx].to.layers[1].col),sceneTone(idx,i)),idx,t0:performance.now()};
-  if(document.fonts)document.fonts.load('italic 500 40px "Cormorant Garamond"',feel.text).catch(()=>{});}
-// 형용사는 다음 터치 전까지 남아 있음 (이미지·영상·코드 저장에도 그대로). 새 단어가 나오면 이전 단어는 0.4초에 걸쳐 사라짐
+const feelingHistory=[];
+let feelingTimer=0;
+function colorFamily(rgb){const [h,s]=rgb2hsl(rgb);return s<.08?'purple':h<18||h>=345?'red':h>=300?'pink':h<75?'yellow':h<165?'green':h<255?'blue':'purple';}
+function sceneFeatures(idx){
+  const bg=hex2rgb(groundColors().bg),bgL=rgb2oklch(bg)[0],layerWeights=[.18,.44,.23,.15];
+  const objects=chosen.map((tileIndex,slot)=>{
+    const layers=tiles[tileIndex].to.layers,pl=placements[slot]||{},size=SZ()[slot]*(pl.tj??1);
+    const colors=layers.map(l=>tf(l.col)),perceptual=colors.map(rgb2oklch);
+    // 반투명 층은 배경에 합성한 색으로 계산하고, 내부의 명도 차이도 따로 반영.
+    const visible=colors.map((c,j)=>rgb2oklch(c.map((v,k)=>v*clamp(layers[j].a)+bg[k]*(1-clamp(layers[j].a)))));
+    const avg=k=>visible.reduce((v,c,j)=>v+c[k]*layerWeights[j],0);
+    const light=clamp(avg(0)),sat=clamp(avg(1)/.22),levels=perceptual.map(c=>c[0]);
+    const internal=Math.max(...levels)-Math.min(...levels),backdrop=Math.abs(light-bgL);
+    const contrast=clamp(internal*.65+backdrop*.7),scale=clamp(Math.log2(1+size)/Math.log2(4.2));
+    const x=clamp(pl.tx??pl.x??.5),y=clamp(pl.ty??pl.y??.5),edge=clamp(1-Math.min(x,1-x,y,1-y)/.28);
+    const hueColor=rgb2hsl(colors[1])[1]>.08?colors[1]:colors[3];
+    const hue=rgb2hsl(hueColor)[0];
+    return{idx:tileIndex,light,sat,contrast,scale,size,x,y,edge,hue,family:colorFamily(hueColor),radius:layers[0].r*size,weight:Math.sqrt(size)};
+  });
+  if(!objects.length)return null;
+  const target=objects.find(o=>o.idx===idx)||objects[0],weight=objects.reduce((v,o)=>v+o.weight,0);
+  const mean=k=>objects.reduce((v,o)=>v+o[k]*o.weight,0)/weight;
+  let near=0,overlap=0,hueGap=0,lightGap=0,pairs=0;
+  for(let i=0;i<objects.length;i++)for(let j=i+1;j<objects.length;j++){
+    const a=objects[i],b=objects[j],distance=Math.hypot(a.x-b.x,(a.y-b.y)*16/9),r=a.radius+b.radius;
+    near+=clamp(1-distance/.85);overlap+=clamp(1-distance/Math.max(.01,r));
+    const dh=Math.abs(a.hue-b.hue);hueGap+=Math.min(dh,360-dh)/180*Math.sqrt(a.sat*b.sat);
+    lightGap+=Math.abs(a.light-b.light);pairs++;
+  }
+  if(pairs){near/=pairs;overlap/=pairs;hueGap/=pairs;lightGap/=pairs;}
+  const balance=clamp(1-Math.hypot((mean('x')-.5)*2,(mean('y')-.5)*2));
+  const sizes=objects.map(o=>o.size),hierarchy=1-Math.min(...sizes)/Math.max(...sizes);
+  return{objects,target,bgL,light:mean('light'),sat:mean('sat'),contrast:mean('contrast'),scale:mean('scale'),balance,hierarchy,near,overlap,hueGap,lightGap,pairs};
+}
+function feelingWeights(idx){
+  const scene=sceneFeatures(idx);if(!scene)return new Map();
+  const weights=new Map(),motion=clamp(S.speed*S.drift/3),add=(list,score)=>{
+    if(score<=.001)return;const each=score/list.length;for(const word of list)weights.set(word,(weights.get(word)||0)+each);
+  };
+  // 누른 개체를 중심으로, 함께 선택한 모든 개체의 색·명도·채도·대비·크기를 반영.
+  const total=scene.objects.reduce((v,o)=>v+o.weight,0);
+  for(const o of scene.objects){
+    const share=scene.objects.length===1?1:(o.idx===scene.target.idx?.55:0)+.45*o.weight/total;
+    const scores={
+      vivid:.5*o.sat+.25*o.contrast+.15*o.light+.1*motion,
+      deep:.35*(1-o.light)+.25*o.contrast+.2*(1-scene.bgL)+.1*o.scale+.1*o.edge,
+      calm:.4*(1-o.sat)+.35*(1-o.contrast)+.15*o.light+.1*(1-motion)
+    };
+    const sum=Object.values(scores).reduce((v,n)=>v+n*n*n,0);
+    for(const tone of Object.keys(scores))add(FEELINGS[o.family][tone],.62*share*scores[tone]**3/sum);
+  }
+  const t=scene.target,context=(key,value)=>add(FEEL_CONTEXT[key],.38*clamp(value)**3);
+  context('expansive',t.scale*(.5+.5*t.sat));
+  context('delicate',(1-t.scale)*(.6+.4*(1-t.contrast)));
+  context('rising',(1-t.y)*(.4+.6*t.light));
+  context('anchored',t.y*(.4+.6*(1-t.contrast)));
+  context('heavy',t.y*(1-t.light)*(.5+.5*t.scale));
+  context('centered',(1-t.edge)*scene.balance);
+  context('edge',t.edge*(.45+.55*t.contrast));
+  context('soft',(1-t.contrast)*(.5+.5*(1-t.sat))*clamp(S.soft/1.3));
+  context('luminous',scene.light*(.5+.5*scene.bgL));
+  context('shadow',(1-scene.bgL)*(.5+.5*(1-scene.light)));
+  if(scene.pairs){
+    const harmony=clamp(1-scene.hueGap*.7-scene.lightGap*.45);
+    const tension=clamp(scene.hueGap*.65+scene.lightGap*.55+scene.hierarchy*.15);
+    context('connected',scene.near*.65+scene.overlap*.35);
+    context('separated',1-scene.near);
+    context('harmony',harmony*(.6+.4*scene.balance));
+    context('tension',tension*(.6+.4*scene.overlap));
+  }
+  return weights;
+}
+function feelingFor(idx){
+  const weights=feelingWeights(idx),entries=[];
+  for(const [word,weight] of weights){
+    if(word===feel?.text)continue;
+    const age=feelingHistory.lastIndexOf(word),recent=age<0?1:.12+.5*(feelingHistory.length-1-age)/8;
+    entries.push([word,weight*recent]);
+  }
+  let roll=Math.random()*entries.reduce((v,e)=>v+e[1],0);
+  for(const [word,weight] of entries){roll-=weight;if(roll<=0)return word;}
+  return entries.at(-1)?.[0]||'calm';
+}
+function showFeeling(idx){if(idx==null||!chosen.includes(idx))return;clearTimeout(feelingTimer);
+  if(feel)prevFeel={text:feel.text,t0:performance.now()};
+  feel={text:feelingFor(idx),idx,t0:performance.now()};feelingHistory.push(feel.text);if(feelingHistory.length>8)feelingHistory.shift();
+  if(document.fonts)document.fonts.load('italic 500 40px "Cormorant Garamond"',feel.text).catch(()=>{});
+}
+function queueFeelingUpdate(){clearTimeout(feelingTimer);if(!feel)return;
+  if(!chosen.length){feel=null;prevFeel=null;return;}
+  feelingTimer=setTimeout(()=>{if(feel)showFeeling(chosen.includes(feel.idx)?feel.idx:chosen[0]);},160);
+}
+// 형용사는 다음 터치나 사용자 설정 변경 전까지 남아 있음 (이미지·영상·코드 저장에도 그대로). 새 단어가 나오면 이전 단어는 0.4초에 걸쳐 사라짐
 function feelingInk(){return MOODS[moodIdx].id==='calm'&&!groundColors().dark?'#333333':'#ffffff';}
 function feelGlyph(ctx,W,H,text,alpha,sc){let sz=W*.15;const ff=z=>`italic 500 ${z}px "Cormorant Garamond","Noto Serif KR",Georgia,serif`;ctx.font=ff(sz);
   const tw=ctx.measureText(text).width;if(tw>W*.84){sz*=W*.84/tw;ctx.font=ff(sz);}
@@ -558,9 +1272,11 @@ function drawPosterText(ctx,W,H,G){
     ctx.fillText('빛망울을 1~3개 골라 주세요',W/2,H*.6);ctx.textAlign='left';}
 }
 // 저장/녹화는 항상 원래 9:16 포스터 캔버스를 사용. 모바일 배경과 메뉴는 포함하지 않음.
-function drawPoster(){const W=pc.width,H=pc.height,G=groundColors();
-  px.fillStyle=G.bg;px.fillRect(0,0,W,H);drawSceneOrbs(px,W,H);drawPosterText(px,W,H,G);
+function renderPoster(ctx,W,H,withText=true){const G=groundColors();
+  ctx.fillStyle=G.bg;ctx.fillRect(0,0,W,H);drawSceneOrbs(ctx,W,H);
+  if(withText)drawPosterText(ctx,W,H,G);
 }
+function drawPoster(){renderPoster(px,pc.width,pc.height);}
 // 모바일에서는 같은 장면을 화면 전체로 펼치되, 문구와 푸터는 기존 포스터 영역에 배치.
 function drawMobileBackdrop(){
   if(!document.body.classList.contains('is-story'))return;
@@ -655,7 +1371,7 @@ const PRESETS=[
   {id:'lively',name:'활기차게',desc:'빠르게 바뀌어요',v:{drift:2.2,speed:1.8,interval:.5,morph:1.1}}];
 function renderPresets(){$('presets').innerHTML=PRESETS.map(p=>`<button type="button" class="preset" data-id="${p.id}" aria-pressed="${S.preset===p.id}"><b>${p.name}</b></button>`).join('');}
 $('presets').addEventListener('click',e=>{const b=e.target.closest('[data-id]');if(!b)return;const p=PRESETS.find(x=>x.id===b.dataset.id);
-  Object.assign(S,p.v);S.preset=p.id;Object.keys(p.v).forEach(syncSlider);renderPresets();});
+  Object.assign(S,p.v);S.preset=p.id;Object.keys(p.v).forEach(syncSlider);renderPresets();queueFeelingUpdate();});
 
 
 
@@ -683,12 +1399,13 @@ Object.entries(SLIDERS).forEach(([box,list])=>{
     $('r-'+k).addEventListener('input',e=>{S[k]=+e.target.value;$('o-'+k).textContent=f(S[k]);
       if(['hue','sat','light','contrast','soft'].includes(k)){markAll();if(k!=='soft')updateColorUI();}
       if(['drift','speed','interval','morph'].includes(k)&&S.preset){S.preset=null;renderPresets();}
+      if(['szL','szM','szS','hue','sat','light','contrast','soft','speed','drift'].includes(k))queueFeelingUpdate();
       if(k==='vol'&&AC&&S.sound)AU.master.gain.setTargetAtTime(S.vol,AC.currentTime,.1);});});});
 function syncSlider(k){const el=$('r-'+k);if(el){el.value=S[k];$('o-'+k).textContent=FMT[k](S[k]);}}
 $('pause').addEventListener('click',e=>{S.paused=!S.paused;e.currentTarget.textContent=S.paused?'움직임 다시 켜기':'움직임 멈추기';});
-$('relayout').addEventListener('click',()=>relayout());
-$('rerollSel').addEventListener('click',()=>chosen.forEach(i=>retarget(tiles[i])));
-$('reroll').addEventListener('click',()=>tiles.forEach(t=>retarget(t)));
+$('relayout').addEventListener('click',()=>{relayout();queueFeelingUpdate();});
+$('rerollSel').addEventListener('click',()=>{chosen.forEach(i=>retarget(tiles[i]));queueFeelingUpdate();});
+$('reroll').addEventListener('click',()=>{tiles.forEach(t=>retarget(t));queueFeelingUpdate();});
 
 // 실제 화면 좌표에서 가장 가까운 빛망울 하나를 터치 지점으로 이동.
 function nearestOrb(x,y,width,height){let hit=-1,best=Infinity;
@@ -721,6 +1438,12 @@ document.addEventListener('pointerdown',e=>{
 // ================= 저장 =================
 const IMG_W=1080, IMG_H=1920, VID_W=720, VID_H=1280, VID_MAX=30;
 const imgBtn=$('saveImg'), vidBtn=$('saveVid'), vidLabel=$('vidLabel'), statusEl=$('status'), formatsEl=$('formats'), vstepsEl=$('vsteps');
+const imageChoices=$('imageChoices'),imageChoiceBtns=[$('savePosterImg'),$('saveBackgroundImg')];
+let imageBusy=false;
+function closeImageChoices(){imageChoices.hidden=true;imgBtn.setAttribute('aria-expanded','false');}
+function syncImageButtons(){const locked=imageBusy||['prep','rec','making'].includes(vstate);
+  imgBtn.disabled=locked;imageChoiceBtns.forEach(b=>b.disabled=locked);
+}
 const canRecord=!!(window.MediaRecorder&&pc.captureStream);
 const mime=!canRecord?'':['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(m=>{try{return MediaRecorder.isTypeSupported(m);}catch(e){return false;}})||'';
 const vext=mime.includes('mp4')?'mp4':'webm';
@@ -737,7 +1460,7 @@ function updateFormats(){
   else if(env()==='claude-link')t+=' 이 링크에서는 영상을 파일로 받을 수 없어요. 이미지는 길게 눌러 저장할 수 있어요.';
   else t+=` 영상은 ${vext.toUpperCase()}(${VID_W}×${VID_H})로 최대 ${VID_MAX}초까지 담겨요.`+(vext==='webm'?' 인스타그램에 올리려면 MP4로 바꿔야 할 수 있어요.':'')+(S.sound?' 소리가 켜져 있으면 영상에 소리도 담겨요.':'');
   formatsEl.textContent=t;
-  if(vstate==='idle')vidBtn.disabled=!vidAllowed();}
+  if(vstate==='idle')vidBtn.disabled=imageBusy||!vidAllowed();}
 const stamp=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;};
 const say=t=>{statusEl.textContent=t;};
 const saveErr=err=>err&&err.code==='declined'?'저장을 취소했어요.':err&&err.code==='rate_limited'?'저장 창이 이미 떠 있어요. 잠시 후 다시 눌러 주세요.':'저장하지 못했어요. 다시 눌러 주세요.';
@@ -774,15 +1497,28 @@ async function deliver(blob,filename,kind){
   if(navigator.canShare&&navigator.canShare({files:[file]})){openSheet(blob,filename,kind,'web');say(`${kind==='image'?'이미지':'영상'}가 준비됐어요.`);return;}
   download(blob,filename);say(`${label} 저장했어요.`);}
 
-// 이미지: 저장용 해상도로 한 장을 그려서 PNG로 (편집 UI는 들어가지 않음)
-imgBtn.addEventListener('click',async()=>{
-  if(imgBtn.disabled)return;imgBtn.disabled=true;imgBtn.textContent='이미지 만드는 중…';closeSheet();say('');
-  await warmFonts();
-  lockSize=true;pc.width=IMG_W;pc.height=IMG_H;fit=null;drawPoster();
-  const blob=await new Promise(r=>pc.toBlob(r,'image/png'));
-  lockSize=false;resize();
-  if(blob)await deliver(blob,`mindfulday-${stamp()}.png`,'image');else say('이미지를 만들지 못했어요. 다시 눌러 주세요.');
-  imgBtn.textContent='이미지로 저장';imgBtn.disabled=vstate==='rec'||vstate==='making';});
+// 왼쪽은 글자 포함 포스터, 오른쪽은 빛망울과 배경만. 화면/녹화와 별도 캔버스로 PNG 생성.
+imgBtn.addEventListener('click',()=>{
+  if(imgBtn.disabled)return;closeSheet();const open=imageChoices.hidden;
+  imageChoices.hidden=!open;imgBtn.setAttribute('aria-expanded',String(open));
+});
+async function saveImage(backgroundOnly=false){
+  if(imageBusy||imgBtn.disabled)return;imageBusy=true;syncImageButtons();vidBtn.disabled=true;
+  imgBtn.textContent='이미지 만드는 중…';closeImageChoices();closeSheet();say('');
+  try{
+    if(!backgroundOnly)await warmFonts();
+    const canvas=document.createElement('canvas');canvas.width=IMG_W;canvas.height=IMG_H;
+    renderPoster(canvas.getContext('2d'),IMG_W,IMG_H,!backgroundOnly);
+    const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
+    if(blob)await deliver(blob,`mindfulday-${backgroundOnly?'background':'poster'}-${stamp()}.png`,'image');
+    else say('이미지를 만들지 못했어요. 다시 눌러 주세요.');
+  }catch(err){say('이미지를 만들지 못했어요. 다시 눌러 주세요.');}
+  finally{imageBusy=false;imgBtn.textContent='이미지로 저장';setV(vstate);}
+}
+$('savePosterImg').addEventListener('click',()=>saveImage(false));
+$('saveBackgroundImg').addEventListener('click',()=>saveImage(true));
+document.addEventListener('pointerdown',e=>{if(!imageChoices.hidden&&!e.target?.closest?.('#imageChoices,#saveImg'))closeImageChoices();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeImageChoices();});
 
 // 영상: 준비 → 녹화 중(다시 누르면 끝, 최대 30초) → 완료. 진행 중에는 중복 실행 막음
 let vstate='idle', rec=null, chunks=[], recStart=0, recTimer=0;
@@ -790,12 +1526,12 @@ function setV(s){vstate=s;vstepsEl.hidden=s==='idle';
   const order=['prep','rec','done'], cur=s==='making'?'rec':s;
   vstepsEl.querySelectorAll('li').forEach(li=>{const i=order.indexOf(li.dataset.s),c=order.indexOf(cur);li.className=i<c||s==='done'?'done':i===c?'on':'';});
   vidBtn.classList.toggle('recording',s==='rec');
-  vidBtn.disabled=s==='prep'||s==='making'||(s==='idle'||s==='done')&&!vidAllowed();
-  imgBtn.disabled=s==='prep'||s==='rec'||s==='making';
+  vidBtn.disabled=imageBusy||s==='prep'||s==='making'||(s==='idle'||s==='done')&&!vidAllowed();
+  syncImageButtons();
   vidLabel.textContent={idle:'영상으로 저장',prep:'준비 중…',rec:'끝내기 0:00',making:'만드는 중…',done:'영상 다시 저장'}[s];}
 const mss=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 async function startRec(){
-  setV('prep');closeSheet();say('녹화를 준비하고 있어요.');
+  setV('prep');closeImageChoices();closeSheet();say('녹화를 준비하고 있어요.');
   await warmFonts();
   lockSize=true;pc.width=VID_W;pc.height=VID_H;fit=null;drawPoster();
   let stream;
