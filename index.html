@@ -15,6 +15,9 @@ body{font-family:var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0p
 button{font-family:inherit;color:var(--ink)}
 button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
+.language-toggle{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:max(16px,calc((100vw - 1040px)/2));z-index:30;display:flex;align-items:center;gap:6px;min-height:34px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--white);font:500 12px var(--f-body);cursor:pointer}
+.language-toggle [data-lang]{opacity:.45}.language-toggle .active{opacity:1;font-weight:700}
+html[lang="en"] .is-story .savebtns .btn{font-size:12px}
 .site-head{max-width:1040px;margin:0 auto;padding-block:18px 14px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
 .brand{margin:0;font:900 26px/1.1 var(--f-body);letter-spacing:-.02em}
 .tagline{margin:0;font-size:14px;line-height:1.5;color:var(--muted);text-wrap:balance}
@@ -200,7 +203,7 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .is-story .image-choices{position:absolute;left:0;right:0;bottom:calc(100% + 8px);z-index:5;box-shadow:0 -6px 28px rgba(29,27,38,.18)}
 @media (prefers-reduced-motion:reduce){.tap-hint{transition:none}}
 /* 모바일: 포스터가 화면 밖으로 나가면 오른쪽 위에 작은 미리보기가 따라옴 */
-.mini{position:fixed;z-index:20;top:calc(env(safe-area-inset-top,0px) + 10px);right:max(10px,env(safe-area-inset-right,0px));width:86px;aspect-ratio:9/16;padding:0;border:1px solid var(--line);border-radius:7px;background:#f2f0f3;cursor:pointer;overflow:hidden;
+.mini{position:fixed;z-index:20;top:calc(env(safe-area-inset-top,0px) + 54px);right:max(10px,env(safe-area-inset-right,0px));width:86px;aspect-ratio:9/16;padding:0;border:1px solid var(--line);border-radius:7px;background:#f2f0f3;cursor:pointer;overflow:hidden;
   box-shadow:0 2px 6px rgba(29,27,38,.12),0 10px 26px rgba(29,27,38,.18);opacity:0;transform:translateY(-8px) scale(.95);pointer-events:none;transition:opacity .2s,transform .2s}
 .mini.show{opacity:1;transform:none;pointer-events:auto}
 .mini canvas{display:block;width:100%;height:100%}
@@ -208,6 +211,7 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 @media (prefers-reduced-motion:reduce){.more>summary .chev,.mini{transition:none}}
 </style>
 
+<button type="button" class="language-toggle" id="langBtn" aria-label="Switch to English"><span data-lang="en">EN</span><span aria-hidden="true">/</span><span data-lang="ko" class="active">KR</span></button>
 <canvas id="mobileBackdrop" aria-hidden="true"></canvas>
 
 <header class="site-head">
@@ -304,6 +308,153 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 </footer>
 
 <script>
+// ================= 언어 =================
+let lang="ko";
+const UI_EN={
+  "화면을 톡 터치해, 오늘의 기분과 가장 닮은 표현을 찾아보세요.": "Tap the screen to find a word that feels like you today.",
+  "‘색 바꾸기’를 누르면 색 조합과 분위기가 달라져요.": "Tap “Colors” to explore different palettes and moods.",
+  "화면을 톡 터치해": "Tap the screen to find",
+  "오늘의 기분과 가장 닮은": "a word that feels",
+  "표현을 찾아보세요": "like you today",
+  "‘색 바꾸기’로 분위기도 바꿔보세요": "Try “Colors” to change the mood.",
+  "포스터 만들기": "Create a poster",
+  "색 조합 바꾸기": "Change color palette",
+  "배경색 바꾸기": "Change background",
+  "색 바꾸기": "Colors",
+  "움직임": "Motion",
+  "소리": "Sound",
+  "포스터 미리보기": "Poster preview",
+  "터치한 곳으로 빛망울이 이동하며 새로운 감정 표현이 나타나요.": "Tap anywhere to move the nearest orb and discover a new feeling.",
+  "포스터로 돌아가기": "Back to poster",
+  "색과 분위기를 바꿔보세요": "Explore colors and moods",
+  "빛망울": "Orbs",
+  "색 조합": "Color palette",
+  "빛망울의 색·자리·크기로 만든 앰비언트예요. 첫 클릭부터 울려요": "Ambient sound shaped by each orb’s color, position and size. Tap to begin.",
+  "포스터 저장하기": "Save your poster",
+  "이미지로 저장": "Save image",
+  "영상으로 저장": "Save video",
+  "코드 복사": "Copy code",
+  "이미지 저장 방식": "Image export style",
+  "포스터 스타일": "Poster style",
+  "배경 이미지만": "Background only",
+  "영상 저장 진행 상태": "Video export progress",
+  "준비": "Preparing",
+  "녹화 중": "Recording",
+  "완료": "Done",
+  "사진첩에 저장": "Save to Photos",
+  "닫기": "Close",
+  "더 꾸미기": "Customize",
+  "배경 · 크기 · 색 · 소리 · 움직임 세부 조정": "Background, size, color, sound and motion",
+  "배경": "Background",
+  "빛망울 크기": "Orb size",
+  "색 다듬기": "Fine-tune colors",
+  "모양": "Shape",
+  "움직임 세부": "Motion details",
+  "움직임 멈추기": "Pause motion",
+  "움직임 다시 켜기": "Resume motion",
+  "자리 다시 배치": "Rearrange",
+  "고른 빛망울 새로 뽑기": "Regenerate selected orbs",
+  "모든 빛망울 새로 뽑기": "Regenerate all orbs",
+  "선명한 색": "Vivid colors",
+  "아주 깊은 색": "Deep colors",
+  "차분한 색": "Calm colors",
+  "깊고 차분한 색이 섞인": "Mixed deep and calm colors",
+  "부드러운 색": "Soft colors",
+  "깊고 차분한 색": "Muted deep colors",
+  "잔잔하게": "Gentle",
+  "둥실둥실": "Floating",
+  "활기차게": "Lively",
+  "흰색": "White",
+  "어두운 밤": "Dark night",
+  "첫 번째 빛망울": "First orb",
+  "두 번째 빛망울": "Second orb",
+  "세 번째 빛망울": "Third orb",
+  "색상 회전": "Hue rotation",
+  "채도": "Saturation",
+  "밝기": "Lightness",
+  "대비": "Contrast",
+  "번짐": "Softness",
+  "소리 크기": "Volume",
+  "음의 밀도": "Note density",
+  "공간감": "Reverb",
+  "떠다니는 폭": "Drift range",
+  "떠다니는 속도": "Drift speed",
+  "빛망울이 바뀌는 간격": "Time between changes",
+  "바뀌는 데 걸리는 시간": "Transition duration",
+  "소리 켜기": "Sound on",
+  "소리 끄기": "Sound off",
+  "소리 다시 켜기": "Retry sound",
+  "저장을 취소했어요.": "Saving was canceled.",
+  "저장 창이 이미 떠 있어요. 잠시 후 다시 눌러 주세요.": "A save dialog is already open. Please try again shortly.",
+  "저장하지 못했어요. 다시 눌러 주세요.": "Could not save. Please try again.",
+  "저장할 포스터": "Poster to save",
+  "이미지를 길게 눌러 ‘사진 앱에 저장’을 고르세요. 컴퓨터에서는 오른쪽 클릭 후 ‘이미지를 다른 이름으로 저장’을 고르세요.": "Touch and hold the image, then choose “Save to Photos”. On a computer, right-click and choose “Save image as”.",
+  "아래 버튼을 누른 뒤 저장할 앱을 선택하세요. 기기에 따라 저장 메뉴가 다를 수 있어요.": "Tap the button below and choose an app to save to. Options vary by device.",
+  "사진 앱이나 선택한 앱에서 저장 결과를 확인해 주세요.": "Find your saved file in Photos or the app you selected.",
+  "저장 메뉴를 닫았어요.": "The save menu was closed.",
+  "저장 메뉴를 열지 못했어요. 다시 눌러 주세요.": "Could not open the save menu. Please try again.",
+  "이미지를 저장했어요.": "Image saved.",
+  "영상을 저장했어요.": "Video saved.",
+  "이미지가 준비됐어요.": "Your image is ready.",
+  "이 링크에서는 영상을 파일로 받을 수 없어요.": "Video download is not available from this link.",
+  "이미지 만드는 중…": "Creating image…",
+  "이미지를 만들지 못했어요. 다시 눌러 주세요.": "Could not create the image. Please try again.",
+  "준비 중…": "Preparing…",
+  "끝내기": "Stop",
+  "만드는 중…": "Creating…",
+  "영상 다시 저장": "Save another video",
+  "녹화를 준비하고 있어요.": "Preparing to record.",
+  "이 브라우저에서는 영상을 녹화할 수 없어요.": "This browser does not support video recording.",
+  "영상을 만들지 못했어요. 다시 시도해 주세요.": "Could not create the video. Please try again.",
+  "녹화 중이에요. 다시 누르면 끝나요. 포스터를 눌러 변화를 담아도 좋아요.": "Recording. Tap again to finish, or tap the poster to capture its changes.",
+  "영상을 만들고 있어요.": "Creating your video.",
+  "소리 켜기를 한 번 더 눌러 주세요.": "Please tap “Sound on” once more.",
+  "포스터 코드": "Poster code",
+  "자동 복사가 막혀 있어요. 코드를 전체 선택해 복사해 주세요.": "Automatic copying is unavailable. Select all the code and copy it manually.",
+  "코드를 복사했어요. 빈 .html 파일에 붙여 넣고 열면 지금 포스터가 떠다니며 재생돼요.": "Code copied. Paste it into an empty .html file and open it to play your animated poster.",
+  "3개까지 고를 수 있어요. 하나를 해제한 뒤 골라 주세요.": "Choose up to 3 orbs. Deselect one to add another.",
+  "선명한 색 조합": "Vivid colors palette",
+  "아주 깊은 색 조합": "Deep colors palette",
+  "차분한 색 조합": "Calm colors palette",
+  "깊고 차분한 색이 섞인 조합": "Mixed deep and calm colors palette",
+  "부드러운 색 조합": "Soft colors palette",
+  "깊고 차분한 색 조합": "Muted deep colors palette",
+  "아래 버튼을 누른 뒤 ‘이미지 저장’을 선택하세요. 저장한 결과는 사진 앱에서 확인해 주세요.": "Tap the button below, then choose “Save Image”. Find your saved file in the Photos app.",
+  "아래 버튼을 누른 뒤 ‘비디오 저장’을 선택하세요. 저장한 결과는 사진 앱에서 확인해 주세요.": "Tap the button below, then choose “Save Video”. Find your saved file in the Photos app.",
+  "이 브라우저에서는 소리를 시작할 수 없어요.": "This browser could not start audio.",
+  "영상이 준비됐어요.": "Your video is ready."
+};
+const UI_KO=Object.fromEntries(Object.entries(UI_EN).map(([ko,en])=>[en,ko]));
+const originalUI=text=>UI_KO[text]||text;
+const tr=text=>{const ko=originalUI(text);return lang==='en'?(UI_EN[ko]||text):ko;};
+const L=(ko,en)=>lang==='en'?en:ko;
+const staticText=[],staticAttrs=[];
+function captureLanguageNodes(){
+  const skip='#saveImg,#vidLabel,#count,#moodName,#presets,#ground,#soundBtnD,#status,#formats,#sheetMsg,#toast,#pause';
+  const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let node;
+  while(node=walk.nextNode()){
+    const key=node.nodeValue.trim();if(UI_EN[key]&&!node.parentElement.closest('script,style,'+skip))staticText.push({node,key,raw:node.nodeValue});
+  }
+  document.querySelectorAll('[aria-label]').forEach(node=>{const key=node.getAttribute('aria-label');if(UI_EN[key]&&node.id!=='soundBtn')staticAttrs.push({node,key});});
+}
+function setLanguage(next,persist=true){
+  lang=next==='en'?'en':'ko';document.documentElement.lang=lang;
+  for(const {node,key,raw} of staticText)node.nodeValue=raw.replace(key,tr(key));
+  for(const {node,key} of staticAttrs)node.setAttribute('aria-label',tr(key));
+  document.querySelectorAll('#langBtn [data-lang]').forEach(el=>el.classList.toggle('active',el.dataset.lang===lang));
+  document.getElementById('langBtn').setAttribute('aria-label',lang==='en'?'Switch to Korean':'Switch to English');
+  document.getElementById('langBtn').setAttribute('title',lang==='en'?'Switch to Korean':'영어로 전환');
+  tiles.forEach((t,i)=>t.el.setAttribute('aria-label',L(`빛망울 ${i+1}`,`Orb ${i+1}`)));
+  document.querySelectorAll('.slider-name').forEach(el=>{el.textContent=tr(el.dataset.label);});
+  Object.keys(FMT).forEach(syncSlider);updateColorUI();renderPresets();renderGround();refreshTiles();soundUI();
+  imgBtn.textContent=tr(imageBusy?'이미지 만드는 중…':'이미지로 저장');setV(vstate);updateFormats();
+  document.getElementById('pause').textContent=tr(S.paused?'움직임 다시 켜기':'움직임 멈추기');
+  statusEl.textContent=tr(statusEl.textContent);sheetMsg.textContent=tr(sheetMsg.textContent);document.getElementById('toast').textContent=tr(document.getElementById('toast').textContent);
+  document.querySelectorAll('.sheet-prev [aria-label],.sheet-prev img').forEach(el=>{if(el.hasAttribute('aria-label'))el.setAttribute('aria-label',tr(el.getAttribute('aria-label')));if(el.alt)el.alt=tr(el.alt);});
+  if(persist)try{localStorage.setItem('mindful-day-language',lang);}catch(err){}
+  fit=null;resize();drawPoster();drawMobileBackdrop();
+}
+
 // ================= 색 유틸 =================
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 function rgb2hsl([r,g,b]){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;let h=0,s=0;
@@ -387,7 +538,7 @@ const N=6, tilesBox=document.getElementById('tiles'), countEl=document.getElemen
 let chosen=[0], warnT=0;
 const CHECK='<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 for(let i=0;i<N;i++){
-  const el=document.createElement('button');el.type='button';el.className='tile';el.setAttribute('aria-label',`빛망울 ${i+1}`);
+  const el=document.createElement('button');el.type='button';el.className='tile';el.setAttribute('aria-label',L(`빛망울 ${i+1}`,`Orb ${i+1}`));
   el.innerHTML=`<canvas></canvas><span class="check">${CHECK}</span>`;tilesBox.appendChild(el);
   const cb={...TILE_COMBOS[i]}, p=gen(cb), t={el,cv:el.querySelector('canvas'),combo:cb,from:p,to:p,cur:p,t0:0,dirty:true};t.ctx=t.cv.getContext('2d');tiles.push(t);
   el.addEventListener('click',()=>toggle(i));
@@ -404,8 +555,8 @@ function toggle(i){
 }
 function refreshTiles(){clearTimeout(warnT);
   tiles.forEach((t,j)=>t.el.setAttribute('aria-pressed',String(chosen.includes(j))));
-  countEl.textContent=`최대 3개 선택 · 현재 ${chosen.length}개`;countEl.classList.remove('warn');}
-function warnCount(){countEl.textContent='3개까지 고를 수 있어요. 하나를 해제한 뒤 골라 주세요.';countEl.classList.add('warn');
+  countEl.textContent=L(`최대 3개 선택 · 현재 ${chosen.length}개`,`Choose up to 3 · ${chosen.length} selected`);countEl.classList.remove('warn');}
+function warnCount(){countEl.textContent=tr('3개까지 고를 수 있어요. 하나를 해제한 뒤 골라 주세요.');countEl.classList.add('warn');
   clearTimeout(warnT);warnT=setTimeout(refreshTiles,2800);}
 function retarget(t,dur){const now=performance.now(),busy=now-t.t0<(t.dur||S.morph)*1000;t.from=t.cur;t.to=gen(t.combo);t.eo=busy;t.t0=now;t.dur=dur||0;}
 const easeOut=t=>1-Math.pow(1-t,3);
@@ -1239,7 +1390,7 @@ function feelGlyph(ctx,W,H,text,alpha,sc){let sz=W*.15;const ff=z=>`italic 500 $
   const tw=ctx.measureText(text).width;if(tw>W*.84){sz*=W*.84/tw;ctx.font=ff(sz);}
   ctx.save();ctx.globalAlpha=.7*clamp(alpha);ctx.fillStyle=feelingInk();ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.translate(W/2,H/2);ctx.scale(sc,sc);ctx.fillText(text,0,0);
-  const ko=FEEL_KO[text];if(ko){const ksz=W*10.7/Math.max(1,pc.clientWidth||W);ctx.font=`400 ${ksz}px "Pretendard","Noto Sans KR",sans-serif`;ctx.fillText(ko,0,sz*.55+ksz*.9);}
+  const ko=lang==='ko'?FEEL_KO[text]:'';if(ko){const ksz=W*10.7/Math.max(1,pc.clientWidth||W);ctx.font=`400 ${ksz}px "Pretendard","Noto Sans KR",sans-serif`;ctx.fillText(ko,0,sz*.55+ksz*.9);}
   ctx.restore();}
 function drawFeeling(ctx,W,H){const now=performance.now();
   if(prevFeel){const e=(now-prevFeel.t0)/1000;if(e>.4)prevFeel=null;else feelGlyph(ctx,W,H,prevFeel.text,1-e/.4,1);}
@@ -1351,11 +1502,11 @@ function cycleColors(){moodIdx=(moodIdx+1)%MOODS.length;const m=MOODS[moodIdx],h
   tiles.forEach((t,i)=>{t.combo={mode:modes[i],h:(h0+i*60+R(-12,12)+360)%360,tone:m.t==='mix'?toneOf(MIX[i]):m.t};retarget(t,1.2);});
   S.combo=tiles[chosen[0]??0].combo;updateColorUI();showToast(m.name+' 조합');if(typeof strum==='function')strum();if(feel)showFeeling(chosen.includes(feel.idx)?feel.idx:chosen[0]);}
 let toastT=0;
-function showToast(t){const el=document.getElementById('toast');if(!el)return;el.textContent=t;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),1600);}
+function showToast(t){const el=document.getElementById('toast');if(!el)return;el.textContent=tr(t);el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),1600);}
 function updateColorUI(){if(chosen.length)S.combo=tiles[chosen[0]].combo;
   const cl=comboColors(S.combo), sw=document.getElementById('railSwatch');
   if(sw)sw.style.background=`radial-gradient(circle,${cl[3]} 0 18%,${cl[2]} 40%,${cl[1]} 62%,${cl[0]} 82%)`;
-  $('moodName').textContent=MOODS[moodIdx].name;
+  $('moodName').textContent=tr(MOODS[moodIdx].name);
   $('palStrip').innerHTML=tiles.map(t=>{const c=comboColors(t.combo);return `<i style="background:radial-gradient(circle,${c[3]} 0 18%,${c[2]} 42%,${c[1]} 66%,${c[0]} 90%)"></i>`;}).join('');}
 $('colorCycle').addEventListener('click',cycleColors);
 $('colorBtn').addEventListener('click',()=>{if(curSheet)closeMSheet();cycleColors();});
@@ -1365,7 +1516,7 @@ const PRESETS=[
   {id:'calm',name:'잔잔하게',desc:'천천히 머물러요',v:{drift:.4,speed:.5,interval:3,morph:4.5}},
   {id:'float',name:'둥실둥실',desc:'가볍게 떠다녀요',v:{drift:1,speed:1,interval:1.2,morph:2.5}},
   {id:'lively',name:'활기차게',desc:'빠르게 바뀌어요',v:{drift:2.2,speed:1.8,interval:.5,morph:1.1}}];
-function renderPresets(){$('presets').innerHTML=PRESETS.map(p=>`<button type="button" class="preset" data-id="${p.id}" aria-pressed="${S.preset===p.id}"><b>${p.name}</b></button>`).join('');}
+function renderPresets(){$('presets').innerHTML=PRESETS.map(p=>`<button type="button" class="preset" data-id="${p.id}" aria-pressed="${S.preset===p.id}"><b>${tr(p.name)}</b></button>`).join('');}
 $('presets').addEventListener('click',e=>{const b=e.target.closest('[data-id]');if(!b)return;const p=PRESETS.find(x=>x.id===b.dataset.id);
   Object.assign(S,p.v);S.preset=p.id;Object.keys(p.v).forEach(syncSlider);renderPresets();queueFeelingUpdate();});
 
@@ -1379,7 +1530,7 @@ function groundColors(){const g=GROUNDS.find(x=>x[0]===S.ground)||GROUNDS[0];
 function renderGround(){const sw=document.getElementById('bgSwatch');if(sw){sw.style.background=groundColors().bg;}
   $('guide').style.setProperty('--guide-ink',groundColors().dark?'#ffffff':'#333333');
   document.body.style.setProperty('--mobile-ink',groundColors().ink);
-  $('ground').innerHTML=GROUNDS.map(([v,n])=>`<button type="button" class="chip" data-v="${v}" aria-pressed="${S.ground===v}">${n}</button>`).join('');}
+  $('ground').innerHTML=GROUNDS.map(([v,n])=>`<button type="button" class="chip" data-v="${v}" aria-pressed="${S.ground===v}">${tr(n)}</button>`).join('');}
 $('ground').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;S.ground=b.dataset.v;renderGround();if(feel)showFeeling(chosen.includes(feel.idx)?feel.idx:chosen[0]);});
 const f2=v=>v.toFixed(2), sg=v=>(v>=0?'+':'')+v;
 const SLIDERS={
@@ -1387,10 +1538,10 @@ const SLIDERS={
   slColor:[['hue','색상 회전',-180,180,1,v=>sg(v)+'°'],['sat','채도',0,1.6,.02,f2],['light','밝기',-.35,.35,.01,v=>sg(v.toFixed(2))],['contrast','대비',.3,1.8,.02,f2]],
   slForm:[['soft','번짐',.3,1.6,.05,f2]],
   slSound:[['vol','소리 크기',0,1,.02,v=>Math.round(v*100)+'%'],['density','음의 밀도',0,1,.05,v=>Math.round(v*100)+'%'],['space','공간감',0,1,.05,v=>Math.round(v*100)+'%']],
-  slMotion:[['drift','떠다니는 폭',0,3,.05,f2],['speed','떠다니는 속도',.1,3,.05,f2],['interval','빛망울이 바뀌는 간격',.2,5,.1,v=>v.toFixed(1)+'초'],['morph','바뀌는 데 걸리는 시간',.3,6,.1,v=>v.toFixed(1)+'초']]};
+  slMotion:[['drift','떠다니는 폭',0,3,.05,f2],['speed','떠다니는 속도',.1,3,.05,f2],['interval','빛망울이 바뀌는 간격',.2,5,.1,v=>v.toFixed(1)+L('초',' s')],['morph','바뀌는 데 걸리는 시간',.3,6,.1,v=>v.toFixed(1)+L('초',' s')]]};
 const FMT={};
 Object.entries(SLIDERS).forEach(([box,list])=>{
-  $(box).innerHTML=list.map(([k,n,mn,mx,st])=>`<div class="ctl"><label for="r-${k}">${n} <output id="o-${k}"></output></label><input id="r-${k}" type="range" min="${mn}" max="${mx}" step="${st}" value="${S[k]}"></div>`).join('');
+  $(box).innerHTML=list.map(([k,n,mn,mx,st])=>`<div class="ctl"><label for="r-${k}"><span class="slider-name" data-label="${n}">${tr(n)}</span> <output id="o-${k}"></output></label><input id="r-${k}" type="range" min="${mn}" max="${mx}" step="${st}" value="${S[k]}"></div>`).join('');
   list.forEach(([k,,,,,f])=>{FMT[k]=f;$('o-'+k).textContent=f(S[k]);
     $('r-'+k).addEventListener('input',e=>{S[k]=+e.target.value;$('o-'+k).textContent=f(S[k]);
       if(['hue','sat','light','contrast','soft'].includes(k)){markAll();if(k!=='soft')updateColorUI();}
@@ -1398,7 +1549,7 @@ Object.entries(SLIDERS).forEach(([box,list])=>{
       if(['szL','szM','szS','hue','sat','light','contrast','soft','speed','drift'].includes(k))queueFeelingUpdate();
       if(k==='vol'&&AC&&S.sound)AU.master.gain.setTargetAtTime(S.vol,AC.currentTime,.1);});});});
 function syncSlider(k){const el=$('r-'+k);if(el){el.value=S[k];$('o-'+k).textContent=FMT[k](S[k]);}}
-$('pause').addEventListener('click',e=>{S.paused=!S.paused;e.currentTarget.textContent=S.paused?'움직임 다시 켜기':'움직임 멈추기';});
+$('pause').addEventListener('click',e=>{S.paused=!S.paused;e.currentTarget.textContent=tr(S.paused?'움직임 다시 켜기':'움직임 멈추기');});
 $('relayout').addEventListener('click',()=>{relayout();queueFeelingUpdate();});
 $('rerollSel').addEventListener('click',()=>{chosen.forEach(i=>retarget(tiles[i]));queueFeelingUpdate();});
 $('reroll').addEventListener('click',()=>{tiles.forEach(t=>retarget(t));queueFeelingUpdate();});
@@ -1451,32 +1602,32 @@ dlP.then(d=>{dl=d;dlReady=true;updateFormats();});
 function env(){return dl?'claude':(inClaude?(dlReady?'claude-link':'pending'):'web');}
 function vidAllowed(){return canRecord&&!!mime&&env()!=='claude-link';}
 function updateFormats(){
-  let t=`이미지는 PNG(${IMG_W}×${IMG_H})로 저장돼요.`;
-  if(!canRecord||!mime)t+=' 이 브라우저는 영상 저장을 지원하지 않아요.';
-  else if(env()==='claude-link')t+=' 이 링크에서는 영상을 파일로 받을 수 없어요. 이미지는 길게 눌러 저장할 수 있어요.';
-  else t+=` 영상은 ${vext.toUpperCase()}(${VID_W}×${VID_H})로 최대 ${VID_MAX}초까지 담겨요.`+(vext==='webm'?' 인스타그램에 올리려면 MP4로 바꿔야 할 수 있어요.':'')+(S.sound?' 소리가 켜져 있으면 영상에 소리도 담겨요.':'');
+  let t=L(`이미지는 PNG(${IMG_W}×${IMG_H})로 저장돼요.`,`Images are saved as PNG (${IMG_W}×${IMG_H}).`);
+  if(!canRecord||!mime)t+=L(' 이 브라우저는 영상 저장을 지원하지 않아요.',' This browser does not support video export.');
+  else if(env()==='claude-link')t+=L(' 이 링크에서는 영상을 파일로 받을 수 없어요. 이미지는 길게 눌러 저장할 수 있어요.',' Video download is not available from this link. Touch and hold an image to save it.');
+  else t+=L(` 영상은 ${vext.toUpperCase()}(${VID_W}×${VID_H})로 최대 ${VID_MAX}초까지 담겨요.`,` Videos are saved as ${vext.toUpperCase()} (${VID_W}×${VID_H}), up to ${VID_MAX} seconds.`)+(vext==='webm'?L(' 인스타그램에 올리려면 MP4로 바꿔야 할 수 있어요.',' You may need to convert to MP4 for Instagram.'):'')+(S.sound?L(' 소리가 켜져 있으면 영상에 소리도 담겨요.',' Sound is included when enabled.'):'');
   formatsEl.textContent=t;
   if(vstate==='idle')vidBtn.disabled=imageBusy||!vidAllowed();}
 const stamp=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;};
-const say=t=>{statusEl.textContent=t;};
+const say=t=>{statusEl.textContent=tr(t);};
 const saveErr=err=>err&&err.code==='declined'?'저장을 취소했어요.':err&&err.code==='rate_limited'?'저장 창이 이미 떠 있어요. 잠시 후 다시 눌러 주세요.':'저장하지 못했어요. 다시 눌러 주세요.';
 function download(blob,filename){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);}
 
 const sheet=$('sheet'), sheetPrev=$('sheetPrev'), sheetMsg=$('sheetMsg'), shShare=$('shShare');
 const applePhotos=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 function saveMenuHint(kind){
-  if(applePhotos)return `아래 버튼을 누른 뒤 ‘${kind==='image'?'이미지':'비디오'} 저장’을 선택하세요. 저장한 결과는 사진 앱에서 확인해 주세요.`;
-  return '아래 버튼을 누른 뒤 저장할 앱을 선택하세요. 기기에 따라 저장 메뉴가 다를 수 있어요.';
+  if(applePhotos)return tr(`아래 버튼을 누른 뒤 ‘${kind==='image'?'이미지':'비디오'} 저장’을 선택하세요. 저장한 결과는 사진 앱에서 확인해 주세요.`);
+  return tr('아래 버튼을 누른 뒤 저장할 앱을 선택하세요. 기기에 따라 저장 메뉴가 다를 수 있어요.');
 }
 let sheetFile=null, sheetURL='';
 function closeSheet(){sheet.hidden=true;sheetPrev.innerHTML='';sheetFile=null;if(sheetURL){URL.revokeObjectURL(sheetURL);sheetURL='';}}
 function openSheet(blob,filename,kind,mode){
   closeSheet();sheetFile={blob,filename,kind};
   if(kind==='image'||mode==='link'){
-    const fr=new FileReader();fr.onload=()=>{const img=new Image();img.src=fr.result;img.alt='저장할 포스터';sheetPrev.appendChild(img);};fr.readAsDataURL(blob);
+    const fr=new FileReader();fr.onload=()=>{const img=new Image();img.src=fr.result;img.alt=tr('저장할 포스터');sheetPrev.appendChild(img);};fr.readAsDataURL(blob);
   }else{sheetURL=URL.createObjectURL(blob);const v=document.createElement('video');v.src=sheetURL;v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.controls=true;sheetPrev.appendChild(v);}
   if(mode==='link'){shShare.hidden=true;
-    sheetMsg.textContent='이미지를 길게 눌러 ‘사진 앱에 저장’을 고르세요. 컴퓨터에서는 오른쪽 클릭 후 ‘이미지를 다른 이름으로 저장’을 고르세요.';}
+    sheetMsg.textContent=tr('이미지를 길게 눌러 ‘사진 앱에 저장’을 고르세요. 컴퓨터에서는 오른쪽 클릭 후 ‘이미지를 다른 이름으로 저장’을 고르세요.');}
   else{shShare.hidden=false;sheetMsg.textContent=saveMenuHint(kind);}
   sheet.hidden=false;}
 shShare.addEventListener('click',async()=>{if(!sheetFile)return;
@@ -1490,7 +1641,7 @@ async function deliver(blob,filename,kind){
   if(dl){try{await dl.save({filename,data:blob});say(`${label} 저장했어요.`);}catch(err){say(saveErr(err));}return;}
   if(inClaude){if(kind==='image'){openSheet(blob,filename,kind,'link');say('이미지가 준비됐어요.');}else say('이 링크에서는 영상을 파일로 받을 수 없어요.');return;}
   const file=new File([blob],filename,{type:blob.type});
-  if(navigator.canShare&&navigator.canShare({files:[file]})){openSheet(blob,filename,kind,'web');say(`${kind==='image'?'이미지':'영상'}가 준비됐어요.`);return;}
+  if(navigator.canShare&&navigator.canShare({files:[file]})){openSheet(blob,filename,kind,'web');say(kind==='image'?'이미지가 준비됐어요.':'영상이 준비됐어요.');return;}
   download(blob,filename);say(`${label} 저장했어요.`);}
 
 // 왼쪽은 글자 포함 포스터, 오른쪽은 빛망울과 배경만. 화면/녹화와 별도 캔버스로 PNG 생성.
@@ -1500,7 +1651,7 @@ imgBtn.addEventListener('click',()=>{
 });
 async function saveImage(backgroundOnly=false){
   if(imageBusy||imgBtn.disabled)return;imageBusy=true;syncImageButtons();vidBtn.disabled=true;
-  imgBtn.textContent='이미지 만드는 중…';closeImageChoices();closeSheet();say('');
+  imgBtn.textContent=tr('이미지 만드는 중…');closeImageChoices();closeSheet();say('');
   try{
     if(!backgroundOnly)await warmFonts();
     const canvas=document.createElement('canvas');canvas.width=IMG_W;canvas.height=IMG_H;
@@ -1509,7 +1660,7 @@ async function saveImage(backgroundOnly=false){
     if(blob)await deliver(blob,`mindfulday-${backgroundOnly?'background':'poster'}-${stamp()}.png`,'image');
     else say('이미지를 만들지 못했어요. 다시 눌러 주세요.');
   }catch(err){say('이미지를 만들지 못했어요. 다시 눌러 주세요.');}
-  finally{imageBusy=false;imgBtn.textContent='이미지로 저장';setV(vstate);}
+  finally{imageBusy=false;imgBtn.textContent=tr('이미지로 저장');setV(vstate);}
 }
 $('savePosterImg').addEventListener('click',()=>saveImage(false));
 $('saveBackgroundImg').addEventListener('click',()=>saveImage(true));
@@ -1524,7 +1675,7 @@ function setV(s){vstate=s;vstepsEl.hidden=s==='idle';
   vidBtn.classList.toggle('recording',s==='rec');
   vidBtn.disabled=imageBusy||s==='prep'||s==='making'||(s==='idle'||s==='done')&&!vidAllowed();
   syncImageButtons();
-  vidLabel.textContent={idle:'영상으로 저장',prep:'준비 중…',rec:'끝내기 0:00',making:'만드는 중…',done:'영상 다시 저장'}[s];}
+  vidLabel.textContent=s==='rec'?tr('끝내기')+' '+mss(recStart?(performance.now()-recStart)/1000:0):tr({idle:'영상으로 저장',prep:'준비 중…',making:'만드는 중…',done:'영상 다시 저장'}[s]);}
 const mss=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 async function startRec(){
   setV('prep');closeImageChoices();closeSheet();say('녹화를 준비하고 있어요.');
@@ -1545,7 +1696,7 @@ async function startRec(){
     if(!blob.size){setV('idle');say('영상을 만들지 못했어요. 다시 시도해 주세요.');return;}
     await deliver(blob,`mindfulday-${stamp()}.${recMime.includes('mp4')?'mp4':'webm'}`,'video');setV('done');};
   rec.start(250);recStart=performance.now();setV('rec');say('녹화 중이에요. 다시 누르면 끝나요. 포스터를 눌러 변화를 담아도 좋아요.');
-  recTimer=setInterval(()=>{const s=(performance.now()-recStart)/1000;vidLabel.textContent=`끝내기 ${mss(s)}`;if(s>=VID_MAX)stopRec();},250);}
+  recTimer=setInterval(()=>{const s=(performance.now()-recStart)/1000;vidLabel.textContent=tr('끝내기')+' '+mss(s);if(s>=VID_MAX)stopRec();},250);}
 function stopRec(){if(vstate!=='rec'||!rec)return;setV('making');say('영상을 만들고 있어요.');rec.stop();}
 vidBtn.addEventListener('click',()=>{if(vstate==='rec')stopRec();else if(vstate==='idle'||vstate==='done')startRec();});
 
@@ -1653,8 +1804,8 @@ function updateAudio(){if(!AC||!AU||AC.state!=='running')return;const t=AC.curre
   for(let id=chosen.length*3;id<AU.loops.length;id++)AU.loops[id]=null;}
 function soundUI(){const on=S.sound;
   const label=!on?'소리 켜기':AC&&(AC.state!=='running'||document.hidden)?'소리 다시 켜기':'소리 끄기';
-  const mb=$('soundBtn');mb.setAttribute('aria-pressed',String(on));mb.setAttribute('aria-label',label);mb.querySelector('.ic').innerHTML=on?ICON_ON:ICON_OFF;
-  const db=$('soundBtnD');db.setAttribute('aria-pressed',String(on));db.innerHTML=(on?ICON_ON:ICON_OFF)+'<span>'+label+'</span>';}
+  const mb=$('soundBtn');mb.setAttribute('aria-pressed',String(on));mb.setAttribute('aria-label',tr(label));mb.querySelector('.ic').innerHTML=on?ICON_ON:ICON_OFF;
+  const db=$('soundBtnD');db.setAttribute('aria-pressed',String(on));db.innerHTML=(on?ICON_ON:ICON_OFF)+'<span>'+tr(label)+'</span>';}
 function audioSession(on){
   // 지원하는 Safari에서는 음악 재생 세션을 사용. 미지원 브라우저는 기존 Web Audio 경로를 사용.
   try{if(navigator.audioSession)navigator.audioSession.type=on?'playback':'auto';}catch(err){}
@@ -1736,7 +1887,7 @@ function draw(now){var W=c.width,H=c.height,T=(now-t0)/1000*D.speed;x.fillStyle=
   D.orbs.forEach(function(o){var p=o.p,a=p.amp*D.drift,px=p.x+Math.sin(T*p.f1*TAU+p.ph1)*a,py=p.y+Math.cos(T*p.f2*TAU+p.ph2)*a,s=p.s*(1+.04*D.drift*Math.sin(T*.8+p.ph3));orb(o,px*W,py*H,s*W);});
   var pad=W*.07;drawHeader(x,W,pad,function(z){return font(D.ft,z);},function(z){return font(D.fs,z);},D.title,D.sub,D.ink);x.fillStyle=D.ink;x.textBaseline='top';x.textAlign='left';
   if(D.feel){var fs2=W*.15;x.save();x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';var fw=x.measureText(D.feel[0]).width;if(fw>W*.84){fs2*=W*.84/fw;x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';}
-    x.globalAlpha=.7;x.fillStyle=D.feelInk||'#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(D.feel[0],W/2,H/2);x.font='400 '+(W*.034)+'px "Pretendard",sans-serif';x.fillText(D.feel[1],W/2,H/2+fs2*.55+W*.031);x.restore();x.fillStyle=D.ink;x.textAlign='left';x.textBaseline='top';}
+    x.globalAlpha=.7;x.fillStyle=D.feelInk||'#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(D.feel[0],W/2,H/2);if(D.feel[1]){x.font='400 '+(W*.034)+'px "Pretendard",sans-serif';x.fillText(D.feel[1],W/2,H/2+fs2*.55+W*.031);}x.restore();x.fillStyle=D.ink;x.textAlign='left';x.textBaseline='top';}
   var fz=W*.026;x.font=font(D.fs,fz);x.globalAlpha=.8;x.textBaseline='alphabetic';footer(x,W,H,pad,fz,function(z){return font(D.fs,z);},D.foot[0],D.foot[1]);
   requestAnimationFrame(draw);}
 addEventListener('resize',size);
@@ -1746,7 +1897,7 @@ size();requestAnimationFrame(draw);
 function buildCode(){
   const r3=v=>+(+v).toFixed(4), G=groundColors(), bg=G.bg;
   const ft=fontOf(S.ft), fs=fontOf(S.fs);
-  const D={title:S.title||'',sub:S.sub||'',feel:feel?[feel.text,FEEL_KO[feel.text]||'']:null,foot:[stampText(),colorNames()],bg,ink:G.ink,feelInk:feelingInk(),drift:r3(S.drift),speed:r3(S.speed),
+  const D={title:S.title||'',sub:S.sub||'',feel:feel?[feel.text,lang==='ko'?(FEEL_KO[feel.text]||''):'']:null,foot:[stampText(),colorNames()],bg,ink:G.ink,feelInk:feelingInk(),drift:r3(S.drift),speed:r3(S.speed),
     ft:{fam:ft.fam,w:ft.tw},fs:{fam:fs.fam,w:fs.sw},
     orbs:chosen.map((idx,i)=>{const o=tiles[idx].cur,pl=placements[i];return{trail:r3(o.trail),ta:r3(o.trailAng),
       p:{x:r3(pl.tx),y:r3(pl.ty),s:r3(SZ()[i]*pl.tj),ph1:r3(pl.ph1),ph2:r3(pl.ph2),ph3:r3(pl.ph3),f1:r3(pl.f1),f2:r3(pl.f2),amp:r3(pl.amp)},
@@ -1754,7 +1905,7 @@ function buildCode(){
   const fams=[...new Set([...[ft,fs].filter(f=>f.id!=='pretendard').map(f=>f.id==='futura'?'family=Jost:wght@400;500':`family=${f.fam.replace(/ /g,'+')}:wght@${f.tw===f.sw?f.tw:Math.min(f.tw,f.sw)+';'+Math.max(f.tw,f.sw)}`),'family=Cormorant+Garamond:ital,wght@1,500'])];
   const esc=t=>t.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
   return `<!doctype html>
-<html lang="ko">
+<html lang="${lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -1773,8 +1924,8 @@ ${RUNTIME.trim().replace('FOOTER_SRC',footer.toString()+'\n'+drawHeader.toString
 </bo${'dy'}>
 </html>
 `;}
-function showCode(code){closeSheet();const ta=document.createElement('textarea');ta.className='codebox';ta.readOnly=true;ta.value=code;ta.setAttribute('aria-label','포스터 코드');
-  sheetPrev.appendChild(ta);shShare.hidden=true;sheetMsg.textContent='자동 복사가 막혀 있어요. 코드를 전체 선택해 복사해 주세요.';sheet.hidden=false;ta.focus();ta.select();}
+function showCode(code){closeSheet();const ta=document.createElement('textarea');ta.className='codebox';ta.readOnly=true;ta.value=code;ta.setAttribute('aria-label',tr('포스터 코드'));
+  sheetPrev.appendChild(ta);shShare.hidden=true;sheetMsg.textContent=tr('자동 복사가 막혀 있어요. 코드를 전체 선택해 복사해 주세요.');sheet.hidden=false;ta.focus();ta.select();}
 $('copyCode').addEventListener('click',()=>{const code=buildCode(),done='코드를 복사했어요. 빈 .html 파일에 붙여 넣고 열면 지금 포스터가 떠다니며 재생돼요.';
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(()=>{closeSheet();say(done);},()=>showCode(code));}else showCode(code);});
 
@@ -1805,7 +1956,10 @@ function hideGuide(){guideGone=true;const guide=$('guide');guide.classList.add('
 // ================= 시작 =================
 relocate();
 updateColorUI();renderPresets();renderGround();refreshTiles();setV('idle');updateFormats();soundUI();
-resize();warmFonts();
+captureLanguageNodes();
+$('langBtn').addEventListener('click',()=>setLanguage(lang==='ko'?'en':'ko'));
+let savedLanguage='ko';try{savedLanguage=localStorage.getItem('mindful-day-language')||'ko';}catch(err){}
+setLanguage(savedLanguage,false);warmFonts();
 (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{fit=null;requestAnimationFrame(frame);});
 </script>
 
