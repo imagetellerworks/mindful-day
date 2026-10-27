@@ -1953,10 +1953,35 @@ function handleDeviceShake(event){
     shake.peak=null;if(blocked)return;shake.last=now;randomShakeMood(Math.max(m,peak.m),v);
   }else if(!peak||now-peak.time>750)shake.peak={v,m,time:now};
 }
+function shakeSceneKey(scene){return scene.mood+':'+scene.ids.map((id,i)=>id+'.'+scene.variants[i]).sort().join('+');}
+function chooseShakeScene(current,rng=Math.random){
+  // Mix a new mood family with neighbouring feelings inside the current family.
+  const other=MOODS.map((_,i)=>i).filter(i=>i!==current.mood);
+  const mood=rng()<.45&&other.length?other[Math.floor(rng()*other.length)]:current.mood;
+  const options=Object.keys(MOODS[mood].combinations).flatMap(signature=>{
+    const ids=signature.split('+').map(Number);
+    return ['base','soft','bold'].map(variant=>({mood,ids,variants:ids.map(()=>variant)}));
+  }).filter(scene=>shakeSceneKey(scene)!==shakeSceneKey(current));
+  const sizes=[1,2,3].filter(size=>options.some(scene=>scene.ids.length===size));
+  const size=sizes[Math.floor(rng()*sizes.length)],pool=options.filter(scene=>scene.ids.length===size);
+  return pool[Math.floor(rng()*pool.length)];
+}
 function randomShakeMood(force=12,vector=[12,0,0]){
-  if(!chosen.length)toggle(0);
-  shake.activeUntil=performance.now()+1700;kickShakeOrbs(vector,force);
-  const choices=MOODS.map((_,i)=>i).filter(i=>i!==moodIdx);applyMood(pick(choices));dismissShakeCoach();
+  const current={mood:moodIdx,ids:[...chosen],variants:chosen.map(i=>tiles[i].combo.variant)};
+  const next=chooseShakeScene(current),previous=placements.map(pl=>({...pl}));
+  applyMood(next.mood);
+  chosen=[...next.ids];placements=[];
+  chosen.forEach((idx,slot)=>{
+    const old=previous[slot],pl=old?{...old,sizeRole:slot,touchActive:false,scaleTween:null,touchMove:null,shakeMotion:null}:mkPl(slot,placements,[.9,1.1]);
+    pl.cs=old?.cs??SZ()[slot];placements.push(pl);
+    tiles[idx].combo=paletteCombo(MOODS[moodIdx].palettes[idx],next.variants[slot]);
+    tiles[idx].pendingMeaning=true;retarget(tiles[idx],1.2);
+  });
+  S.combo=tiles[chosen[0]].combo;
+  KEY=KEY_BY_HUE[Math.floor(rgb2hsl(hex2rgb(S.combo.colors[1]))[0]/30)%12];
+  refreshTiles();updateColorUI();
+  // Apply the impulse after the scene change, so it survives the new selection.
+  shake.activeUntil=performance.now()+1700;kickShakeOrbs(vector,force);dismissShakeCoach();
 }
 $('shakeEnable').addEventListener('click',enableShake);
 $('shakeClose').addEventListener('click',dismissShakeCoach);
