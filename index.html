@@ -299,6 +299,17 @@ body.about-open{overflow:hidden}
 .about-scroll .about-credit{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;line-height:1.7}
 @media (min-width:860px){.about-dialog{width:min(80vw,960px);max-height:50vh;max-height:50dvh}}
 @media (max-width:520px){.about-header{padding:12px 12px 10px 16px}.about-scroll{padding:0 16px 20px;font-size:14px;line-height:1.8}}
+
+/* 12개 감정 기둥 중 하나를 직접 고르는 팝업 */
+.mood-dialog{width:min(92vw,560px);max-height:min(80dvh,680px);overflow:auto;padding:20px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:18px;box-shadow:0 24px 80px #12101a55}
+.mood-dialog::backdrop{background:#12101bb6;backdrop-filter:blur(3px)}
+.mood-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.mood-dialog-head strong{font-size:18px}.mood-dialog-desc{font-size:12px;color:var(--muted);line-height:1.55;margin:0 0 15px}
+.mood-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mood-choice{display:flex;flex-direction:column;align-items:center;min-width:0;gap:6px;padding:8px 6px 11px;background:var(--white);border:1px solid var(--line);border-radius:11px;cursor:pointer}
+.mood-choice[aria-pressed="true"]{border:2px solid var(--ink);padding:7px 5px 10px}
+.mood-choice .sample{width:100%;height:43px;border-radius:7px}.mood-choice b{font-size:12px}.mood-close{border:0;background:none;font-size:24px;cursor:pointer}
+@media(max-width:420px){.mood-dialog{padding:14px}.mood-grid{gap:6px}.mood-choice{padding:6px 4px}.mood-choice .sample{height:37px}}
 </style>
 
 <button type="button" class="language-toggle" id="langBtn" aria-label="Switch to English"><span data-lang="en">EN</span><span aria-hidden="true">/</span><span data-lang="ko" class="active">KR</span></button>
@@ -308,9 +319,10 @@ body.about-open{overflow:hidden}
 
 <header class="site-head">
   <h1 class="brand">mindful day</h1>
-  <p class="tagline">화면을 터치해 오늘의 감정과 가장 닮은 표현을 찾아보세요.<span class="tagline-sub">‘무드 선택’을 누르면 색 조합과 감정의 분위기가 달라져요.</span></p>
+  <p class="tagline">화면을 터치해 오늘의 감정과 가장 닮은 표현을 찾아보세요.<span class="tagline-sub">‘무드 선택’에서 감정을 고르고 빛망울을 조합해보세요.</span></p>
 </header>
 
+<dialog id="moodChooser" class="mood-dialog" aria-label="무드 선택"><div class="mood-dialog-head"><strong id="moodDialogTitle">무드 선택</strong><button type="button" class="mood-close" id="moodClose" aria-label="닫기">×</button></div><p class="mood-dialog-desc" id="moodDialogDesc"></p><div class="mood-grid" id="moodGrid"></div></dialog>
 <main class="app">
   <section class="story" id="story" aria-label="포스터 만들기">
     <div class="story-stage" id="storyStage">
@@ -431,7 +443,7 @@ function readLanguagePreference(){
 }
 const UI_EN={
   "화면을 터치해 오늘의 감정과 가장 닮은 표현을 찾아보세요.": "Tap the screen to find a word that feels like you today.",
-  "‘무드 선택’을 누르면 색 조합과 감정의 분위기가 달라져요.": "Tap “Moods” to explore different colors and feelings.",
+  "‘무드 선택’에서 감정을 고르고 빛망울을 조합해보세요.": "Choose a mood, then combine the orbs to explore its nuances.",
   "화면을 터치해": "Tap the screen to find",
   "오늘의 감정과 가장 닮은": "a word that feels",
   "표현을 찾아보세요.": "like you today.",
@@ -1683,6 +1695,26 @@ function applyMood(index){
  S.combo=tiles[chosen[0]??0].combo;updateColorUI();showToast(L(m.name,m.en));
  if(typeof strum==='function')strum();showPrimaryMood();
 }
+
+function openMoodPicker(){
+  if(curSheet)closeMSheet();
+  const dialog=document.getElementById('moodChooser');
+  document.getElementById('moodDialogTitle').textContent=L('무드 선택','Choose a mood');
+  document.getElementById('moodDialogDesc').textContent=L('주 감정을 선택한 다음, 빛망울과 배경으로 세부 감정을 찾아보세요.','Choose a primary mood, then refine its feeling with orbs and backgrounds.');
+  document.getElementById('moodGrid').innerHTML=MOODS.map((m,i)=>{
+    const tone=m.tone==='mixed'?MIXED_TONES[0]:m.tone;
+    const colors=comboColors({mode:m.m[0],h:m.h[0],tone:MOOD_TONES[tone]});
+    return '<button type="button" class="mood-choice" data-mood="'+i+'" aria-pressed="'+(i===moodIdx)+'"><span class="sample" style="background:linear-gradient(110deg,'+colors.join(',')+')"></span><b>'+L(m.name,m.en)+'</b></button>';
+  }).join('');
+  dialog.showModal();
+}
+document.getElementById('moodGrid').addEventListener('click',e=>{
+  const b=e.target.closest('[data-mood]');if(!b)return;
+  applyMood(+b.dataset.mood);document.getElementById('moodChooser').close();
+});
+document.getElementById('moodClose').addEventListener('click',()=>document.getElementById('moodChooser').close());
+document.getElementById('moodChooser').addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close();});
+
 let toastT=0;
 function showToast(t){const el=document.getElementById('toast');if(!el)return;el.textContent=tr(t);el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),1600);}
 function updateColorUI(){if(chosen.length)S.combo=tiles[chosen[0]].combo;
@@ -1690,8 +1722,8 @@ function updateColorUI(){if(chosen.length)S.combo=tiles[chosen[0]].combo;
   if(sw)sw.style.background=`radial-gradient(circle,${cl[3]} 0 18%,${cl[2]} 40%,${cl[1]} 62%,${cl[0]} 82%)`;
   $('moodName').textContent=L(MOODS[moodIdx].name,MOODS[moodIdx].en);
   $('palStrip').innerHTML=tiles.map(t=>{const c=comboColors(t.combo);return `<i style="background:radial-gradient(circle,${c[3]} 0 18%,${c[2]} 42%,${c[1]} 66%,${c[0]} 90%)"></i>`;}).join('');}
-$('colorCycle').addEventListener('click',cycleColors);
-$('colorBtn').addEventListener('click',()=>{if(curSheet)closeMSheet();cycleColors();});
+$('colorCycle').addEventListener('click',openMoodPicker);
+$('colorBtn').addEventListener('click',openMoodPicker);
 
 // 움직임 프리셋 → 떠다니는 폭·속도, 바뀌는 간격·시간에 연결
 const PRESETS=[
@@ -1749,7 +1781,8 @@ function touchPoster(e){
   const b=pc.getBoundingClientRect(), x=(e.clientX-b.left)/b.width, y=(e.clientY-b.top)/b.height;
   const hit=nearestOrb(x,y,b.width,b.height);if(hit<0)return;
   moveOrbToTouch(hit,x,y);
-  const t=tiles[chosen[hit]];t.combo={mode:pick(MODES),h:R(0,360),tone:t.combo.tone};retarget(t,.9);
+  const tileIndex=chosen[hit],t=tiles[tileIndex],mood=MOODS[moodIdx];
+  t.combo={mode:mood.m[tileIndex],h:(mood.h[tileIndex]+R(-10,10)+360)%360,tone:t.combo.tone};retarget(t,.9);
   strum([hit]);
   showFeeling(chosen[hit]);
   offerShakeAfterTouch();updateColorUI();
@@ -1757,7 +1790,7 @@ function touchPoster(e){
 pc.addEventListener('pointerdown',touchPoster);
 document.addEventListener('pointerdown',e=>{
   if(!document.body.classList.contains('is-story')||e.target===pc)return;
-  if(e.target?.closest?.('button,input,select,textarea,summary,a,video,#dock,#storyBar,#more,#menuOverlay,#menuToggle,#menuGuide,#exportLayer,#aboutDialog,footer'))return;
+  if(e.target?.closest?.('button,input,select,textarea,summary,a,video,#dock,#storyBar,#more,#menuOverlay,#menuToggle,#menuGuide,#exportLayer,#aboutDialog,#moodChooser,footer'))return;
   touchPoster(e);
 });
 
