@@ -139,7 +139,8 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 #mobileBackdrop{display:none}
 .is-story #mobileBackdrop{display:block;position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:0;pointer-events:none}
 .is-story .app{position:relative;z-index:1;gap:14px}
-.is-story footer.site{position:relative;z-index:1;color:var(--mobile-ink,var(--muted))}
+.is-story footer.site{position:fixed;z-index:2;left:max(16px,env(safe-area-inset-left,0px));right:calc(max(16px,env(safe-area-inset-right,0px)) + 64px);bottom:calc(10px + env(safe-area-inset-bottom,0px));max-width:none;margin:0;padding:0;border:0;gap:2px;font-size:11px;line-height:1.4;color:var(--mobile-ink,var(--muted))}
+.is-story footer.site{bottom:calc(16px + env(safe-area-inset-bottom,0px));font-size:12px}
 .is-story footer.site a{color:inherit}
 .is-story .formats,.is-story .status{color:var(--mobile-ink,var(--muted))}
 .is-story .story{display:flex;flex-direction:column;gap:10px;padding-top:10px}
@@ -222,7 +223,8 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .is-story.customizing{position:fixed;inset:0;overflow:hidden;height:100dvh;overscroll-behavior:none}
 .is-story.customizing .story{position:fixed;top:10px;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));padding-top:0;gap:0;align-items:center}
 .is-story.customizing .story-stage{width:100%}
-.is-story.customizing #dock,.is-story.customizing #storyBar,.is-story.customizing footer.site,.is-story.customizing #guide,.is-story.customizing #shakeCoach{display:none}
+.is-story.customizing footer.site{visibility:hidden}
+.is-story.customizing #dock,.is-story.customizing #storyBar,.is-story.customizing #guide,.is-story.customizing #shakeCoach{display:none}
 .is-story.customizing #more{position:fixed;inset:auto 0 0;height:50vh;height:50dvh;z-index:40;margin:0;border-radius:18px 18px 0 0;display:block;overflow:hidden;box-shadow:0 -8px 32px rgba(29,27,38,.12)}
 .is-story.customizing #more>summary{flex:none;padding:16px 62px 16px 20px;min-height:60px;cursor:pointer}
 .is-story.customizing #more>summary .chev{display:none}
@@ -260,6 +262,20 @@ body.dark-ground{color-scheme:dark;--paper:#121019;--card:#201d28;--white:#24212
 
 .export-layer .status{position:absolute;top:calc(82px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--popup-bg);color:var(--ui-ink);font-size:12px;line-height:1.5;pointer-events:none}
 .export-layer .status:empty{display:none}
+
+.about-link{align-self:flex-start;min-width:48px;min-height:48px;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+body.about-open{overflow:hidden}
+.about-dialog{width:min(80vw,1040px);height:80vh;height:80dvh;max-width:80vw;max-height:80dvh;margin:auto;padding:0;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.3);color:var(--ui-ink);box-shadow:0 16px 60px rgba(0,0,0,.2);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px)}
+.about-dialog[open]{display:flex;flex-direction:column}
+.dark-ground .about-dialog{background:rgba(18,16,25,.3)}
+.about-dialog::backdrop{background:rgba(0,0,0,.3)}
+.about-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none;padding:18px 18px 14px 22px;border-bottom:1px solid var(--line)}
+.about-header h2{margin:0;font-size:clamp(18px,2.4vw,24px);line-height:1.3;font-weight:700}
+.about-close{flex:none;display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:transparent;color:inherit;font:400 26px/1 var(--f-body);cursor:pointer}
+.about-scroll{flex:1;min-height:0;padding:4px 22px 24px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;font-size:15px;line-height:1.85;word-break:keep-all;overflow-wrap:anywhere}
+.about-scroll p{margin:18px 0}.about-scroll a{color:inherit;text-underline-offset:3px}
+.about-scroll .about-credit{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;line-height:1.7}
+@media (max-width:520px){.about-header{padding:12px 12px 10px 16px}.about-scroll{padding:0 16px 20px;font-size:14px;line-height:1.8}}
 </style>
 
 <button type="button" class="language-toggle" id="langBtn" aria-label="Switch to English"><span data-lang="en">EN</span><span aria-hidden="true">/</span><span data-lang="ko" class="active">KR</span></button>
@@ -355,11 +371,27 @@ body.dark-ground{color-scheme:dark;--paper:#121019;--card:#201d28;--white:#24212
   </div>
 </main>
 
-<footer class="site">
-  <span>Designed by <a href="https://www.instagram.com/imageteller.works/" target="_blank" rel="noopener">@imageteller.works</a></span>
-  <span>Created with Claude Code</span>
-  <span class="mail">(jiin.imageteller@gmail.com)</span>
-</footer>
+<footer class="site"><button type="button" class="about-link" id="aboutOpen" aria-haspopup="dialog" aria-controls="aboutDialog">About</button></footer>
+
+<dialog class="about-dialog" id="aboutDialog" aria-labelledby="aboutTitle">
+  <header class="about-header"><h2 id="aboutTitle">About Mindful Day</h2><button type="button" class="about-close" id="aboutClose" aria-label="About 닫기">×</button></header>
+  <div class="about-scroll" tabindex="0" role="region" aria-label="About 내용">
+    <section data-about-lang="ko" lang="ko">
+      <p>Mindful Day는 색과 소리를 통해 지금 나의 기분을 탐색하고 표현하는 오디오비주얼 인터랙티브 웹앱입니다.</p>
+      <p>미술과 영상을 전공한 안지인은 오랫동안 사랑해 온 추상미술가와 음악가들에게 보내는 작은 오마주로 이 작업을 시작했습니다. 힐마 아프 클린트의 추상화, 제임스 터렐의 빛, 브라이언 이노의 제너러티브 음악에서 받은 영감을 자신만의 방식으로 시각화해 보고 싶었습니다.</p>
+      <p>화가가 캔버스 위에서 색을 찾아가고 음악가가 소리를 쌓아가듯, 누구나 이 작은 화면 안에서 자신만의 색과 분위기를 만들어 볼 수 있기를 바랍니다. 그 과정에서 창작자들이 느끼는 순수한 즐거움과 호기심, 그리고 자신을 탐색하는 시간을 잠시나마 경험할 수 있다면 좋겠습니다.</p>
+      <p>지금 나의 기분을 표현할 꼭 맞는 단어를 찾기 어려울 때, 화면을 천천히 터치해 보세요. 움직이는 빛과 색, 소리 사이에서 나를 표현할 감각과 언어를 발견할지도 모릅니다. 손끝의 아주 작은 움직임이 잠깐의 명상 같은 시간이 되기를 바랍니다.</p>
+    </section>
+    <section data-about-lang="en" lang="en" hidden>
+      <p>Mindful Day is an interactive audiovisual web app that invites you to explore and express how you feel through color and sound.</p>
+      <p>With a background in fine art and filmmaking, artist Jiin Ahn began this project as a small tribute to the artists and musicians whose work she has loved for years. Inspired by Hilma af Klint’s abstract paintings, James Turrell’s explorations of light, and Brian Eno’s generative music, she wanted to bring these influences together in her own visual language.</p>
+      <p>Just as painters explore colors on a canvas and musicians build layers of sound, she hopes this little screen can become a space where anyone can discover their own colors and moods. Along the way, she hopes you might experience a little of the simple joy, curiosity, and self-discovery that come with the creative process.</p>
+      <p>When you can't quite find the right words for how you're feeling, try gently touching the screen. Somewhere among the shifting light, colors, and sounds, you might discover a new way to express yourself.</p>
+      <p>May these small movements of your fingertips become a quiet moment of meditation.</p>
+    </section>
+    <p class="about-credit">Designed by Jiin Ahn (<a href="mailto:jiin.imageteller@gmail.com">jiin.imageteller@gmail.com</a>)<br>Created with Claude Code &amp; Chat GPT</p>
+  </div>
+</dialog>
 
 <div class="export-layer" id="exportLayer"></div>
 <script>
@@ -494,7 +526,9 @@ const UI_EN={
   "오른쪽 아래 메뉴로 색도 바꿔보세요.": "Open the bottom-right menu to explore colors.",
   "오른쪽 아래 패널을 열어보세요.": "Open the panel at the bottom right.",
   "더 다양한 무드를 연출해보세요.": "Explore more ways to create your mood.",
-  "패널 안내 닫기": "Dismiss panel tip"
+  "패널 안내 닫기": "Dismiss panel tip",
+  "About 닫기": "Close About",
+  "About 내용": "About content"
 };
 const UI_KO=Object.fromEntries(Object.entries(UI_EN).map(([ko,en])=>[en,ko]));
 const originalUI=text=>UI_KO[text]||text;
@@ -523,7 +557,7 @@ function setLanguage(next,persist=true){
   statusEl.textContent=tr(statusEl.textContent);sheetMsg.textContent=tr(sheetMsg.textContent);document.getElementById('toast').textContent=tr(document.getElementById('toast').textContent);
   document.querySelectorAll('.sheet-prev [aria-label],.sheet-prev img').forEach(el=>{if(el.hasAttribute('aria-label'))el.setAttribute('aria-label',tr(el.getAttribute('aria-label')));if(el.alt)el.alt=tr(el.alt);});
   if(persist)try{localStorage.setItem('mindful-day-language',lang);}catch(err){}
-  updateShakeCoach();updateMenuToggle();fit=null;resize();drawPoster();drawMobileBackdrop();
+  updateShakeCoach();updateMenuToggle();updateAboutLanguage();fit=null;resize();drawPoster();drawMobileBackdrop();
 }
 
 // ================= 색 유틸 =================
@@ -1515,7 +1549,8 @@ function resize(){const d=Math.min(devicePixelRatio||1,2);
   if(document.body.classList.contains('is-story')&&st){
     const customizing=document.body.classList.contains('customizing');
     if(customizing)$('more').style.setProperty('--customize-head',$('more').querySelector('summary').offsetHeight+'px');
-    const availH=Math.max(300,window.innerHeight-48),normalW=Math.min(st.clientWidth,availH*9/16),scale=customizing?Math.min(.7,(innerHeight*.5-20)/(normalW*16/9)):document.body.classList.contains('menu-open')?Math.min(.7,Math.max(160,$('menuOverlay').getBoundingClientRect().top-20)/(normalW*16/9)):1;
+    const creditTop=document.querySelector('footer.site').getBoundingClientRect().top;
+    const availH=Math.max(160,Math.min(window.innerHeight-48,creditTop-24)),normalW=Math.min(st.clientWidth,availH*9/16),scale=customizing?Math.min(.7,(innerHeight*.5-20)/(normalW*16/9)):document.body.classList.contains('menu-open')?Math.min(.7,Math.max(160,$('menuOverlay').getBoundingClientRect().top-20)/(normalW*16/9)):1;
     const w=Math.max(1,Math.floor(normalW*scale)),h=Math.floor(w*16/9);
     slot.style.width=w+'px';slot.style.height=h+'px';st.style.height=h+'px';}
   else if(slot){slot.style.width='';slot.style.height='';if(st){st.style.height='';}}
@@ -1525,7 +1560,7 @@ function resize(){const d=Math.min(devicePixelRatio||1,2);
   alignLanguageToggle();if(lockSize)return;
   const W=Math.max(2,Math.round(pc.clientWidth*d));pc.width=W;pc.height=Math.round(W*16/9);fit=null;}
 addEventListener('resize',resize);
-if(window.ResizeObserver){let rq=0;const ro=new ResizeObserver(()=>{cancelAnimationFrame(rq);rq=requestAnimationFrame(resize);});ro.observe(pc);ro.observe(tilesBox);ro.observe(document.getElementById('storyStage'));}
+if(window.ResizeObserver){let rq=0;const ro=new ResizeObserver(()=>{cancelAnimationFrame(rq);rq=requestAnimationFrame(resize);});ro.observe(pc);ro.observe(tilesBox);ro.observe(document.getElementById('storyStage'));ro.observe(document.querySelector('footer.site'));}
 
 // ================= 루프 =================
 let last=performance.now(),acc=0;
@@ -1637,7 +1672,7 @@ function touchPoster(e){
 pc.addEventListener('pointerdown',touchPoster);
 document.addEventListener('pointerdown',e=>{
   if(!document.body.classList.contains('is-story')||e.target===pc)return;
-  if(e.target?.closest?.('button,input,select,textarea,summary,a,video,#dock,#storyBar,#more,#menuOverlay,#menuToggle,#menuGuide,#exportLayer,footer'))return;
+  if(e.target?.closest?.('button,input,select,textarea,summary,a,video,#dock,#storyBar,#more,#menuOverlay,#menuToggle,#menuGuide,#exportLayer,#aboutDialog,footer'))return;
   touchPoster(e);
 });
 
@@ -1963,7 +1998,7 @@ function buildCode(){
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(D.title||'mindful day')}</title>
-<!-- mindful day · Designed by @imageteller.works · Created with Claude Code -->
+<!-- mindful day · Designed by @imageteller.works · Created with Claude Code & Chat GPT -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 ${fams.length?`<link rel="stylesheet" href="https://fonts.googleapis.com/css2?${fams.join('&')}&display=swap">`:''}
 <style>html,body{margin:0;height:100%;background:${bg}}body{display:grid;place-items:center;overflow:hidden}canvas{display:block;width:min(100vw,calc(100vh*9/16));width:min(100vw,calc(100dvh*9/16));aspect-ratio:9/16}</style>
@@ -2151,6 +2186,17 @@ function randomShakeMood(force=12,vector=[12,0,0]){
 $('shakeEnable').addEventListener('click',enableShake);
 $('shakeClose').addEventListener('click',dismissShakeCoach);
 document.addEventListener('visibilitychange',()=>{shake.peak=null;shake.gravity=null;shake.inputAt=null;if(document.hidden){shake.activeUntil=0;placements.forEach(pl=>{if(pl.shakeMotion){pl.shakeMotion=null;pl.tx=pl.x;pl.ty=pl.y;}});clearTimeout(shake.offerTimer);$('shakeCoach').hidden=true;}});
+
+// ================= About =================
+const aboutDialog=$('aboutDialog');
+function updateAboutLanguage(){
+  document.querySelectorAll('[data-about-lang]').forEach(section=>{section.hidden=section.dataset.aboutLang!==lang;});
+  aboutDialog.setAttribute('lang',lang);
+}
+$('aboutOpen').addEventListener('click',()=>{updateAboutLanguage();aboutDialog.showModal();document.body.classList.add('about-open');aboutDialog.querySelector('.about-scroll').scrollTop=0;});
+$('aboutClose').addEventListener('click',()=>aboutDialog.close());
+aboutDialog.addEventListener('close',()=>document.body.classList.remove('about-open'));
+aboutDialog.addEventListener('click',e=>{if(e.target!==aboutDialog)return;const r=aboutDialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)aboutDialog.close();});
 
 // ================= 시작 =================
 exportLayer.append(imageChoices,sheet,statusEl);
