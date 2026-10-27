@@ -15,8 +15,8 @@ body{font-family:var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0p
 button{font-family:inherit;color:var(--ink)}
 button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-.shake-coach{position:absolute;z-index:8;left:50%;bottom:14%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);padding:15px 34px 15px 18px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.92);color:var(--ink);box-shadow:0 8px 28px rgba(29,27,38,.1);text-align:center;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
-.shake-coach p{margin:0;font-size:13px;line-height:1.55;word-break:keep-all}.shake-coach strong,.shake-coach p span{display:block}.shake-coach .btn{margin-top:10px}.shake-close{position:absolute;top:5px;right:5px;border:0;background:none;padding:4px;cursor:pointer;font-size:18px;line-height:1}
+.shake-coach{position:absolute;z-index:8;left:50%;bottom:14%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);padding:15px 34px 15px 18px;border:1px solid var(--line);border-radius:14px;background:var(--popup-bg);color:var(--ui-ink);box-shadow:0 8px 28px rgba(29,27,38,.1);text-align:center;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.shake-coach p{margin:0;font-size:13px;line-height:1.55;word-break:keep-all}.shake-coach strong,.shake-coach p span{display:block}.shake-coach .btn{margin-top:10px;color:inherit}.shake-coach .shake-close{color:inherit}.shake-close{position:absolute;top:5px;right:5px;border:0;background:none;padding:4px;cursor:pointer;font-size:18px;line-height:1}
 .language-toggle{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:max(16px,calc((100vw - 1040px)/2));z-index:30;display:flex;align-items:center;gap:6px;min-height:34px;padding:6px 10px;border:0;border-radius:0;background:transparent;font:500 12px var(--f-body);cursor:pointer}
 .language-toggle{padding:4px 0;color:#808080}.language-toggle [data-lang]{opacity:1;color:#808080}.language-toggle .active{color:var(--ui-ink);font-weight:700}
 html[lang="en"] .is-story .savebtns .btn{font-size:12px}
