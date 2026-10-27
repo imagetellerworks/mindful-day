@@ -312,9 +312,9 @@ const SZ=()=>[S.szL,S.szM,S.szS];
 // 색 조합 = 배색 규칙(mode) + 기준 색상(h). 빛망울 4겹(바깥→안)의 색을 여기서 뽑음
 let combos=[{mode:'analog',h:300},{mode:'comp',h:205},{mode:'analog',h:18},{mode:'triad',h:150}];
 // 썸네일 6개는 각자 다른 배색으로 시작 (색 조합을 고르면 포스터에 담긴 빛망울만 그 배색으로 바뀜)
-// 처음엔 '아주 깊은 색' 톤으로 시작
-const DEEP={s:1.12,l:-.17,c:1.35};
-const TILE_COMBOS=[{mode:'analog',h:313},{mode:'comp',h:195},{mode:'analog',h:33},{mode:'triad',h:30},{mode:'mono',h:270},{mode:'comp',h:12}].map(c=>({...c,tone:DEEP}));
+// 처음엔 '차분한 색' 톤으로 시작
+const CALM={ok:1,s:.32,l:.1,c:.55,pivot:.78,core:{ok:1,s:1.15,l:.1,c:.6,pivot:.6,cmin:.16}};
+const TILE_COMBOS=[{mode:'analog',h:313},{mode:'comp',h:195},{mode:'analog',h:33},{mode:'triad',h:30},{mode:'mono',h:270},{mode:'comp',h:12}].map(c=>({...c,tone:CALM}));
 S.combo=TILE_COMBOS[0];
 function hueSet(mode,h,jit){const j=()=>jit?R(-20,20):0;
   return{analog:[h,h+22,h+48,h+80],comp:[h,h+10,h+180,h+190+j()],triad:[h,h+120,h+240,h+120],mono:[h,h,h+8,h-8]}[mode];}
@@ -509,9 +509,10 @@ function showFeeling(idx){if(idx==null)return;const i=Math.max(0,chosen.indexOf(
   feel={text:feelingFor(tf(tiles[idx].to.layers[1].col),sceneTone(idx,i)),idx,t0:performance.now()};
   if(document.fonts)document.fonts.load('italic 500 40px "Cormorant Garamond"',feel.text).catch(()=>{});}
 // 형용사는 다음 터치 전까지 남아 있음 (이미지·영상·코드 저장에도 그대로). 새 단어가 나오면 이전 단어는 0.4초에 걸쳐 사라짐
+function feelingInk(){return MOODS[moodIdx].id==='calm'?'#333333':'#ffffff';}
 function feelGlyph(ctx,W,H,text,alpha,sc){let sz=W*.15;const ff=z=>`italic 500 ${z}px "Cormorant Garamond","Noto Serif KR",Georgia,serif`;ctx.font=ff(sz);
   const tw=ctx.measureText(text).width;if(tw>W*.84){sz*=W*.84/tw;ctx.font=ff(sz);}
-  ctx.save();ctx.globalAlpha=.7*clamp(alpha);ctx.fillStyle='#ffffff';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.save();ctx.globalAlpha=.7*clamp(alpha);ctx.fillStyle=feelingInk();ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.translate(W/2,H/2);ctx.scale(sc,sc);ctx.fillText(text,0,0);
   const ko=FEEL_KO[text];if(ko){const ksz=W*10.7/Math.max(1,pc.clientWidth||W);ctx.font=`400 ${ksz}px "Pretendard","Noto Sans KR",sans-serif`;ctx.fillText(ko,0,sz*.55+ksz*.9);}
   ctx.restore();}
@@ -589,10 +590,10 @@ const $=id=>document.getElementById(id);
 
 // 색: 누를 때마다 6개 빛망울 전체가 새 배색 세트로. 선명 → 아주 깊은 → 차분 → 섞인 → 부드러운 → 깊고 차분 순서로 돌아감
 const MOODS=[{id:'vivid',name:'선명한 색',t:null},{id:'deep',name:'아주 깊은 색',t:{s:1.12,l:-.17,c:1.35}},// 차분한 색: 바깥은 밝고 옅게(저대비·저채도·고명도), 중심만 채도 높게 남겨 회색이 되지 않게
-  {id:'calm',name:'차분한 색',t:{ok:1,s:.32,l:.1,c:.55,pivot:.78,core:{ok:1,s:1.15,l:.1,c:.6,pivot:.6,cmin:.16}}},
+  {id:'calm',name:'차분한 색',t:CALM},
   {id:'mixed',name:'깊고 차분한 색이 섞인',t:'mix'},{id:'soft',name:'부드러운 색',t:{s:.72,l:.1,c:.75}},{id:'dusk',name:'깊고 차분한 색',t:{s:.65,l:-.12,c:1.1}}];
 const MIX=['deep','calm','vivid','dusk','deep','calm'];
-let moodIdx=1;
+let moodIdx=2;
 const toneOf=id=>MOODS.find(m=>m.id===id).t;
 const MODES=['analog','comp','triad','mono'];
 function cycleColors(){moodIdx=(moodIdx+1)%MOODS.length;const m=MOODS[moodIdx],h0=R(0,360);KEY=KEY_BY_HUE[Math.floor(h0/30)%12];const modes=[...MODES,'analog','comp'].sort(()=>Math.random()-.5);
@@ -891,7 +892,7 @@ function draw(now){var W=c.width,H=c.height,T=(now-t0)/1000*D.speed;x.fillStyle=
   D.orbs.forEach(function(o){var p=o.p,a=p.amp*D.drift,px=p.x+Math.sin(T*p.f1*TAU+p.ph1)*a,py=p.y+Math.cos(T*p.f2*TAU+p.ph2)*a,s=p.s*(1+.04*D.drift*Math.sin(T*.8+p.ph3));orb(o,px*W,py*H,s*W);});
   var pad=W*.07;drawHeader(x,W,pad,function(z){return font(D.ft,z);},function(z){return font(D.fs,z);},D.title,D.sub,D.ink);x.fillStyle=D.ink;x.textBaseline='top';x.textAlign='left';
   if(D.feel){var fs2=W*.15;x.save();x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';var fw=x.measureText(D.feel[0]).width;if(fw>W*.84){fs2*=W*.84/fw;x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';}
-    x.globalAlpha=.7;x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(D.feel[0],W/2,H/2);x.font='400 '+(W*.034)+'px "Pretendard",sans-serif';x.fillText(D.feel[1],W/2,H/2+fs2*.55+W*.031);x.restore();x.fillStyle=D.ink;x.textAlign='left';x.textBaseline='top';}
+    x.globalAlpha=.7;x.fillStyle=D.feelInk||'#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(D.feel[0],W/2,H/2);x.font='400 '+(W*.034)+'px "Pretendard",sans-serif';x.fillText(D.feel[1],W/2,H/2+fs2*.55+W*.031);x.restore();x.fillStyle=D.ink;x.textAlign='left';x.textBaseline='top';}
   var fz=W*.026;x.font=font(D.fs,fz);x.globalAlpha=.8;x.textBaseline='alphabetic';footer(x,W,H,pad,fz,function(z){return font(D.fs,z);},D.foot[0],D.foot[1]);
   requestAnimationFrame(draw);}
 addEventListener('resize',size);
@@ -901,7 +902,7 @@ size();requestAnimationFrame(draw);
 function buildCode(){
   const r3=v=>+(+v).toFixed(4), G=groundColors(), bg=G.bg;
   const ft=fontOf(S.ft), fs=fontOf(S.fs);
-  const D={title:S.title||'',sub:S.sub||'',feel:feel?[feel.text,FEEL_KO[feel.text]||'']:null,foot:[stampText(),colorNames()],bg,ink:G.ink,drift:r3(S.drift),speed:r3(S.speed),
+  const D={title:S.title||'',sub:S.sub||'',feel:feel?[feel.text,FEEL_KO[feel.text]||'']:null,foot:[stampText(),colorNames()],bg,ink:G.ink,feelInk:feelingInk(),drift:r3(S.drift),speed:r3(S.speed),
     ft:{fam:ft.fam,w:ft.tw},fs:{fam:fs.fam,w:fs.sw},
     orbs:chosen.map((idx,i)=>{const o=tiles[idx].cur,pl=placements[i];return{trail:r3(o.trail),ta:r3(o.trailAng),
       p:{x:r3(pl.tx),y:r3(pl.ty),s:r3(SZ()[i]*pl.tj),ph1:r3(pl.ph1),ph2:r3(pl.ph2),ph3:r3(pl.ph3),f1:r3(pl.f1),f2:r3(pl.f2),amp:r3(pl.amp)},
