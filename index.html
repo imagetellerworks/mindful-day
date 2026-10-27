@@ -509,7 +509,7 @@ function showFeeling(idx){if(idx==null)return;const i=Math.max(0,chosen.indexOf(
   feel={text:feelingFor(tf(tiles[idx].to.layers[1].col),sceneTone(idx,i)),idx,t0:performance.now()};
   if(document.fonts)document.fonts.load('italic 500 40px "Cormorant Garamond"',feel.text).catch(()=>{});}
 // 형용사는 다음 터치 전까지 남아 있음 (이미지·영상·코드 저장에도 그대로). 새 단어가 나오면 이전 단어는 0.4초에 걸쳐 사라짐
-function feelingInk(){return MOODS[moodIdx].id==='calm'?'#333333':'#ffffff';}
+function feelingInk(){return MOODS[moodIdx].id==='calm'&&!groundColors().dark?'#333333':'#ffffff';}
 function feelGlyph(ctx,W,H,text,alpha,sc){let sz=W*.15;const ff=z=>`italic 500 ${z}px "Cormorant Garamond","Noto Serif KR",Georgia,serif`;ctx.font=ff(sz);
   const tw=ctx.measureText(text).width;if(tw>W*.84){sz*=W*.84/tw;ctx.font=ff(sz);}
   ctx.save();ctx.globalAlpha=.7*clamp(alpha);ctx.fillStyle=feelingInk();ctx.textAlign='center';ctx.textBaseline='middle';
@@ -866,8 +866,8 @@ function updateAudio(){if(!AC||!AU||AC.state!=='running')return;const t=AC.curre
     for(let k=0;k<3;k++){const id=i*3+k;let lp=AU.loops[id];if(!lp||lp.fam!==v.fam){lp=AU.loops[id]={fam:v.fam,next:t+.3+Math.random()*per[k]*dens*.5,n:0};}
       if(lp.next<=t+.05){play(v.fam,Math.max(lp.next,t),chordNote(v,H,k+lp.n),v,clamp(.75+.12*v.size,.75,1.05)/Math.max(1,chosen.length*.75));lp.n++;lp.next=Math.max(lp.next,t)+per[k]*dens;}}});
   for(let id=chosen.length*3;id<AU.loops.length;id++)AU.loops[id]=null;}
-function soundUI(){const on=!!(S.sound&&AC&&AC.state==='running'&&!document.hidden);
-  const label=on?'소리 끄기':S.sound&&AC?'소리 다시 켜기':'소리 켜기';
+function soundUI(){const on=S.sound;
+  const label=!on?'소리 켜기':AC&&(AC.state!=='running'||document.hidden)?'소리 다시 켜기':'소리 끄기';
   const mb=$('soundBtn');mb.setAttribute('aria-pressed',String(on));mb.setAttribute('aria-label',label);mb.querySelector('.ic').innerHTML=on?ICON_ON:ICON_OFF;
   const db=$('soundBtnD');db.setAttribute('aria-pressed',String(on));db.innerHTML=(on?ICON_ON:ICON_OFF)+'<span>'+label+'</span>';}
 function audioSession(on){
@@ -919,7 +919,7 @@ function unlockAudio(e){
   if(S.sound&&(!AC||AC.state!=='running'||audioNeedsReset))setSound(true);
 }
 ['pointerup','touchend','click','keydown'].forEach(ev=>document.addEventListener(ev,unlockAudio,{capture:true,passive:true}));
-function toggleSound(){setSound(!(S.sound&&AC&&AC.state==='running'),true,true);}
+function toggleSound(){const retry=S.sound&&AC&&AC.state!=='running';setSound(retry||!S.sound,true,true);}
 $('soundBtn').addEventListener('click',()=>{if(curSheet)closeMSheet();toggleSound();});
 $('soundBtnD').addEventListener('click',toggleSound);
 document.addEventListener('visibilitychange',()=>{
