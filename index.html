@@ -215,22 +215,14 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .is-story .dock-tools .rbtn{justify-self:center;justify-content:center;width:100%;max-width:72px;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.4);padding:6px 0}
 .is-story #soundBtn[aria-pressed="true"]{background:rgba(255,255,255,.4)}
 .is-story .menu-overlay .more:not([open]){background:rgba(255,255,255,.4)}
-.is-story.customizing #menuToggle{display:none}
-.is-story.customizing .menu-overlay{padding:0;border:0;background:transparent;box-shadow:none;overflow:visible}
-.is-story.customizing #more{background:var(--card)}
-
-/* 모바일 Customize 하단 패널 */
-.customize-close{display:none}
-.is-story.customizing{position:fixed;inset:0;overflow:hidden;height:100dvh;overscroll-behavior:none}
-.is-story.customizing .story{position:fixed;top:10px;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));padding-top:0;gap:0;align-items:center}
-.is-story.customizing .story-stage{width:100%}
-.is-story.customizing footer.site{visibility:hidden}
-.is-story.customizing #dock,.is-story.customizing #storyBar,.is-story.customizing #guide,.is-story.customizing #shakeCoach{display:none}
-.is-story.customizing #more{position:fixed;inset:auto var(--menu-inset-right) 0 var(--menu-inset-left);height:50vh;height:50dvh;z-index:40;margin:0;border-radius:18px 18px 0 0;display:block;overflow:hidden;box-shadow:0 -8px 32px rgba(29,27,38,.12)}
-.is-story.customizing #more>summary{flex:none;padding:16px 62px 16px 20px;min-height:60px;cursor:pointer}
-.is-story.customizing #more>summary .chev{display:none}
-.is-story.customizing #more .more-body{height:calc(50vh - var(--customize-head,70px));height:calc(50dvh - var(--customize-head,70px));min-height:0;overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
-.is-story.customizing .customize-close{position:absolute;right:10px;top:8px;display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:10px;background:transparent;color:var(--ink);font:400 26px var(--f-body);cursor:pointer}
+/* Customize replaces the controls inside the same menu frame. Hidden base rows retain its responsive size. */
+.is-story.customizing{overflow:hidden;overscroll-behavior:none}
+.is-story.customizing .menu-overlay{overflow:hidden;background:var(--panel-bg)}
+.is-story.customizing #dock,.is-story.customizing #storyBar{visibility:hidden;pointer-events:none}
+.is-story.customizing #guide,.is-story.customizing #shakeCoach{display:none}
+.is-story.customizing #more{border-color:transparent;background:transparent}
+.is-story.customizing #more>summary{visibility:hidden;pointer-events:none}
+.is-story.customizing #more .more-body{position:absolute;inset:34px 8px 8px;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;border-top:0;padding:0 10px 12px}
 @media (prefers-reduced-motion:reduce){.more>summary .chev{transition:none}}
 
 /* Scene-aware glass controls. */
@@ -245,12 +237,10 @@ body.dark-ground{color-scheme:dark;--paper:#121019;--card:#201d28;--white:#24212
 .is-story .more>summary{padding:9px 12px;font-size:14px}
 .more .sum-hint,.more .ctl label{color:var(--ui-muted)}
 .more,.more h3,.more .ctl output{color:var(--ui-ink)}
-.more[open],.is-story.customizing #more{background:var(--panel-bg)}
+.more[open]{background:var(--panel-bg)}
 .more .chip{background:var(--control-glass);color:var(--ui-ink);border-color:var(--line)}
 .more .chip[aria-pressed="true"]{background:var(--ui-ink);color:var(--ui-inverse)}
-.is-story.customizing .menu-overlay{padding:0;background:transparent}
-.is-story.customizing #more>summary{padding:14px 60px 14px 18px}
-.is-story.customizing #more .more-body{padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+.is-story.customizing .menu-overlay{background:var(--panel-bg)}
 .menu-guide{position:fixed;right:16px;bottom:82px;z-index:33;max-width:270px;padding:14px 32px 14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel-bg);color:var(--ui-ink);box-shadow:0 6px 22px rgba(0,0,0,.1);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .menu-guide p{margin:0;font-size:13px;line-height:1.6}.menu-guide strong,.menu-guide p span{display:block}
 .menu-guide::after{content:'';position:absolute;right:17px;bottom:-7px;width:12px;height:12px;transform:rotate(45deg);background:var(--panel-bg);border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
@@ -303,7 +293,7 @@ body.about-open{overflow:hidden}
       <div class="dock-tiles" id="dockTiles"><div id="railTiles"></div></div>
       <div class="dock-tools" id="dockTools">
         <button type="button" class="rbtn" id="colorBtn" aria-label="색 조합 바꾸기"><span class="ic"><i class="sw" id="railSwatch"></i></span><span class="rl">색 바꾸기</span></button>
-        <button type="button" class="rbtn" id="bgBtn" aria-label="배경색 바꾸기"><span class="ic"><i class="bgsw" id="bgSwatch"></i></span><span class="rl">bg</span></button>
+        <button type="button" class="rbtn" id="bgBtn" aria-label="배경색 바꾸기"><span class="ic"><i class="bgsw" id="bgSwatch"></i></span><span class="rl">배경색</span></button>
         <button type="button" class="rbtn" data-sheet="motion" aria-pressed="false"><span class="ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M2.5 12c2.4-5 4.8-5 7.1 0s4.8 5 7.2 0 4.7-5 4.7-5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></svg></span><span class="rl">움직임</span></button>
         <button type="button" class="rbtn" id="soundBtn" aria-pressed="false" aria-label="소리 켜기"><span class="ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></span><span class="rl">소리</span></button>
       </div>
@@ -360,7 +350,6 @@ body.about-open{overflow:hidden}
 
     <details class="more" id="more">
       <summary>더 꾸미기 <span class="sum-hint">배경 · 크기 · 색 · 소리 · 움직임 세부 조정</span><span class="chev" aria-hidden="true"></span></summary>
-      <button type="button" class="customize-close" id="customizeClose" aria-label="커스터마이즈 닫기">×</button>
       <div class="more-body" tabindex="0" role="region" aria-label="커스터마이즈 설정">
         <div class="group"><h3 id="bgLbl">배경</h3><div class="chipwrap" id="ground" role="group" aria-labelledby="bgLbl"></div></div>
         <div class="group"><h3>빛망울 크기</h3><div class="sliders" id="slSize"></div></div>
@@ -410,6 +399,8 @@ const UI_EN={
   "포스터 만들기": "Create a poster",
   "색 조합 바꾸기": "Change color palette",
   "배경색 바꾸기": "Change background",
+  "배경색": "Background",
+  "아이보리": "Ivory",
   "색 바꾸기": "Colors",
   "움직임": "Motion",
   "소리": "Sound",
@@ -1550,10 +1541,8 @@ function resize(){const d=Math.min(devicePixelRatio||1,2);
   const st=document.getElementById('storyStage'), slot=document.getElementById('posterSlot');
   // 모바일: 포스터 + 빛망울 줄 + 도구 줄 + 저장 버튼이 한 화면에 들어가도록 포스터 크기를 정함 (펼침 창은 아래로 열림)
   if(document.body.classList.contains('is-story')&&st){
-    const customizing=document.body.classList.contains('customizing');
-    if(customizing)$('more').style.setProperty('--customize-head',$('more').querySelector('summary').offsetHeight+'px');
     const creditTop=document.querySelector('footer.site').getBoundingClientRect().top;
-    const availH=Math.max(160,Math.min(window.innerHeight-48,creditTop-24)),normalW=Math.min(st.clientWidth,availH*9/16),scale=customizing?Math.min(.7,(innerHeight*.5-20)/(normalW*16/9)):document.body.classList.contains('menu-open')?Math.min(.7,Math.max(160,$('menuOverlay').getBoundingClientRect().top-20)/(normalW*16/9)):1;
+    const availH=Math.max(160,Math.min(window.innerHeight-48,creditTop-24)),normalW=Math.min(st.clientWidth,availH*9/16),scale=document.body.classList.contains('menu-open')?Math.min(.7,Math.max(160,$('menuOverlay').getBoundingClientRect().top-20)/(normalW*16/9)):1;
     const w=Math.max(1,Math.floor(normalW*scale)),h=Math.floor(w*16/9);
     slot.style.width=w+'px';slot.style.height=h+'px';st.style.height=h+'px';}
   else if(slot){slot.style.width='';slot.style.height='';if(st){st.style.height='';}}
@@ -1625,7 +1614,8 @@ $('presets').addEventListener('click',e=>{const b=e.target.closest('[data-id]');
 
 // ================= 더 꾸미기 =================
 // 배경: bg 버튼을 누를 때마다 다음 색으로
-const GROUNDS=[['white','흰색','#ffffff','#1d1b26'],['dark','어두운 밤','#121019','#f2f0f3']];
+const GROUNDS=[['white','흰색','#ffffff','#1d1b26'],['ivory','아이보리','#f2eadc','#1d1b26'],['dark','어두운 밤','#121019','#f2f0f3']];
+function cycleGround(){const i=GROUNDS.findIndex(g=>g[0]===S.ground);S.ground=GROUNDS[(i+1)%GROUNDS.length][0];renderGround();}
 function groundColors(){const g=GROUNDS.find(x=>x[0]===S.ground)||GROUNDS[0];
   return{bg:g[2],ink:g[3],dark:g[0]==='dark'};}
 function renderGround(){document.body.classList.toggle('dark-ground',groundColors().dark);const sw=document.getElementById('bgSwatch');if(sw){sw.style.background=groundColors().bg;}
@@ -2035,7 +2025,7 @@ function openMSheet(k){if(curSheet===k){closeMSheet();return;}curSheet=k;const m
 addEventListener('keydown',e=>{if(e.key==='Escape'&&curSheet)closeMSheet();});
 function closeMSheet(){curSheet=null;$('msheet').hidden=true;document.body.classList.remove('sheet-open');document.querySelectorAll('.rbtn[data-sheet]').forEach(b=>b.setAttribute('aria-pressed','false'));}
 document.querySelectorAll('.rbtn[data-sheet]').forEach(b=>b.addEventListener('click',()=>openMSheet(b.dataset.sheet)));
-$('bgBtn').addEventListener('click',()=>{if(curSheet)closeMSheet();const i=GROUNDS.findIndex(g=>g[0]===S.ground);S.ground=GROUNDS[(i+1)%GROUNDS.length][0];renderGround();if(feel)showFeeling(chosen.includes(feel.idx)?feel.idx:chosen[0]);});
+$('bgBtn').addEventListener('click',()=>{if(curSheet)closeMSheet();cycleGround();if(feel)showFeeling(chosen.includes(feel.idx)?feel.idx:chosen[0]);});
 function relocate(){const m=mq.matches;document.body.classList.toggle('is-story',m);
   MOVES.forEach(([el,dest])=>{if(m)$(dest).appendChild(el);else el._home.after(el);});
   if(!m)closeMSheet();syncCustomizePanel();resize();}
@@ -2053,7 +2043,7 @@ $('menuGuideClose').addEventListener('click',dismissMenuGuide);
 
 // 모바일 기본 조작은 오른쪽 아래 버튼으로 여닫는 오버레이.
 let menuOpen=false;const menuToggleHome=document.createComment('menu-toggle-home');$('menuToggle').before(menuToggleHome);
-function updateMenuToggle(){const button=$('menuToggle');button.setAttribute('aria-expanded',String(menuOpen));button.setAttribute('aria-label',tr(menuOpen?'메뉴 닫기':'메뉴 열기'));
+function updateMenuToggle(){const button=$('menuToggle');button.setAttribute('aria-expanded',String(menuOpen));button.setAttribute('aria-label',tr(customPanelOpen?'커스터마이즈 닫기':menuOpen?'메뉴 닫기':'메뉴 열기'));
   button.innerHTML=menuOpen?'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>':'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
 }
 function setMenuOpen(open){menuOpen=!!open;document.body.classList.toggle('menu-open',menuOpen);
@@ -2062,7 +2052,7 @@ function setMenuOpen(open){menuOpen=!!open;document.body.classList.toggle('menu-
   if(!menuOpen){if($('more').open){$('more').open=false;syncCustomizePanel();}closeMSheet();closeImageChoices();closeSheet();}
   resize();drawPoster();drawMobileBackdrop();
 }
-$('menuToggle').addEventListener('click',()=>setMenuOpen(!menuOpen));
+$('menuToggle').addEventListener('click',()=>{if(customPanelOpen){$('more').open=false;syncCustomizePanel();}else setMenuOpen(!menuOpen);});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen&&!customPanelOpen){e.preventDefault();setMenuOpen(false);$('menuToggle').focus({preventScroll:true});}});
 function alignLanguageToggle(){const button=$('langBtn');if(!button)return;let center;
   if(document.body.classList.contains('is-story')){
@@ -2075,17 +2065,16 @@ function alignLanguageToggle(){const button=$('langBtn');if(!button)return;let c
 }
 addEventListener('scroll',alignLanguageToggle,{passive:true});
 
-// 모바일 Customize는 하단 절반의 독립 스크롤 패널.
+// 모바일 Customize는 기본 메뉴와 같은 프레임 안에서 독립 스크롤.
 let customPanelOpen=false;
 function syncCustomizePanel(){const open=mq.matches&&$('more').open;if(open===customPanelOpen)return;
   customPanelOpen=open;
   if(open){setMenuOpen(true);closeMSheet();closeImageChoices();closeSheet();}
-  document.body.classList.toggle('customizing',open);window.scrollTo(0,0);resize();drawPoster();drawMobileBackdrop();
-  if(open)$('customizeClose').focus({preventScroll:true});
+  document.body.classList.toggle('customizing',open);updateMenuToggle();window.scrollTo(0,0);resize();drawPoster();drawMobileBackdrop();
+  if(open)$('menuToggle').focus({preventScroll:true});
   else $('more').querySelector('summary').focus({preventScroll:true});
 }
 $('more').addEventListener('toggle',syncCustomizePanel);
-$('customizeClose').addEventListener('click',()=>{$('more').open=false;syncCustomizePanel();});
 $('more').querySelector('summary').addEventListener('click',e=>{if(!mq.matches)return;e.preventDefault();$('more').open=!$('more').open;syncCustomizePanel();});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&customPanelOpen){e.preventDefault();$('more').open=false;syncCustomizePanel();}});
 
@@ -2183,7 +2172,7 @@ function handleDeviceShake(event){
 function randomShakeMood(force=12,vector=[12,0,0]){
   if(!chosen.length)toggle(0);
   shake.activeUntil=performance.now()+1700;kickShakeOrbs(vector,force);
-  S.ground=S.ground==='white'?'dark':'white';renderGround();
+  cycleGround();
   const choices=MOODS.map((_,i)=>i).filter(i=>i!==moodIdx);applyMood(pick(choices));dismissShakeCoach();
 }
 $('shakeEnable').addEventListener('click',enableShake);
