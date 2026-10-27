@@ -314,7 +314,7 @@ const TAU=Math.PI*2;
 
 // ================= 상태 =================
 const S={hue:0,sat:1,light:0,contrast:1,soft:1,trailP:0,interval:1.2,morph:2.5,paused:false,drift:1,speed:1,
-  ground:'light',title:'Mindful Day',sub:'What’s your mood today?',ft:'futura',fs:'futura',szL:2.5,szM:.8,szS:.25,sound:true,vol:.75,density:.5,space:.6,preset:'float',tone:'base',combo:null};
+  ground:'white',title:'Mindful Day',sub:'What’s your mood today?',ft:'futura',fs:'futura',szL:2.5,szM:.8,szS:.25,sound:true,vol:.75,density:.5,space:.6,preset:'float',tone:'base',combo:null};
 const SZ=()=>[S.szL,S.szM,S.szS];
 
 // 색 조합 = 배색 규칙(mode) + 기준 색상(h). 빛망울 4겹(바깥→안)의 색을 여기서 뽑음
@@ -408,6 +408,9 @@ const markAll=()=>tiles.forEach(t=>t.dirty=true);
 // ================= 포스터 배치 (기존 빛망울은 자리를 지키고, 새로 고른 것만 빈자리에) =================
 const pc=document.getElementById('poster'), px=pc.getContext('2d');
 const mobileBackdrop=document.getElementById('mobileBackdrop'),mobilePx=mobileBackdrop.getContext('2d');
+const TOUCH_MOVE_MS=1080,TOUCH_HOLD_MS=240;
+// 시작과 끝에서 속도·가속도가 모두 0이 되는 부드러운 ease-in-out.
+const touchEase=t=>t*t*t*(t*(6*t-15)+10);
 function place(i,others,jr){const j=R(jr[0],jr[1]),s=SZ()[i]*j;let best=null,bestD=-1;
   for(let k=0;k<40;k++){const big=i===0;
     const c={tx:big?R(.15,.85):R(.1,.9),ty:big?R(.3,.88):R(.15,.92),s,tj:j};
@@ -537,7 +540,7 @@ let clock=0;
 function drawSceneOrbs(ctx,W,H){const T=reduce?0:clock*S.speed;
   leaving.forEach(l=>{const pl=l.pl,a=pl.amp*S.drift,x=pl.x+Math.sin(T*pl.f1*TAU+pl.ph1)*a,y=pl.y+Math.cos(T*pl.f2*TAU+pl.ph2)*a;drawOrb(ctx,tiles[l.idx].cur,x*W,y*H,Math.max(0,pl.cs)*W);});
   chosen.forEach((idx,i)=>{const pl=placements[i];if(!pl)return;
-    const drift=reduce?0:pl.touchAt==null?1:clamp((performance.now()-pl.touchAt-900)/700);
+    const drift=reduce?0:pl.touchAt==null?1:clamp((performance.now()-pl.touchAt-TOUCH_MOVE_MS-TOUCH_HOLD_MS)/700);
     const a=pl.amp*S.drift*drift, x=pl.x+Math.sin(T*pl.f1*TAU+pl.ph1)*a, y=pl.y+Math.cos(T*pl.f2*TAU+pl.ph2)*a;
     const sc=(pl.cs??SZ()[i]*pl.tj)*(1+.04*S.drift*Math.sin(T*.8+pl.ph3));
     pl.lx=x;pl.ly=y;pl.lr=sc*.38;
@@ -598,7 +601,7 @@ function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;
       t.ctx.clearRect(0,0,t.w,t.h);drawOrb(t.ctx,t.cur,t.w/2,t.h/2,t.size);t.dirty=false;}}
   const e=reduce?1:.06, sz=SZ();
   placements.forEach((pl,i)=>{
-    if(pl.touchMove){const k=reduce?1:clamp((now-pl.touchMove.t0)/360),v=easeOut(k);
+    if(pl.touchMove){const k=reduce?1:clamp((now-pl.touchMove.t0)/TOUCH_MOVE_MS),v=touchEase(k);
       pl.x=lerp(pl.touchMove.x,pl.tx,v);pl.y=lerp(pl.touchMove.y,pl.ty,v);if(k>=1)pl.touchMove=null;
     }else{pl.x+=(pl.tx-pl.x)*e;pl.y+=(pl.ty-pl.y)*e;}
     const tg=sz[i]*pl.tj;pl.cs=pl.cs==null?tg:pl.cs+(tg-pl.cs)*e;
@@ -658,11 +661,9 @@ $('presets').addEventListener('click',e=>{const b=e.target.closest('[data-id]');
 
 // ================= 더 꾸미기 =================
 // 배경: bg 버튼을 누를 때마다 다음 색으로
-const GROUNDS=[['light','밝은 종이','#f2f0f3','#1d1b26'],['tint','빛망울 색 틴트',null,'#1d1b26'],['white','하양','#ffffff','#1d1b26'],
-  ['mist','안개','#e3e8ee','#1d1b26'],['sand','모래','#ece5da','#1d1b26'],['dusk','저녁','#2a2140','#f2f0f3'],['dark','어두운 밤','#121019','#f2f0f3']];
-function groundColors(){const g=GROUNDS.find(x=>x[0]===S.ground)||GROUNDS[0];let bg=g[2]||'#f2f0f3';
-  if(g[0]==='tint'&&chosen.length){const [h,s2]=rgb2hsl(tf(tiles[chosen[0]].cur.layers[0].col));bg=toHex(hsl2rgb(h,s2*.35,.93));}
-  return{bg,ink:g[3],dark:g[3]!=='#1d1b26'};}
+const GROUNDS=[['white','흰색','#ffffff','#1d1b26'],['dark','어두운 밤','#121019','#f2f0f3']];
+function groundColors(){const g=GROUNDS.find(x=>x[0]===S.ground)||GROUNDS[0];
+  return{bg:g[2],ink:g[3],dark:g[0]==='dark'};}
 function renderGround(){const sw=document.getElementById('bgSwatch');if(sw){sw.style.background=groundColors().bg;}
   $('guide').style.setProperty('--guide-ink',groundColors().dark?'#ffffff':'#333333');
   document.body.style.setProperty('--mobile-ink',groundColors().ink);
