@@ -354,7 +354,7 @@ body.about-open{overflow:hidden}
   <section class="preview" aria-label="포스터 미리보기">
     <canvas id="poster" role="img" aria-label="포스터 미리보기"></canvas>
     <aside class="shake-coach" id="shakeCoach" hidden aria-live="polite"><p><strong id="shakeLead">휴대폰을 가볍게 흔들어보세요.</strong><span id="shakeSub">새로운 무드를 만나보세요.</span></p><button type="button" class="btn sm" id="shakeEnable">흔들기 켜기</button><button type="button" class="shake-close" id="shakeClose" aria-label="흔들기 안내 닫기">×</button></aside>
-    <p class="preview-hint">터치한 빛망울이 20% 커져 천천히 손끝으로 이동하고, 같은 무드의 다음 색과 감정으로 바뀌어요.</p>
+    <p class="preview-hint">터치한 빛망울이 20% 커져 천천히 손끝으로 이동하고, 다음 색과 감정으로 바뀌어요.</p>
   </section>
 
   <div class="editor">
@@ -462,7 +462,7 @@ const UI_EN={
   "움직임": "Motion",
   "소리": "Sound",
   "포스터 미리보기": "Poster preview",
-  "터치한 빛망울이 20% 커져 천천히 손끝으로 이동하고, 같은 무드의 다음 색과 감정으로 바뀌어요.": "Tap an orb: it grows by 20%, drifts toward your touch, and changes to the next color and feeling within this mood.",
+  "터치한 빛망울이 20% 커져 천천히 손끝으로 이동하고, 다음 색과 감정으로 바뀌어요.": "Tap an orb: it grows by 20%, drifts toward your touch, and moves to the next color and feeling in order.",
   "포스터로 돌아가기": "Back to poster",
   "색과 분위기를 바꿔보세요": "Explore colors and moods",
   "빛망울": "Orbs",
@@ -1412,16 +1412,34 @@ function posterTouchTarget(e){
  const selected=hits[0]||visible.sort((a,b)=>a.distance-b.distance||a.slot-b.slot)[0];
  return {slot:selected.slot,x:clamp(x,.06,.94),y:clamp(y,.12,.92)};
 }
+// One selected orb walks every authored single-orb feeling in a fixed loop.
+const SINGLE_EMOTION_STEPS=MOODS.flatMap((m,mood)=>m.palettes.flatMap((p,palette)=>p.variants.map(v=>({mood,palette,variant:v.id}))));
+function nextSingleEmotion(mood,palette,variant){
+ const at=SINGLE_EMOTION_STEPS.findIndex(step=>step.mood===mood&&step.palette===palette&&step.variant===variant);
+ return SINGLE_EMOTION_STEPS[(at+1)%SINGLE_EMOTION_STEPS.length];
+}
 function cycleTouchEmotion(now=performance.now(),slot=null,point=null){
  if(!chosen.length)return [];
  // Direct callers can omit a slot; scene touches supply the hit-tested visible orb.
  if(!Number.isInteger(slot)||slot<0||slot>=chosen.length){slot=0;
   for(let i=1;i<chosen.length;i++)if(tiles[chosen[i]].cur.layers[0].r*currentOrbScale(placements[i],i)>tiles[chosen[slot]].cur.layers[0].r*currentOrbScale(placements[slot],slot))slot=i;
  }
- const source=chosen[slot],occupied=new Set(chosen.filter((_,i)=>i!==slot));let next=(source+1)%N;
- while(occupied.has(next))next=(next+1)%N;
- const visible=tiles[source].cur,tile=tiles[next],pl=placements[slot];
- tile.combo=paletteCombo(MOODS[moodIdx].palettes[next]);
+ const source=chosen[slot],visible=tiles[source].cur,pl=placements[slot];
+ let next,variant='base';
+ if(chosen.length===1){
+  const step=nextSingleEmotion(moodIdx,source,tiles[source].combo.variant);
+  if(step.mood!==moodIdx){
+   applyMood(step.mood);placements[0]=pl;
+   moodTransitionUntil=now+TOUCH_CYCLE_MS;clearTimeout(feelingTimer);
+   feelingTimer=setTimeout(showPrimaryMood,TOUCH_CYCLE_MS+30);
+  }
+  next=step.palette;variant=step.variant;
+ }else{
+  const occupied=new Set(chosen.filter((_,i)=>i!==slot));next=(source+1)%N;
+  while(occupied.has(next))next=(next+1)%N;
+ }
+ const tile=tiles[next];
+ tile.combo=paletteCombo(MOODS[moodIdx].palettes[next],variant);
  const destination=gen(tile.combo);
  // Keep the outline stable so the tap's 20% focus is the only size change.
  destination.layers.forEach((layer,i)=>{const before=visible.layers[i];layer.r=before.r;layer.ox=before.ox;layer.oy=before.oy;layer.soft=before.soft;layer.a=before.a;});
