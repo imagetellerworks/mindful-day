@@ -159,9 +159,7 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .toast.on{opacity:1}
 /* 아래 두 줄 메뉴: 1줄 빛망울, 2줄 도구. 펼침 창은 이 영역 안에서 열리고 닫힘 */
 .dock{display:flex;flex-direction:column;gap:8px}
-.dock-tiles{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:8px}
-.rcount{font:600 11px var(--f-mono);padding:3px 7px;border-radius:999px;background:var(--white);border:1px solid var(--line);white-space:nowrap}
-.rcount.warn{background:var(--accent);border-color:var(--accent);color:#fff}
+.dock-tiles{display:grid;grid-template-columns:minmax(0,1fr)}
 .is-story #railTiles .tiles{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
 .is-story #railTiles .tile .check{width:16px;height:16px;top:3px;right:3px}
 .is-story #railTiles .tile .check svg{width:9px;height:9px}
@@ -225,7 +223,7 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
       <p class="toast" id="toast" aria-live="polite"></p>
     </div>
     <div class="dock" id="dock">
-      <div class="dock-tiles" id="dockTiles"><span class="rcount" id="railCount" aria-live="polite">1/3</span><div id="railTiles"></div></div>
+      <div class="dock-tiles" id="dockTiles"><div id="railTiles"></div></div>
       <div class="dock-tools" id="dockTools">
         <button type="button" class="rbtn" id="colorBtn" aria-label="색 조합 바꾸기"><span class="ic"><i class="sw" id="railSwatch"></i></span><span class="rl">색 바꾸기</span></button>
         <button type="button" class="rbtn" id="bgBtn" aria-label="배경색 바꾸기"><span class="ic"><i class="bgsw" id="bgSwatch"></i></span><span class="rl">bg</span></button>
@@ -406,10 +404,8 @@ function toggle(i){
 }
 function refreshTiles(){clearTimeout(warnT);
   tiles.forEach((t,j)=>t.el.setAttribute('aria-pressed',String(chosen.includes(j))));
-  countEl.textContent=`최대 3개 선택 · 현재 ${chosen.length}개`;countEl.classList.remove('warn');
-  const rc=document.getElementById('railCount');rc.textContent=`${chosen.length}/3`;rc.classList.remove('warn');}
+  countEl.textContent=`최대 3개 선택 · 현재 ${chosen.length}개`;countEl.classList.remove('warn');}
 function warnCount(){countEl.textContent='3개까지 고를 수 있어요. 하나를 해제한 뒤 골라 주세요.';countEl.classList.add('warn');
-  const rc=document.getElementById('railCount');rc.textContent='최대 3개';rc.classList.add('warn');
   clearTimeout(warnT);warnT=setTimeout(refreshTiles,2800);}
 function retarget(t,dur){const now=performance.now(),busy=now-t.t0<(t.dur||S.morph)*1000;t.from=t.cur;t.to=gen(t.combo);t.eo=busy;t.t0=now;t.dur=dur||0;}
 const easeOut=t=>1-Math.pow(1-t,3);
