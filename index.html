@@ -293,6 +293,7 @@ body.dark-ground{color-scheme:dark;--paper:#121019;--card:#201d28;--white:#24212
  .wide-scene .savebtns{grid-template-columns:1fr}
 }
 
+.about-analytics{margin-top:22px!important;padding-top:16px;border-top:1px solid var(--line);font-size:12px;line-height:1.7}.about-analytics button{margin-top:8px}
 .about-link{align-self:flex-start;min-width:48px;min-height:48px;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 body.about-open{overflow:hidden}
 .about-dialog{inset:0;width:min(80vw,760px);height:fit-content;max-width:80vw;max-height:80vh;max-height:80dvh;margin:auto;padding:0;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.3);color:var(--ui-ink);box-shadow:0 16px 60px rgba(0,0,0,.2);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px)}
@@ -426,6 +427,7 @@ body.about-open{overflow:hidden}
       <p>When you can't quite find the right words for how you're feeling, try gently touching the screen. Somewhere among the shifting light, colors, and sounds, you might discover a new way to express yourself.</p>
       <p>May these small movements of your fingertips become a quiet moment of meditation.</p>
     </section>
+    <div class="about-analytics"><p id="analyticsNotice">이 웹앱은 개선을 위해 체류 시간, 저장 버튼 사용, 작품 설정과 IP 기반의 대략적인 국가·도시를 무작위 방문 번호로 기록합니다. 이름·이메일·IP 원문·GPS 좌표·영상 원본은 통계에 저장하지 않습니다. 기록은 90일간 보관합니다.</p><button type="button" class="linkbtn" id="analyticsToggle">익명 사용 통계 끄기</button></div>
     <p class="about-credit">Designed by Jiin Ahn (<a href="mailto:jiin.imageteller@gmail.com">jiin.imageteller@gmail.com</a>)<br>Created with Claude Code &amp; Chat GPT</p>
   </div>
 </dialog>
@@ -443,6 +445,12 @@ function readLanguagePreference(){
   try{const value=localStorage.getItem('mindful-day-language');return value==='ko'||value==='en'?value:null;}catch(err){return null;}
 }
 const UI_EN={
+  "이 페이지는 수집 대상이 아니에요.": "This page is excluded from usage statistics.",
+  "이 웹앱은 개선을 위해 체류 시간, 저장 버튼 사용, 작품 설정과 IP 기반의 대략적인 국가·도시를 무작위 방문 번호로 기록합니다. 이름·이메일·IP 원문·GPS 좌표·영상 원본은 통계에 저장하지 않습니다. 기록은 90일간 보관합니다.": "To improve this app, we record visible time, save-button use, artwork settings, and an approximate country and city based on IP, using a random visit ID. Names, emails, raw IP addresses, GPS coordinates, and video files are not stored in the analytics database. Records are kept for 90 days.",
+  "익명 사용 통계 끄기": "Turn off anonymous usage statistics",
+  "익명 사용 통계 켜기": "Turn on anonymous usage statistics",
+  "브라우저 개인정보 설정에 따라 꺼져 있어요.": "Disabled by your browser privacy settings.",
+  "사용 통계 수집 준비 중": "Usage statistics are not active yet",
   "빛망울을 조합해 오늘의 감정과 가장 닮은 표현을 찾아보세요.": "Combine the orbs to find a word that feels like you today.",
   "‘무드’를 눌러 감정을 바꾸고 빛망울을 조합해보세요.": "Tap Mood to change the feeling, then combine the orbs to explore its nuances.",
   "빛망울을 조합해": "Combine the orbs to find",
@@ -617,7 +625,7 @@ function setLanguage(next,persist=true){
   statusEl.textContent=tr(statusEl.textContent);sheetMsg.textContent=tr(sheetMsg.textContent);document.getElementById('toast').textContent=tr(document.getElementById('toast').textContent);
   document.querySelectorAll('.sheet-prev [aria-label],.sheet-prev img').forEach(el=>{if(el.hasAttribute('aria-label'))el.setAttribute('aria-label',tr(el.getAttribute('aria-label')));if(el.alt)el.alt=tr(el.alt);});
   if(persist){languagePreference=lang;try{localStorage.setItem('mindful-day-language',lang);}catch(err){}}
-  updateShakeCoach();updateMenuToggle();updateAboutLanguage();syncFeelingStatus();fit=null;resize();drawPoster();drawMobileBackdrop();
+  updateShakeCoach();updateMenuToggle();updateAboutLanguage();syncFeelingStatus();if(typeof usageAnalytics!=='undefined')updateAnalyticsToggle(usageAnalytics.getState());fit=null;resize();drawPoster();drawMobileBackdrop();
 }
 
 // ================= 색 유틸 =================
@@ -1538,8 +1546,9 @@ async function saveImage(backgroundOnly=false){
     if(!backgroundOnly)await warmFonts();
     const canvas=document.createElement('canvas');canvas.width=IMG_W;canvas.height=IMG_H;
     renderPoster(canvas.getContext('2d'),IMG_W,IMG_H,!backgroundOnly);
+    const analyticsScene=captureAnalyticsScene(backgroundOnly?'background':'poster');
     const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
-    if(blob)await deliver(blob,`mindfulday-${backgroundOnly?'background':'poster'}-${stamp()}.png`,'image');
+    if(blob){usageAnalytics.track('image_created',{format:backgroundOnly?'background':'poster',scene:analyticsScene});await deliver(blob,`mindfulday-${backgroundOnly?'background':'poster'}-${stamp()}.png`,'image');}
     else say('이미지를 만들지 못했어요. 다시 눌러 주세요.');
   }catch(err){say('이미지를 만들지 못했어요. 다시 눌러 주세요.');}
   finally{imageBusy=false;imgBtn.textContent=tr('이미지로 저장');setV(vstate);}
@@ -1575,6 +1584,7 @@ async function startRec(){
   rec.onstop=async()=>{clearInterval(recTimer);stream.getVideoTracks().forEach(t=>t.stop());lockSize=false;resize();
     const blob=new Blob(chunks,{type:recMime.split(';')[0]});
     if(!blob.size){setV('idle');say('영상을 만들지 못했어요. 다시 시도해 주세요.');return;}
+    usageAnalytics.track('video_created',{format:'video'});
     await deliver(blob,`mindfulday-${stamp()}.${recMime.includes('mp4')?'mp4':'webm'}`,'video');setV('done');};
   rec.start(250);recStart=performance.now();setV('rec');say('');
   recTimer=setInterval(()=>{const s=(performance.now()-recStart)/1000;vidLabel.textContent=tr('끝내기')+' '+mss(s);if(s>=VID_MAX)stopRec();},250);}
@@ -1777,7 +1787,7 @@ addEventListener('resize',size);
 if(document.fonts){document.fonts.load(font(D.ft,40),D.title||'A');document.fonts.load(font(D.fs,40),D.sub||'A');if(document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',function(){fit=null;});}
 size();requestAnimationFrame(draw);
 `;
-function buildCode(){
+function captureReplayData(freeze=false){
   const r3=v=>+(+v).toFixed(4), G=groundColors(), bg=G.bg;
   const ft=fontOf(S.ft), fs=fontOf(S.fs);
   const D={title:S.title||'',sub:S.sub||'',moodLabel:feel?.text&&feel.text!==MOODS[moodIdx].word?L(MOODS[moodIdx].name,MOODS[moodIdx].en):'',feel:feel?.text?[feel.text,lang==='ko'?(FEEL_KO[feel.text]||''):'']:null,foot:[stampText(),colorNames()],bg,ink:G.ink,feelInk:feelingInk(),drift:r3(S.drift),speed:r3(S.speed),
@@ -1785,6 +1795,11 @@ function buildCode(){
     orbs:chosen.map((idx,i)=>{const o=tiles[idx].cur,pl=placements[i];return{trail:r3(o.trail),ta:r3(o.trailAng),
       p:{x:r3(pl.tx),y:r3(pl.ty),s:r3(currentOrbScale(pl,i)),ph1:r3(pl.ph1),ph2:r3(pl.ph2),ph3:r3(pl.ph3),f1:r3(pl.f1),f2:r3(pl.f2),amp:r3(pl.amp)},
       layers:o.layers.map(L=>({c:tf(L.col).map(Math.round).join(','),r:r3(L.r),ox:r3(L.ox),oy:r3(L.oy),s:r3(clamp(1-(1-L.soft)*S.soft,0,.95)),a:r3(L.a)}))};})};
+  if(freeze){D.drift=0;D.speed=0;D.orbs.forEach((orb,i)=>{const pl=placements[i];orb.p.x=r3(pl.lx??pl.x);orb.p.y=r3(pl.ly??pl.y);orb.p.s=r3(currentOrbScale(pl,i));orb.p.amp=0;});}
+  return D;
+}
+function buildCode(){
+  const D=captureReplayData(),bg=D.bg,ft=fontOf(S.ft),fs=fontOf(S.fs);
   const fams=[...new Set([...[ft,fs].filter(f=>f.id!=='pretendard').map(f=>f.id==='futura'?'family=Jost:wght@400;500':`family=${f.fam.replace(/ /g,'+')}:wght@${f.tw===f.sw?f.tw:Math.min(f.tw,f.sw)+';'+Math.max(f.tw,f.sw)}`),'family=Cormorant+Garamond:ital,wght@1,500'])];
   const esc=t=>t.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
   return `<!doctype html>
@@ -1810,7 +1825,7 @@ ${RUNTIME.trim().replace('FOOTER_SRC',footer.toString()+'\n'+drawHeader.toString
 function showCode(code){closeSheet();const ta=document.createElement('textarea');ta.className='codebox';ta.readOnly=true;ta.value=code;ta.setAttribute('aria-label',tr('포스터 코드'));
   sheetPrev.appendChild(ta);shShare.hidden=true;sheetMsg.textContent=tr('자동 복사가 막혀 있어요. 코드를 전체 선택해 복사해 주세요.');sheet.hidden=false;syncExportLayer();ta.focus();ta.select();}
 $('copyCode').addEventListener('click',()=>{const code=buildCode(),done='코드를 복사했어요. 빈 .html 파일에 붙여 넣고 열면 지금 포스터가 떠다니며 재생돼요.';
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(()=>{closeSheet();say(done,7000);},()=>showCode(code));}else showCode(code);});
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(()=>{closeSheet();say(done,7000);usageAnalytics.track('copy_success',{format:'code',capture:false});},()=>showCode(code));}else showCode(code);});
 
 // ================= 모바일 스토리형 배치 =================
 // 같은 조작 요소를 화면 폭에 따라 옮겨 씀 (PC: 단계 카드 / 모바일: 레일·시트·아래 막대)
@@ -2017,6 +2032,56 @@ $('aboutClose').addEventListener('click',()=>aboutDialog.close());
 aboutDialog.addEventListener('close',()=>document.body.classList.remove('about-open'));
 aboutDialog.addEventListener('click',e=>{if(e.target!==aboutDialog)return;const r=aboutDialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)aboutDialog.close();});
 
+// ================= GitHub 익명 사용 통계 =================
+function createUsageAnalytics(options,ctx=globalThis){
+ const doc=ctx.document,nav=ctx.navigator,win=ctx.window||ctx,perf=ctx.performance;
+ const key='mindful-day-analytics-optout',allowed=options.allowedOrigins||['https://imagetellerworks.github.io'];
+ let optedOut=false;try{optedOut=ctx.localStorage.getItem(key)==='1';}catch{}
+ const privacyBlocked=nav.globalPrivacyControl===true||nav.doNotTrack==='1';
+ let excluded=true;try{const url=new URL(ctx.location.href);excluded=!allowed.includes(url.origin)||url.searchParams.get('analytics')==='off'||url.searchParams.get('md_analytics')==='off';}catch{}
+ let token=null,starting=null,queue=[],inflight=false,flushTimer=0,heartbeat=0,retry=0,tries=0,nextAttempt=0,retryDelay=2000;
+ const started=perf.now();let active=0,visibleSince=doc.hidden?null:perf.now();
+ const available=()=>options.enabled&&!optedOut&&!privacyBlocked&&!excluded;
+ function state(){return{enabled:available(),configured:options.enabled,privacyBlocked,excluded,collecting:!!token};}
+ function notify(){options.onChange?.(state());}
+ function timing(){const now=perf.now();return{elapsed_ms:Math.max(0,Math.round(now-started)),active_ms:Math.max(0,Math.round(active+(visibleSince===null?0:now-visibleSince)))};}
+ function account(){const now=perf.now();if(visibleSince!==null)active+=now-visibleSince;visibleSince=doc.hidden?null:now;}
+ function schedule(){ctx.clearTimeout(flushTimer);if(available())flushTimer=ctx.setTimeout(()=>{void flush();},250);}
+ async function request(url,init){const controller=new ctx.AbortController(),timeout=ctx.setTimeout(()=>controller.abort(),6000);try{return await ctx.fetch(url,{...init,signal:controller.signal});}finally{ctx.clearTimeout(timeout);}}
+ async function start(){if(!available()||doc.hidden||token||starting||tries>=3)return;tries++;starting=(async()=>{try{
+  const device=nav.maxTouchPoints>0?(Math.min(ctx.innerWidth,ctx.innerHeight)>=600?'tablet':'phone'):'desktop';
+  const response=await request(options.endpoint+'/api/session',{method:'POST',mode:'cors',credentials:'omit',headers:{'Content-Type':'application/json'},body:JSON.stringify({device,language:options.language()})});
+  if(!response.ok)throw Error('not_available');const session=await response.json();if(!available())return;token=session.token;tries=0;ctx.clearInterval(heartbeat);heartbeat=ctx.setInterval(()=>{if(!doc.hidden)void flush();},60000);notify();if(queue.length)schedule();
+ }catch{if(available()&&tries<3){ctx.clearTimeout(retry);retry=ctx.setTimeout(()=>{void start();},60000);}}finally{starting=null;}})();return starting;}
+ function track(kind,details={}){if(!available())return;try{const scene=details.capture===false?undefined:details.scene||options.captureScene(details.format);queue.push({id:ctx.crypto.randomUUID(),kind,...timing(),format:details.format,scene,word:scene?.poster?.feel?.[0]||undefined,word_ko:scene?.poster?.feel?.[1]||undefined});if(queue.length>40)queue.shift();void start();schedule();}catch{}}
+ async function flush(beacon=false){ctx.clearTimeout(flushTimer);if(!available())return;if(!token){if(!doc.hidden)void start();return;}if(inflight&&!beacon)return;if(!beacon&&perf.now()<nextAttempt){flushTimer=ctx.setTimeout(()=>{void flush();},nextAttempt-perf.now());return;}
+  const events=queue.splice(0,3),payload=JSON.stringify({token,language:options.language(),...timing(),events});
+  if(beacon&&nav.sendBeacon){try{if(nav.sendBeacon(options.endpoint+'/api/events',payload))return;}catch{}}
+  inflight=true;try{const response=await request(options.endpoint+'/api/events',{method:'POST',mode:'cors',credentials:'omit',headers:{'Content-Type':'text/plain'},body:payload,keepalive:beacon});if(!response.ok)throw Error('not_available');retryDelay=2000;nextAttempt=0;}catch{if(available())queue=[...events,...queue].slice(-40);retryDelay=Math.min(60000,retryDelay*2);nextAttempt=perf.now()+retryDelay;}finally{inflight=false;if(queue.length&&available()&&!doc.hidden){ctx.clearTimeout(flushTimer);flushTimer=ctx.setTimeout(()=>{void flush();},retryDelay);}}
+ }
+ function stop(){ctx.clearTimeout(flushTimer);ctx.clearTimeout(retry);ctx.clearInterval(heartbeat);queue=[];token=null;notify();}
+ function setEnabled(value){optedOut=!value;try{ctx.localStorage.setItem(key,optedOut?'1':'0');}catch{}if(optedOut)stop();else{tries=0;void start();}notify();}
+ doc.addEventListener('visibilitychange',()=>{account();if(doc.hidden)void flush(true);else{void start();schedule();}});
+ win.addEventListener('pagehide',()=>{account();visibleSince=null;void flush(true);});
+ win.addEventListener('pageshow',()=>{if(!doc.hidden)visibleSince=perf.now();});
+ return{start,track,flush,setEnabled,getState:state};
+}
+
+const ANALYTICS_CONFIG={enabled:false,allowedOrigins:['https://imagetellerworks.github.io'],endpoint:'https://mindful-day-insights-imageteller.jiin-imageteller.chatgpt.site',version:'mindful-day-scene-v2'};
+function captureAnalyticsScene(format){return{schema:1,mood_id:MOODS[moodIdx].id,selected:chosen.map(i=>({palette_id:tiles[i].combo.paletteId,variant:tiles[i].combo.variant})),language:lang,word_ko:feel?(FEEL_KO[feel.text]||''):'',version:ANALYTICS_CONFIG.version,view:document.body.classList.contains('wide-scene')?'landscape':'portrait',background_only:format==='background',poster:captureReplayData(true)};}
+function updateAnalyticsToggle(state){const button=$('analyticsToggle');if(!button)return;button.disabled=!state.configured||state.privacyBlocked||state.excluded;button.textContent=tr(!state.configured?'사용 통계 수집 준비 중':state.privacyBlocked?'브라우저 개인정보 설정에 따라 꺼져 있어요.':state.excluded?'이 페이지는 수집 대상이 아니에요.':state.enabled?'익명 사용 통계 끄기':'익명 사용 통계 켜기');}
+const usageAnalytics=createUsageAnalytics({...ANALYTICS_CONFIG,language:()=>lang,captureScene:captureAnalyticsScene,onChange:updateAnalyticsToggle});
+$('analyticsToggle').addEventListener('click',()=>usageAnalytics.setEnabled(!usageAnalytics.getState().enabled));
+document.addEventListener('click',e=>{const button=e.target?.closest?.('button');if(!button||button.disabled)return;const id=button.id;
+  if(id==='saveImg'&&button.getAttribute('aria-expanded')!=='true')usageAnalytics.track('image_open');
+  else if(id==='savePosterImg')usageAnalytics.track('image_request',{format:'poster'});
+  else if(id==='saveBackgroundImg')usageAnalytics.track('image_request',{format:'background'});
+  else if(id==='saveVid'&&(vstate==='idle'||vstate==='done'))usageAnalytics.track('video_start',{format:'video'});
+  else if(id==='saveVid'&&vstate==='rec')usageAnalytics.track('video_stop',{format:'video'});
+  else if(id==='copyCode')usageAnalytics.track('copy_click',{format:'code'});
+  else if(id==='resetSettings')usageAnalytics.track('reset',{capture:false});
+},true);
+
 // ================= 설정 초기화 =================
 const initialScene=JSON.parse(JSON.stringify({settings:S,chosen,placements,mood:moodIdx,key:KEY,tiles:tiles.map(t=>({combo:t.combo,palette:t.cur}))}));
 function resetSceneSettings(){
@@ -2043,6 +2108,7 @@ $('langBtn').addEventListener('click',()=>setLanguage(lang==='ko'?'en':'ko'));
 languagePreference=readLanguagePreference();
 setLanguage(languagePreference||deviceLanguage(),false);
 addEventListener('languagechange',()=>{if(!languagePreference)setLanguage(deviceLanguage(),false);});
+updateAnalyticsToggle(usageAnalytics.getState());void usageAnalytics.start();
 warmFonts();
 (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{fit=null;requestAnimationFrame(frame);});
 </script>
