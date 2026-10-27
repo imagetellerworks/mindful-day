@@ -169,7 +169,12 @@ html[lang="en"] .guide-copy-en{display:block}
 .toast.on{opacity:1}
 /* 무드 → 빛망울 → 움직임·소리 순서로 조작합니다. */
 .dock{display:flex;flex-direction:column;gap:8px}
-.mood-row{display:flex;align-items:center;min-height:44px;padding-right:44px}
+.mood-row{display:flex;align-items:center;gap:8px;min-height:44px;padding-right:44px}
+.mood-row .mood-control{min-width:0;max-width:calc(100% - 52px);height:44px}
+.mood-row .current-mood{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.is-story .mood-row #soundBtn{flex:none;display:grid;place-items:center;width:44px;height:44px;min-height:44px;padding:0;border-radius:50%;background:var(--control-glass);color:var(--ui-ink)}
+.is-story .mood-row #soundBtn .ic{height:24px;color:inherit}
+.is-story .mood-row #soundBtn .rl{display:none}
 .mood-control{display:inline-flex;align-items:center;justify-content:flex-start;gap:8px;min-height:44px;max-width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:24px;background:var(--control-glass);color:var(--ui-ink);font:600 14px/1.2 var(--f-body);cursor:pointer;white-space:nowrap}
 .mood-control .sw{flex:none;width:24px;height:24px;border-radius:50%}
 .mood-control .mood-cycle{flex:none;width:15px;height:15px;opacity:.65}
@@ -333,14 +338,10 @@ body.about-open{overflow:hidden}
       <p class="toast" id="toast" aria-live="polite"></p>
     </div>
     <div class="menu-overlay" id="menuOverlay" role="region" aria-label="포스터 메뉴">
-      <div class="mood-row"><button type="button" class="mood-control" id="colorBtn" aria-label="무드 선택"><i class="sw" id="railSwatch" aria-hidden="true"></i><span class="current-mood" id="currentMood" aria-live="polite"></span><svg class="mood-cycle" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 8A8 8 0 1 0 20 15M19.5 3.5V8H15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      <div class="mood-row"><button type="button" class="mood-control" id="colorBtn" aria-label="무드 선택"><i class="sw" id="railSwatch" aria-hidden="true"></i><span class="current-mood" id="currentMood" aria-live="polite"></span><svg class="mood-cycle" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 8A8 8 0 1 0 20 15M19.5 3.5V8H15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="rbtn" id="soundBtn" aria-pressed="false" aria-label="소리 켜기"><span class="ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></span><span class="rl">소리</span></button></div>
     <div class="menu-scroll" role="region" aria-label="모든 설정" tabindex="-1">
     <div class="dock" id="dock">
       <div class="dock-tiles" id="dockTiles"><div id="railTiles"></div></div>
-      <div class="dock-tools" id="dockTools">
-        <button type="button" class="rbtn" data-sheet="motion" aria-pressed="false"><span class="ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M2.5 12c2.4-5 4.8-5 7.1 0s4.8 5 7.2 0 4.7-5 4.7-5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></svg></span><span class="rl">움직임</span></button>
-        <button type="button" class="rbtn" id="soundBtn" aria-pressed="false" aria-label="소리 켜기"><span class="ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></span><span class="rl">소리</span></button>
-      </div>
       <div class="msheet" id="msheet" hidden>
         <div class="msheet-b" data-body="motion" id="sbMotion"></div>
       </div>
@@ -368,7 +369,6 @@ body.about-open{overflow:hidden}
         <div class="lbl"><span id="comboLbl">색 조합</span><span class="moodname" id="moodName"></span></div>
         <div class="colorrow"><div class="palstrip" id="palStrip" aria-hidden="true"></div><button type="button" class="btn sm" id="colorCycle">무드 바꾸기</button></div>
       </div>
-      <div class="field" id="fPreset"><span class="lbl" id="presetLbl">움직임</span><div class="presets" id="presets" role="group" aria-labelledby="presetLbl"></div></div>
       <div class="field" id="fSound"><span class="lbl">소리</span><div class="colorrow"><button type="button" class="btn sm" id="soundBtnD" aria-pressed="false">소리 켜기</button><span class="hint">빛망울의 색·자리·크기로 만든 앰비언트예요. 첫 클릭부터 울려요</span></div></div>
     </section>
 
@@ -400,7 +400,7 @@ body.about-open{overflow:hidden}
         <div class="group"><h3>색 다듬기</h3><div class="sliders" id="slColor"></div></div>
         <div class="group"><h3>모양</h3><div class="sliders" id="slForm"></div></div>
         <div class="group"><h3>소리</h3><div class="sliders" id="slSound"></div></div>
-        <div class="group"><h3>움직임 세부</h3><div class="sliders" id="slMotion"></div>
+        <div class="group"><h3>움직임 세부</h3><div class="field" id="fPreset"><span class="lbl" id="presetLbl">움직임</span><div class="presets" id="presets" role="group" aria-labelledby="presetLbl"></div></div><div class="sliders" id="slMotion"></div>
         </div>
         <button type="button" class="btn reset-settings" id="resetSettings"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.4 6M20 4v7h-7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>초기 설정값으로</span></button>
       </div>
@@ -1255,7 +1255,7 @@ function resize(){const d=Math.min(devicePixelRatio||1,2);
   }else if(document.body.classList.contains('is-story')&&st){
     document.body.style.removeProperty('--scene-width');
     const creditTop=document.querySelector('footer.site').getBoundingClientRect().top;
-    const availH=Math.max(160,Math.min(window.innerHeight-48,creditTop-24)),normalW=Math.min(st.clientWidth,availH*9/16),scale=document.body.classList.contains('menu-open')?Math.min(.7,Math.max(160,$('menuOverlay').getBoundingClientRect().top-20)/(normalW*16/9)):1;
+    const availH=Math.max(160,Math.min(window.innerHeight-48,creditTop-24)),normalW=Math.min(st.clientWidth,availH*9/16),scale=document.body.classList.contains('menu-open')?Math.min(1,Math.max(160,$('menuOverlay').getBoundingClientRect().top-12)/(normalW*16/9)):1;
     const w=Math.max(1,Math.floor(normalW*scale)),h=Math.floor(w*16/9);
     slot.style.width=w+'px';slot.style.height=h+'px';st.style.height=h+'px';}
   else if(slot){slot.style.width='';slot.style.height='';if(st){st.style.height='';}}
@@ -1796,7 +1796,7 @@ $('copyCode').addEventListener('click',()=>{const code=buildCode(),done='코드�
 // ================= 모바일 스토리형 배치 =================
 // 같은 조작 요소를 화면 폭에 따라 옮겨 씀 (PC: 단계 카드 / 모바일: 레일·시트·아래 막대)
 const mq=matchMedia('(min-width:0px)'),wideScene=matchMedia('(min-width:860px) and (orientation:landscape)');
-const MOVES=[[pc,'posterSlot'],[$('shakeCoach'),'storyStage'],[tilesBox,'railTiles'],[$('fPreset'),'sbMotion'],[$('saveBox'),'storyBar'],[$('more'),'menuCustomizeSlot']];
+const MOVES=[[pc,'posterSlot'],[$('shakeCoach'),'storyStage'],[tilesBox,'railTiles'],[$('saveBox'),'storyBar'],[$('more'),'menuCustomizeSlot']];
 MOVES.forEach(([el])=>{const ph=document.createComment('home');el.before(ph);el._home=ph;});
 let curSheet=null;
 // 펼침 창은 아래 메뉴 영역 안에서 열림. 같은 버튼이나 포스터를 다시 누르면 닫힘
