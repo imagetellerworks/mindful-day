@@ -472,7 +472,7 @@ const UI_EN={
   "잔잔하게": "Gentle",
   "둥실둥실": "Floating",
   "활기차게": "Lively",
-  "흰색": "White",
+  "오프화이트": "Off-white",
   "어두운 밤": "Dark night",
   "첫 번째 빛망울": "First orb",
   "두 번째 빛망울": "Second orb",
@@ -1653,7 +1653,7 @@ $('presets').addEventListener('click',e=>{const b=e.target.closest('[data-id]');
 
 // ================= 더 꾸미기 =================
 // 배경: bg 버튼을 누를 때마다 다음 색으로
-const GROUNDS=[['white','흰색','#ffffff','#1d1b26'],['ivory','아이보리','#f2eadc','#1d1b26'],['dark','어두운 밤','#121019','#f2f0f3']];
+const GROUNDS=[['white','오프화이트','#f2f2f2','#1d1b26'],['ivory','아이보리','#f2eadc','#1d1b26'],['dark','어두운 밤','#121019','#f2f0f3']];
 function cycleGround(){const i=GROUNDS.findIndex(g=>g[0]===S.ground);S.ground=GROUNDS[(i+1)%GROUNDS.length][0];renderGround();}
 function groundColors(){const g=GROUNDS.find(x=>x[0]===S.ground)||GROUNDS[0];
   return{bg:g[2],ink:g[3],dark:g[0]==='dark'};}
