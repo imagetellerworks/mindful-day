@@ -18,6 +18,7 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
 .site-head{max-width:1040px;margin:0 auto;padding-block:18px 14px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
 .brand{margin:0;font:900 26px/1.1 var(--f-body);letter-spacing:-.02em}
 .tagline{margin:0;font-size:14px;line-height:1.5;color:var(--muted);text-wrap:balance}
+.tagline-sub{display:block;margin-top:4px;font-size:12px;line-height:1.5}
 
 .app{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 .preview{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0}
@@ -137,11 +138,11 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 /* 애플 글라스처럼: 뒤의 빛망울이 흐릿하게 비치는 밝은 반투명 유리 + 진한 글씨 */
 .guide p,.toast{background:rgba(255,255,255,.4);-webkit-backdrop-filter:blur(30px) saturate(1.8);backdrop-filter:blur(30px) saturate(1.8);text-shadow:0 0 10px rgba(255,255,255,.55);
   border:1px solid rgba(255,255,255,.55);box-shadow:0 8px 30px rgba(29,27,38,.12),inset 0 1px 0 rgba(255,255,255,.6);color:var(--ink)}
-.guide p{margin:0;max-width:17em;word-break:keep-all;padding:0;font-family:'Pretendard',sans-serif;font-size:13px;font-weight:500;line-height:1.5;text-align:center;text-wrap:balance}
-.guide small{display:block;margin-top:4px;font-size:10px;font-weight:400;color:#fff;opacity:.9}
+.guide p{margin:0;max-width:17em;word-break:keep-all;padding:0;font-family:'Pretendard',sans-serif;font-size:15px;font-weight:600;line-height:1.5;text-align:center;text-wrap:balance}
+.guide small{display:block;margin-top:6px;font-size:11px;font-weight:400;color:inherit;opacity:.9}
 /* 안내는 상자 없이 글자만: 빛망울 위에서도 읽히도록 얕은 흰 번짐 */
 .guide p{background:none!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
-  text-shadow:none!important;color:#fff!important}
+  text-shadow:none!important;color:var(--guide-ink,#333333)!important}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.guide p,.toast{background:rgba(255,255,255,.82)}}
 /* 색 조합 알림: 포스터 아래쪽, 배경은 20%만 비치는 유리 */
 .toast{background:rgba(255,255,255,.2)!important;border-color:rgba(255,255,255,.35)!important}
@@ -200,20 +201,20 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 
 <header class="site-head">
   <h1 class="brand">mindful day</h1>
-  <p class="tagline">오늘의 기분을 색으로 골라, 움직이는 포스터로 남겨 보세요.</p>
+  <p class="tagline">화면을 톡 터치해, 오늘의 기분과 가장 닮은 표현을 찾아보세요.<span class="tagline-sub">‘색 바꾸기’를 누르면 색 조합과 분위기가 달라져요.</span></p>
 </header>
 
 <main class="app">
   <section class="story" id="story" aria-label="포스터 만들기">
     <div class="story-stage" id="storyStage">
       <div class="poster-slot" id="posterSlot"></div>
-      <div class="guide" id="guide"><p>오늘의 기분을 색으로 골라<br>움직이는 포스터로 남겨 보세요<small>포스터를 누를 때마다<br>빛망울과 오늘의 기분이 떠올라요</small></p></div>
+      <div class="guide" id="guide"><p>화면을 톡 터치해<br>오늘의 기분과 가장 닮은<br>표현을 찾아보세요<small>‘색 바꾸기’로 분위기도 바꿔보세요</small></p></div>
       <p class="toast" id="toast" aria-live="polite"></p>
     </div>
     <div class="dock" id="dock">
       <div class="dock-tiles" id="dockTiles"><span class="rcount" id="railCount" aria-live="polite">1/3</span><div id="railTiles"></div></div>
       <div class="dock-tools" id="dockTools">
-        <button type="button" class="rbtn" id="colorBtn" aria-label="색 조합 바꾸기"><span class="ic"><i class="sw" id="railSwatch"></i></span><span class="rl">색</span></button>
+        <button type="button" class="rbtn" id="colorBtn" aria-label="색 조합 바꾸기"><span class="ic"><i class="sw" id="railSwatch"></i></span><span class="rl">색 바꾸기</span></button>
         <button type="button" class="rbtn" id="bgBtn" aria-label="배경색 바꾸기"><span class="ic"><i class="bgsw" id="bgSwatch"></i></span><span class="rl">bg</span></button>
         <button type="button" class="rbtn" data-sheet="motion" aria-pressed="false"><span class="ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M2.5 12c2.4-5 4.8-5 7.1 0s4.8 5 7.2 0 4.7-5 4.7-5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></svg></span><span class="rl">움직임</span></button>
         <button type="button" class="rbtn" id="soundBtn" aria-pressed="false" aria-label="소리 켜기"><span class="ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></span><span class="rl">소리</span></button>
@@ -226,21 +227,21 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
   </section>
   <section class="preview" aria-label="포스터 미리보기">
     <canvas id="poster" role="img" aria-label="포스터 미리보기"></canvas>
-    <p class="preview-hint">포스터를 누르면 빛망울의 색과 자리가 바뀌어요.</p>
+    <p class="preview-hint">터치한 곳으로 빛망울이 이동하며 새로운 감정 표현이 나타나요.</p>
   </section>
   <button type="button" class="mini" id="mini" aria-label="포스터로 돌아가기" tabindex="-1"><canvas id="miniCv"></canvas></button>
 
   <div class="editor">
 
     <section class="step" aria-labelledby="s2">
-      <h2 class="step-h" id="s2"><span class="step-no">1</span>오늘의 분위기를 골라 보세요</h2>
+      <h2 class="step-h" id="s2"><span class="step-no">1</span>색과 분위기를 바꿔보세요</h2>
       <div class="field">
         <div class="lbl"><span id="tileLbl">빛망울</span><span class="count" id="count" aria-live="polite">최대 3개 선택 · 현재 1개</span></div>
         <div class="tiles" id="tiles" role="group" aria-labelledby="tileLbl"></div>
       </div>
       <div class="field" id="fCombo">
         <div class="lbl"><span id="comboLbl">색 조합</span><span class="moodname" id="moodName"></span></div>
-        <div class="colorrow"><div class="palstrip" id="palStrip" aria-hidden="true"></div><button type="button" class="btn sm" id="colorCycle">다른 색 조합으로</button></div>
+        <div class="colorrow"><div class="palstrip" id="palStrip" aria-hidden="true"></div><button type="button" class="btn sm" id="colorCycle">색 바꾸기</button></div>
       </div>
       <div class="field" id="fPreset"><span class="lbl" id="presetLbl">움직임</span><div class="presets" id="presets" role="group" aria-labelledby="presetLbl"></div></div>
       <div class="field" id="fSound"><span class="lbl">소리</span><div class="colorrow"><button type="button" class="btn sm" id="soundBtnD" aria-pressed="false">소리 켜기</button><span class="hint">빛망울의 색·자리·크기로 만든 앰비언트예요. 첫 클릭부터 울려요</span></div></div>
@@ -407,7 +408,7 @@ function mkPl(i,others,jr){const b=place(i,others,jr);
 function relayout(only=-1,jr=[.9,1.1]){
   chosen.forEach((_,i)=>{if(only>=0&&i!==only)return;
     const others=placements.filter((p,k)=>k!==i&&(only>=0||k<i)), b=place(i,others,jr);
-    Object.assign(placements[i],{tx:b.tx,ty:b.ty,tj:b.tj,s:b.s});});}
+    Object.assign(placements[i],{tx:b.tx,ty:b.ty,tj:b.tj,s:b.s,touchMove:null,touchAt:null});});}
 // 첫 화면 예시: 빛망울 1개를 화면 아래쪽 가운데에
 // 해제한 빛망울은 작아지며 사라질 때까지 따로 그림
 let leaving=[];
@@ -527,7 +528,8 @@ function drawPoster(){
   ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
   leaving.forEach(l=>{const pl=l.pl,a=pl.amp*S.drift,x=pl.x+Math.sin(T*pl.f1*TAU+pl.ph1)*a,y=pl.y+Math.cos(T*pl.f2*TAU+pl.ph2)*a;drawOrb(ctx,tiles[l.idx].cur,x*W,y*H,Math.max(0,pl.cs)*W);});
   chosen.forEach((idx,i)=>{const pl=placements[i];if(!pl)return;
-    const a=pl.amp*S.drift, x=pl.x+Math.sin(T*pl.f1*TAU+pl.ph1)*a, y=pl.y+Math.cos(T*pl.f2*TAU+pl.ph2)*a;
+    const drift=reduce?0:pl.touchAt==null?1:clamp((performance.now()-pl.touchAt-900)/700);
+    const a=pl.amp*S.drift*drift, x=pl.x+Math.sin(T*pl.f1*TAU+pl.ph1)*a, y=pl.y+Math.cos(T*pl.f2*TAU+pl.ph2)*a;
     const sc=(pl.cs??SZ()[i]*pl.tj)*(1+.04*S.drift*Math.sin(T*.8+pl.ph3));
     pl.lx=x;pl.ly=y;pl.lr=sc*.38;
     drawOrb(ctx,tiles[idx].cur,x*W,y*H,sc*W);});
@@ -567,7 +569,12 @@ function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;
     if(k<1||t.dirty||t.cur!==t.to){t.cur=k>=1?t.to:mix(t.from,t.to,t.eo?easeOut(k):ease(k));
       t.ctx.clearRect(0,0,t.w,t.h);drawOrb(t.ctx,t.cur,t.w/2,t.h/2,t.size);t.dirty=false;}}
   const e=reduce?1:.06, sz=SZ();
-  placements.forEach((pl,i)=>{pl.x+=(pl.tx-pl.x)*e;pl.y+=(pl.ty-pl.y)*e;const tg=sz[i]*pl.tj;pl.cs=pl.cs==null?tg:pl.cs+(tg-pl.cs)*e;});
+  placements.forEach((pl,i)=>{
+    if(pl.touchMove){const k=reduce?1:clamp((now-pl.touchMove.t0)/360),v=easeOut(k);
+      pl.x=lerp(pl.touchMove.x,pl.tx,v);pl.y=lerp(pl.touchMove.y,pl.ty,v);if(k>=1)pl.touchMove=null;
+    }else{pl.x+=(pl.tx-pl.x)*e;pl.y+=(pl.ty-pl.y)*e;}
+    const tg=sz[i]*pl.tj;pl.cs=pl.cs==null?tg:pl.cs+(tg-pl.cs)*e;
+  });
   leaving.forEach(l=>{l.pl.cs+=(0-l.pl.cs)*e*1.4;});leaving=leaving.filter(l=>l.pl.cs>.004&&!chosen.includes(l.idx));
   drawPoster();
   if(S.sound)updateAudio();
@@ -628,6 +635,7 @@ function groundColors(){const g=GROUNDS.find(x=>x[0]===S.ground)||GROUNDS[0];let
   if(g[0]==='tint'&&chosen.length){const [h,s2]=rgb2hsl(tf(tiles[chosen[0]].cur.layers[0].col));bg=toHex(hsl2rgb(h,s2*.35,.93));}
   return{bg,ink:g[3],dark:g[3]!=='#1d1b26'};}
 function renderGround(){const sw=document.getElementById('bgSwatch');if(sw){sw.style.background=groundColors().bg;}
+  $('guide').style.setProperty('--guide-ink',groundColors().dark?'#ffffff':'#333333');
   $('ground').innerHTML=GROUNDS.map(([v,n])=>`<button type="button" class="chip" data-v="${v}" aria-pressed="${S.ground===v}">${n}</button>`).join('');}
 $('ground').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;S.ground=b.dataset.v;renderGround();if(feel)showFeeling(chosen.includes(feel.idx)?feel.idx:chosen[0]);});
 const f2=v=>v.toFixed(2), sg=v=>(v>=0?'+':'')+v;
@@ -651,18 +659,26 @@ $('relayout').addEventListener('click',()=>relayout());
 $('rerollSel').addEventListener('click',()=>chosen.forEach(i=>retarget(tiles[i])));
 $('reroll').addEventListener('click',()=>tiles.forEach(t=>retarget(t)));
 
-// 포스터 터치: 빛망울 위면 그 빛망울만, 빈 곳이면 고른 빛망울 전부의 색·자리·크기를 바꿈
+// 실제 화면 좌표에서 가장 가까운 빛망울 하나를 터치 지점으로 이동.
+function nearestOrb(x,y,width,height){let hit=-1,best=Infinity;
+  placements.forEach((pl,i)=>{const d=Math.hypot((x-(pl.lx??pl.x))*width,(y-(pl.ly??pl.y))*height);
+    if(d<best){best=d;hit=i;}});return hit;}
+function moveOrbToTouch(i,x,y){const pl=placements[i];if(!pl)return;
+  pl.x=pl.lx??pl.x;pl.y=pl.ly??pl.y;pl.tx=clamp(x);pl.ty=clamp(y);pl.touchAt=performance.now();
+  pl.touchMove={x:pl.x,y:pl.y,t0:pl.touchAt};
+}
 pc.addEventListener('pointerdown',e=>{
-  if(curSheet){closeMSheet();return;}
-  if(!guideGone&&document.body.classList.contains('is-story')){hideGuide();return;}
+  if(e.isPrimary===false||e.pointerType==='mouse'&&e.button!==0)return;
+  if(curSheet)closeMSheet();
+  if(!guideGone)hideGuide();
+  if(!chosen.length)toggle(0);
   const b=pc.getBoundingClientRect(), x=(e.clientX-b.left)/b.width, y=(e.clientY-b.top)/b.height;
-  let hit=-1;
-  for(let i=chosen.length-1;i>=0;i--){const pl=placements[i];if(pl&&pl.lr&&Math.hypot(x-pl.lx,(y-pl.ly)*16/9)<pl.lr){hit=i;break;}}
-  (hit>=0?[chosen[hit]]:chosen).forEach(i=>{const t=tiles[i];t.combo={mode:pick(MODES),h:R(0,360),tone:t.combo.tone};retarget(t,.9);});
-  strum(hit>=0?[hit]:null);
-  showFeeling(hit>=0?chosen[hit]:chosen[0]);
+  const hit=nearestOrb(x,y,b.width,b.height);if(hit<0)return;
+  moveOrbToTouch(hit,x,y);
+  const t=tiles[chosen[hit]];t.combo={mode:pick(MODES),h:R(0,360),tone:t.combo.tone};retarget(t,.9);
+  strum([hit]);
+  showFeeling(chosen[hit]);
   updateColorUI();
-  relayout(hit,[.55,1.5]);
 });
 
 // ================= 저장 =================
@@ -1014,9 +1030,8 @@ function relocate(){const m=mq.matches;document.body.classList.toggle('is-story'
   if(!m)closeMSheet();resize();}
 if(mq.addEventListener)mq.addEventListener('change',relocate);else mq.addListener(relocate);
 let guideGone=false;
-function hideGuide(){guideGone=true;$('guide').classList.add('gone');}
-// 처음 안내는 6초 뒤 저절로 사라짐 (그 전에 누르면 바로 사라짐)
-setTimeout(()=>{if(!guideGone)hideGuide();},6000);
+function hideGuide(){guideGone=true;const guide=$('guide');guide.classList.add('gone');guide.setAttribute('aria-hidden','true');}
+// 모바일 첫 안내는 포스터를 처음 터치할 때까지 유지. 첫 터치도 바로 작품에 반영.
 
 // ================= 시작 =================
 relocate();
