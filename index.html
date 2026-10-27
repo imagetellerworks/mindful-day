@@ -153,6 +153,9 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .guide p,.toast{background:rgba(255,255,255,.4);-webkit-backdrop-filter:blur(30px) saturate(1.8);backdrop-filter:blur(30px) saturate(1.8);text-shadow:0 0 10px rgba(255,255,255,.55);
   border:1px solid rgba(255,255,255,.55);box-shadow:0 8px 30px rgba(29,27,38,.12),inset 0 1px 0 rgba(255,255,255,.6);color:var(--ink)}
 .guide p{margin:0;max-width:17em;word-break:keep-all;padding:0;font-family:'Pretendard',sans-serif;font-size:15px;font-weight:600;line-height:1.5;text-align:center;text-wrap:balance}
+.guide-copy-en{display:none;white-space:nowrap}
+html[lang="en"] .guide-copy-ko{display:none}
+html[lang="en"] .guide-copy-en{display:block}
 .guide small{display:block;margin-top:6px;font-size:11px;font-weight:400;color:inherit;opacity:.9}
 /* 안내는 상자 없이 글자만: 빛망울 위에서도 읽히도록 얕은 흰 번짐 */
 .guide p{background:none!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
@@ -310,7 +313,7 @@ body.about-open{overflow:hidden}
   <section class="story" id="story" aria-label="포스터 만들기">
     <div class="story-stage" id="storyStage">
       <div class="poster-slot" id="posterSlot"></div>
-      <div class="guide" id="guide"><p>화면을 터치해<br>오늘의 감정과 가장 닮은<br>표현을 찾아보세요.<small>오른쪽 아래 메뉴로 색도 바꿔보세요.</small></p></div>
+      <div class="guide" id="guide"><p><span class="guide-copy-ko">화면을 터치해<br>오늘의 감정과 가장 닮은<br>표현을 찾아보세요.</span><span class="guide-copy-en" lang="en">Tap the screen to find a word<br>that feels like you today.</span><small>오른쪽 아래 메뉴로 색도 바꿔보세요.</small></p></div>
       <p class="toast" id="toast" aria-live="polite"></p>
     </div>
     <div class="menu-overlay" id="menuOverlay" role="region" aria-label="포스터 메뉴">
@@ -426,7 +429,7 @@ const UI_EN={
   "포스터 만들기": "Create a poster",
   "색 조합 바꾸기": "Change color palette",
   "배경색 바꾸기": "Change background",
-  "배경색": "Background",
+  "배경색": "BG",
   "아이보리": "Ivory",
   "색 바꾸기": "Colors",
   "움직임": "Motion",
