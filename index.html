@@ -204,6 +204,21 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .is-story .sheet{position:absolute;left:0;right:0;bottom:calc(100% + 8px);z-index:6;box-shadow:0 -6px 28px rgba(29,27,38,.18)}
 .is-story .image-choices{position:absolute;left:0;right:0;bottom:calc(100% + 8px);z-index:5;box-shadow:0 -6px 28px rgba(29,27,38,.18)}
 @media (prefers-reduced-motion:reduce){.tap-hint{transition:none}}
+/* 기본 메뉴: 처음에는 숨기고 햄버거 버튼으로 오버레이 표시 */
+.menu-toggle{display:none}
+.is-story .menu-toggle{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:35;display:grid;place-items:center;width:48px;height:48px;border:1px solid var(--line);border-radius:50%;background:rgba(255,255,255,.4);color:var(--ink);cursor:pointer;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.is-story .menu-overlay{display:none;position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:25;max-height:calc(100dvh - 140px);padding:8px;gap:10px;border:1px solid rgba(255,255,255,.45);border-radius:18px;background:rgba(255,255,255,.15);overflow-y:auto;overscroll-behavior-y:contain;box-shadow:0 8px 32px rgba(29,27,38,.12)}
+.is-story.menu-open .menu-overlay{display:flex;flex-direction:column}
+.is-story.menu-open footer.site{visibility:hidden}
+.is-story #railTiles .tile{border-radius:50%;background:rgba(255,255,255,.4)}
+.is-story #railTiles .tile .check{top:12%;right:12%}
+.is-story .dock-tools .rbtn{justify-self:center;justify-content:center;width:100%;max-width:72px;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.4);padding:6px 0}
+.is-story #soundBtn[aria-pressed="true"]{background:rgba(255,255,255,.4)}
+.is-story .menu-overlay .more:not([open]){background:rgba(255,255,255,.4)}
+.is-story.customizing #menuToggle{display:none}
+.is-story.customizing .menu-overlay{padding:0;border:0;background:transparent;box-shadow:none;overflow:visible}
+.is-story.customizing #more{background:var(--card)}
+
 /* 모바일 Customize 하단 패널 */
 .customize-close{display:none}
 .is-story.customizing{position:fixed;inset:0;overflow:hidden;height:100dvh;overscroll-behavior:none}
@@ -219,6 +234,7 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 </style>
 
 <button type="button" class="language-toggle" id="langBtn" aria-label="Switch to English"><span data-lang="en">EN</span><span aria-hidden="true">/</span><span data-lang="ko" class="active">KR</span></button>
+<button type="button" class="menu-toggle" id="menuToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="menuOverlay"></button>
 <canvas id="mobileBackdrop" aria-hidden="true"></canvas>
 
 <header class="site-head">
@@ -230,9 +246,10 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
   <section class="story" id="story" aria-label="포스터 만들기">
     <div class="story-stage" id="storyStage">
       <div class="poster-slot" id="posterSlot"></div>
-      <div class="guide" id="guide"><p>화면을 톡 터치해<br>오늘의 기분과 가장 닮은<br>표현을 찾아보세요<small>‘색 바꾸기’로 분위기도 바꿔보세요</small></p></div>
+      <div class="guide" id="guide"><p>화면을 톡 터치해<br>오늘의 기분과 가장 닮은<br>표현을 찾아보세요<small>오른쪽 아래 메뉴로 색도 바꿔보세요.</small></p></div>
       <p class="toast" id="toast" aria-live="polite"></p>
     </div>
+    <div class="menu-overlay" id="menuOverlay" role="region" aria-label="포스터 메뉴">
     <div class="dock" id="dock">
       <div class="dock-tiles" id="dockTiles"><div id="railTiles"></div></div>
       <div class="dock-tools" id="dockTools">
@@ -246,6 +263,8 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
       </div>
     </div>
     <div class="story-bar" id="storyBar"></div>
+    <div id="menuCustomizeSlot"></div>
+    </div>
   </section>
   <section class="preview" aria-label="포스터 미리보기">
     <canvas id="poster" role="img" aria-label="포스터 미리보기"></canvas>
@@ -440,7 +459,11 @@ const UI_EN={
   "연결 중…": "Connecting…",
   "빛망울을 1~3개 골라 주세요": "Choose 1–3 orbs",
   "커스터마이즈 닫기": "Close Customize",
-  "커스터마이즈 설정": "Customize settings"
+  "커스터마이즈 설정": "Customize settings",
+  "메뉴 열기": "Open menu",
+  "메뉴 닫기": "Close menu",
+  "포스터 메뉴": "Poster menu",
+  "오른쪽 아래 메뉴로 색도 바꿔보세요.": "Open the bottom-right menu to explore colors."
 };
 const UI_KO=Object.fromEntries(Object.entries(UI_EN).map(([ko,en])=>[en,ko]));
 const originalUI=text=>UI_KO[text]||text;
@@ -448,12 +471,12 @@ const tr=text=>{const ko=originalUI(text);return lang==='en'?(UI_EN[ko]||text):k
 const L=(ko,en)=>lang==='en'?en:ko;
 const staticText=[],staticAttrs=[];
 function captureLanguageNodes(){
-  const skip='#saveImg,#vidLabel,#count,#moodName,#presets,#ground,#soundBtnD,#status,#formats,#sheetMsg,#toast,#pause,#shakeLead,#shakeSub,#shakeEnable';
+  const skip='#saveImg,#vidLabel,#count,#moodName,#presets,#ground,#soundBtnD,#status,#formats,#sheetMsg,#toast,#pause,#shakeLead,#shakeSub,#shakeEnable,#menuToggle';
   const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let node;
   while(node=walk.nextNode()){
     const key=node.nodeValue.trim();if(UI_EN[key]&&!node.parentElement.closest('script,style,'+skip))staticText.push({node,key,raw:node.nodeValue});
   }
-  document.querySelectorAll('[aria-label]').forEach(node=>{const key=node.getAttribute('aria-label');if(UI_EN[key]&&node.id!=='soundBtn')staticAttrs.push({node,key});});
+  document.querySelectorAll('[aria-label]').forEach(node=>{const key=node.getAttribute('aria-label');if(UI_EN[key]&&!['soundBtn','menuToggle'].includes(node.id))staticAttrs.push({node,key});});
 }
 function setLanguage(next,persist=true){
   lang=next==='en'?'en':'ko';document.documentElement.lang=lang;
@@ -470,7 +493,7 @@ function setLanguage(next,persist=true){
   statusEl.textContent=tr(statusEl.textContent);sheetMsg.textContent=tr(sheetMsg.textContent);document.getElementById('toast').textContent=tr(document.getElementById('toast').textContent);
   document.querySelectorAll('.sheet-prev [aria-label],.sheet-prev img').forEach(el=>{if(el.hasAttribute('aria-label'))el.setAttribute('aria-label',tr(el.getAttribute('aria-label')));if(el.alt)el.alt=tr(el.alt);});
   if(persist)try{localStorage.setItem('mindful-day-language',lang);}catch(err){}
-  updateShakeCoach();fit=null;resize();drawPoster();drawMobileBackdrop();
+  updateShakeCoach();updateMenuToggle();fit=null;resize();drawPoster();drawMobileBackdrop();
 }
 
 // ================= 색 유틸 =================
@@ -622,7 +645,7 @@ function fontStr(id,role,size){const f=fontOf(id);return `${role==='t'?f.tw:f.sw
 let fit=null;
 function warmFonts(){fit=null;if(!document.fonts)return Promise.resolve();
   return Promise.all([document.fonts.load(fontStr(S.ft,'t',40),S.title||'A'),document.fonts.load(fontStr(S.fs,'s',40),S.sub||'A')]).catch(()=>{});}
-if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',()=>{fit=null;});
+if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',()=>{fit=null;alignLanguageToggle();});
 [['Black',900],['Bold',700],['Medium',500],['Regular',400]].forEach(([n,w])=>{
   fetch(`fonts/Pretendard-${n}.woff2`).then(r=>r.ok?r.arrayBuffer():Promise.reject()).then(buf=>new FontFace('Pretendard',buf,{weight:String(w)}).load())
     .then(f=>{document.fonts.add(f);fit=null;}).catch(()=>{});});
@@ -1456,7 +1479,7 @@ function drawMobileBackdrop(){
 }
 
 // ================= 크기 맞추기 (저장 중에는 저장용 해상도를 유지) =================
-let lockSize=false,mobileRows=180;
+let lockSize=false;
 function resize(){const d=Math.min(devicePixelRatio||1,2);
   // 모바일 스토리형: 무대 크기 안에서 9:16을 유지하도록 포스터 틀 크기를 직접 정함
   const st=document.getElementById('storyStage'), slot=document.getElementById('posterSlot');
@@ -1464,15 +1487,14 @@ function resize(){const d=Math.min(devicePixelRatio||1,2);
   if(document.body.classList.contains('is-story')&&st){
     const customizing=document.body.classList.contains('customizing');
     if(customizing)$('more').style.setProperty('--customize-head',$('more').querySelector('summary').offsetHeight+'px');
-    if(!customizing)mobileRows=$('dockTiles').offsetHeight+$('dockTools').offsetHeight+document.querySelector('.savebtns').offsetHeight;
-    const availH=Math.max(300,window.innerHeight-mobileRows-10-3*10-8),normalW=Math.min(st.clientWidth,availH*9/16),scale=customizing?Math.min(.7,(innerHeight*.5-20)/(normalW*16/9)):1;
+    const availH=Math.max(300,window.innerHeight-48),normalW=Math.min(st.clientWidth,availH*9/16),scale=customizing?Math.min(.7,(innerHeight*.5-20)/(normalW*16/9)):1;
     const w=Math.max(1,Math.floor(normalW*scale)),h=Math.floor(w*16/9);
     slot.style.width=w+'px';slot.style.height=h+'px';st.style.height=h+'px';}
   else if(slot){slot.style.width='';slot.style.height='';if(st){st.style.height='';}}
   tiles.forEach(t=>{t.w=Math.max(1,Math.round(t.cv.clientWidth*d));t.h=Math.max(1,Math.round(t.cv.clientHeight*d));t.cv.width=t.w;t.cv.height=t.h;t.size=Math.min(t.w,t.h);t.dirty=true;});
   if(document.body.classList.contains('is-story')){mobileBackdrop.width=Math.max(2,Math.round(innerWidth*d));mobileBackdrop.height=Math.max(2,Math.round(innerHeight*d));}
   else{mobileBackdrop.width=1;mobileBackdrop.height=1;}
-  if(lockSize)return;
+  alignLanguageToggle();if(lockSize)return;
   const W=Math.max(2,Math.round(pc.clientWidth*d));pc.width=W;pc.height=Math.round(W*16/9);fit=null;}
 addEventListener('resize',resize);
 if(window.ResizeObserver){let rq=0;const ro=new ResizeObserver(()=>{cancelAnimationFrame(rq);rq=requestAnimationFrame(resize);});ro.observe(pc);ro.observe(tilesBox);ro.observe(document.getElementById('storyStage'));}
@@ -1591,7 +1613,7 @@ function touchPoster(e){
 pc.addEventListener('pointerdown',touchPoster);
 document.addEventListener('pointerdown',e=>{
   if(!document.body.classList.contains('is-story')||e.target===pc)return;
-  if(e.target?.closest?.('button,input,select,textarea,summary,a,video,#dock,#storyBar,#more,footer'))return;
+  if(e.target?.closest?.('button,input,select,textarea,summary,a,video,#dock,#storyBar,#more,#menuOverlay,#menuToggle,footer'))return;
   touchPoster(e);
 });
 
@@ -1945,7 +1967,7 @@ $('copyCode').addEventListener('click',()=>{const code=buildCode(),done='코드�
 // ================= 모바일 스토리형 배치 =================
 // 같은 조작 요소를 화면 폭에 따라 옮겨 씀 (PC: 단계 카드 / 모바일: 레일·시트·아래 막대)
 const mq=matchMedia('(max-width:859px)');
-const MOVES=[[pc,'posterSlot'],[$('shakeCoach'),'storyStage'],[tilesBox,'railTiles'],[$('fPreset'),'sbMotion'],[$('saveBox'),'storyBar']];
+const MOVES=[[pc,'posterSlot'],[$('shakeCoach'),'storyStage'],[tilesBox,'railTiles'],[$('fPreset'),'sbMotion'],[$('saveBox'),'storyBar'],[$('more'),'menuCustomizeSlot']];
 MOVES.forEach(([el])=>{const ph=document.createComment('home');el.before(ph);el._home=ph;});
 let curSheet=null;
 // 펼침 창은 아래 메뉴 영역 안에서 열림. 같은 버튼이나 포스터를 다시 누르면 닫힘
@@ -1966,11 +1988,32 @@ let guideGone=false;
 function hideGuide(){guideGone=true;const guide=$('guide');guide.classList.add('gone');guide.setAttribute('aria-hidden','true');}
 // 모바일 첫 안내는 포스터를 처음 터치할 때까지 유지. 첫 터치도 바로 작품에 반영.
 
+// 모바일 기본 조작은 오른쪽 아래 버튼으로 여닫는 오버레이.
+let menuOpen=false;
+function updateMenuToggle(){const button=$('menuToggle');button.setAttribute('aria-expanded',String(menuOpen));button.setAttribute('aria-label',tr(menuOpen?'메뉴 닫기':'메뉴 열기'));
+  button.innerHTML=menuOpen?'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>':'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+}
+function setMenuOpen(open){menuOpen=!!open;document.body.classList.toggle('menu-open',menuOpen);updateMenuToggle();
+  if(!menuOpen){if($('more').open){$('more').open=false;syncCustomizePanel();}closeMSheet();closeImageChoices();closeSheet();}
+}
+$('menuToggle').addEventListener('click',()=>setMenuOpen(!menuOpen));
+addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen&&!customPanelOpen){e.preventDefault();setMenuOpen(false);$('menuToggle').focus({preventScroll:true});}});
+function alignLanguageToggle(){const button=$('langBtn');if(!button)return;let center;
+  if(document.body.classList.contains('is-story')){
+    const r=pc.getBoundingClientRect(),size=r.width*.0675,baseline=r.top+r.width*.07*1.2+size*.82;
+    px.save();px.font=fontStr(S.ft,'t',size);const metric=px.measureText(S.title||'Mindful Day');px.restore();
+    const ascent=metric.actualBoundingBoxAscent??size*.75,descent=metric.actualBoundingBoxDescent??size*.2;
+    center=baseline+(descent-ascent)/2;
+  }else{const r=document.querySelector('.brand').getBoundingClientRect();center=r.top+r.height/2;}
+  button.style.top=Math.max(10,center-button.offsetHeight/2)+'px';
+}
+addEventListener('scroll',alignLanguageToggle,{passive:true});
+
 // 모바일 Customize는 하단 절반의 독립 스크롤 패널.
 let customPanelOpen=false;
 function syncCustomizePanel(){const open=mq.matches&&$('more').open;if(open===customPanelOpen)return;
   customPanelOpen=open;
-  if(open){closeMSheet();closeImageChoices();closeSheet();}
+  if(open){setMenuOpen(true);closeMSheet();closeImageChoices();closeSheet();}
   document.body.classList.toggle('customizing',open);window.scrollTo(0,0);resize();drawPoster();drawMobileBackdrop();
   if(open)$('customizeClose').focus({preventScroll:true});
   else $('more').querySelector('summary').focus({preventScroll:true});
@@ -2082,7 +2125,7 @@ $('shakeClose').addEventListener('click',dismissShakeCoach);
 document.addEventListener('visibilitychange',()=>{shake.peak=null;shake.gravity=null;shake.inputAt=null;if(document.hidden){shake.activeUntil=0;placements.forEach(pl=>{if(pl.shakeMotion){pl.shakeMotion=null;pl.tx=pl.x;pl.ty=pl.y;}});clearTimeout(shake.offerTimer);$('shakeCoach').hidden=true;}});
 
 // ================= 시작 =================
-relocate();
+relocate();updateMenuToggle();
 updateColorUI();renderPresets();renderGround();refreshTiles();setV('idle');updateFormats();soundUI();
 captureLanguageNodes();
 $('langBtn').addEventListener('click',()=>setLanguage(lang==='ko'?'en':'ko'));
