@@ -1458,7 +1458,7 @@ function sceneFeatures(idx){
     const x=clamp(pl.tx??pl.x??.5),y=clamp(pl.ty??pl.y??.5),edge=clamp(1-Math.min(x,1-x,y,1-y)/.28);
     const hueColor=rgb2hsl(colors[1])[1]>.08?colors[1]:colors[3];
     const hue=rgb2hsl(hueColor)[0];
-    return{idx:tileIndex,light,sat,contrast,scale,size,x,y,edge,hue,family:colorFamily(hueColor),radius:layers[0].r*size,weight:Math.sqrt(size)};
+    return{idx:tileIndex,light,sat,contrast,internalContrast:clamp(internal),backgroundContrast:clamp(backdrop),scale,size,x,y,edge,hue,family:colorFamily(hueColor),radius:layers[0].r*size,weight:Math.sqrt(size)};
   });
   if(!objects.length)return null;
   const target=objects.find(o=>o.idx===idx)||objects[0],weight=objects.reduce((v,o)=>v+o.weight,0);
@@ -1622,17 +1622,6 @@ function showPrimaryMood(){
   if(feel)prevFeel={text:feel.text,t0:performance.now()};
   feel={text:word,idx:chosen[0]??0,t0:performance.now()};
   feelingHistory.push(word);if(feelingHistory.length>8)feelingHistory.shift();
-}
-function feelingFor(idx){
-  const weights=feelingWeights(idx),entries=[];
-  for(const [word,weight] of weights){
-    if(word===feel?.text)continue;
-    const age=feelingHistory.lastIndexOf(word),recent=age<0?1:.12+.5*(feelingHistory.length-1-age)/8;
-    entries.push([word,weight*recent]);
-  }
-  let roll=Math.random()*entries.reduce((v,e)=>v+e[1],0);
-  for(const [word,weight] of entries){roll-=weight;if(roll<=0)return word;}
-  return entries.at(-1)?.[0]||'calm';
 }
 function showFeeling(idx){if(idx==null||!chosen.includes(idx))return;clearTimeout(feelingTimer);
   if(feel)prevFeel={text:feel.text,t0:performance.now()};
