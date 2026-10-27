@@ -357,7 +357,7 @@ const MOODS=[
       {
         "id": "sadness.red",
         "color": "sky-blue",
-        "tag": "heartsore",
+        "tag": "longing",
         "name": "차가운 하늘색",
         "en": "Cold sky blue",
         "variants": [
@@ -369,7 +369,7 @@ const MOODS=[
               "#8cb9d8",
               "#c3e8f5"
             ],
-            "word": "heartsore"
+            "word": "longing"
           },
           {
             "id": "soft",
@@ -418,7 +418,7 @@ const MOODS=[
               "#e9cac3",
               "#fff5e5"
             ],
-            "word": "wistful"
+            "word": "nostalgic"
           },
           {
             "id": "bold",
@@ -435,7 +435,7 @@ const MOODS=[
       {
         "id": "sadness.blue",
         "color": "deep-green-red",
-        "tag": "melancholic",
+        "tag": "heartbroken",
         "name": "딥그린 · 선명한 빨강 핵",
         "en": "Deep green · vivid red core",
         "variants": [
@@ -447,7 +447,7 @@ const MOODS=[
               "#bd202e",
               "#ff253b"
             ],
-            "word": "melancholic"
+            "word": "heartbroken"
           },
           {
             "id": "soft",
@@ -513,7 +513,7 @@ const MOODS=[
       {
         "id": "sadness.purple",
         "color": "orange-red-white",
-        "tag": "wistful",
+        "tag": "nostalgic",
         "name": "주황 · 은은한 빨강 · 흰 핵",
         "en": "Orange · subtle red · white core",
         "variants": [
@@ -525,7 +525,7 @@ const MOODS=[
               "#cf6658",
               "#ffffff"
             ],
-            "word": "wistful"
+            "word": "nostalgic"
           },
           {
             "id": "soft",
@@ -553,7 +553,7 @@ const MOODS=[
     "combinations": {
       "0": {
         "base": "aching",
-        "soft": "wistful",
+        "soft": "nostalgic",
         "bold": "aching"
       },
       "1": {
@@ -563,7 +563,7 @@ const MOODS=[
       },
       "2": {
         "base": "forlorn",
-        "soft": "melancholic",
+        "soft": "heartbroken",
         "bold": "forlorn"
       },
       "3": {
@@ -573,11 +573,11 @@ const MOODS=[
       },
       "4": {
         "base": "homesick",
-        "soft": "wistful",
+        "soft": "nostalgic",
         "bold": "aching"
       },
       "0+1": {
-        "base": "heartsore",
+        "base": "longing",
         "soft": "poignant",
         "bold": "anguished"
       },
@@ -588,7 +588,7 @@ const MOODS=[
       },
       "0+3": {
         "base": "forlorn",
-        "soft": "heartsore",
+        "soft": "longing",
         "bold": "forlorn"
       },
       "0+4": {
@@ -598,7 +598,7 @@ const MOODS=[
       },
       "1+2": {
         "base": "heavy-hearted",
-        "soft": "melancholic",
+        "soft": "heartbroken",
         "bold": "heavy-hearted"
       },
       "1+3": {
@@ -618,7 +618,7 @@ const MOODS=[
       },
       "2+4": {
         "base": "longing",
-        "soft": "wistful",
+        "soft": "nostalgic",
         "bold": "longing"
       },
       "3+4": {
@@ -628,7 +628,7 @@ const MOODS=[
       },
       "0+1+2": {
         "base": "heavy-hearted",
-        "soft": "melancholic",
+        "soft": "heartbroken",
         "bold": "heavy-hearted"
       },
       "0+1+3": {
@@ -638,7 +638,7 @@ const MOODS=[
       },
       "0+1+4": {
         "base": "homesick",
-        "soft": "heartsore",
+        "soft": "longing",
         "bold": "aching"
       },
       "0+2+3": {
@@ -647,7 +647,7 @@ const MOODS=[
         "bold": "bereft"
       },
       "0+2+4": {
-        "base": "heartsore",
+        "base": "longing",
         "soft": "longing",
         "bold": "anguished"
       },
@@ -663,7 +663,7 @@ const MOODS=[
       },
       "1+2+4": {
         "base": "heavy-hearted",
-        "soft": "melancholic",
+        "soft": "heartbroken",
         "bold": "heavy-hearted"
       },
       "1+3+4": {
