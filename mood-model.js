@@ -657,9 +657,9 @@ const MOODS=[
         "bold": "forlorn"
       },
       "1+2+3": {
-        "base": "desolate",
-        "soft": "lonely",
-        "bold": "desolate"
+        "base": "aching",
+        "soft": "aching",
+        "bold": "desperate"
       },
       "1+2+4": {
         "base": "heavy-hearted",
@@ -1691,7 +1691,7 @@ const MOODS=[
     }
   }
 ];
-const EXTRA_KO={sad:'슬픈',angry:'화가 난',afraid:'두려운',irritated:'짜증나는',frustrated:'답답한',resentful:'억울한',bitter:'씁쓸한',indignant:'불공평한',seething:'속이 끓는',furious:'몹시 화가 난',threatened:'위협받는',alarmed:'깜짝 놀라 긴장한',panicked:'겁에 질린',confused:'혼란스러운',defensive:'방어적인',anxious:'불안한'};
+const EXTRA_KO={desperate:'절망적인',sad:'슬픈',angry:'화가 난',afraid:'두려운',irritated:'짜증나는',frustrated:'답답한',resentful:'억울한',bitter:'씁쓸한',indignant:'불공평한',seething:'속이 끓는',furious:'몹시 화가 난',threatened:'위협받는',alarmed:'깜짝 놀라 긴장한',panicked:'겁에 질린',confused:'혼란스러운',defensive:'방어적인',anxious:'불안한'};
 const ROLE_WORDS={warmPair:{base:'cherished',soft:'embraced',bold:'trusting'},greenTrio:{base:'refreshed',soft:'hopeful',bold:'renewed'}};
 const SOOTHING=new Set(['serene','calm','peaceful','comforted','soothed','safe','reassured','reassuring','tranquil','placid','at ease','relaxed','unhurried','hushed','held','gentle','mellow','meditative','contemplative','introspective']);
 // User-approved controls are part of each authored palette's starting point.
