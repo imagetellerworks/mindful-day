@@ -1513,115 +1513,41 @@ function baseFeelingWeights(idx){
   }
   return weights;
 }
-// ── 유한 감정 어휘 체계: 기존 FEELINGS + FEEL_CONTEXT 255개만 사용 ──
-// 팔레트/형태/움직임 생성은 그대로 보존하고 단어 선택에만 색조·대비·배경·조합을 반영.
-// 주 감정(색 바꾸기) → 개별 orb 특성 → 2/3개 상호작용 → 배경과 대비에 따른 언어적 보정.
-const PRIMARY_MOOD_WORD={vivid:'lively',deep:'intense',calm:'serene',mixed:'ambivalent',soft:'tender',dusk:'reflective'};
-const BACKGROUND_ORDER={white:0,ivory:1,dark:2};
-// 모든 후보 어휘는 FEEL_KO에 이미 포함된 영문 형용사/감정 표현이다.
-const MOOD_LEXICON={
-  clear:[['clear','lucid','fresh'],['mellow','reassured','gentle'],['hushed','weightless','meditative']],
-  warm:[['tender','gentle','reassuring'],['comforted','cherished','safe'],['consoled','cocooned','held']],
-  lively:[['radiant','cheerful','buoyant'],['hopeful','glad','fond'],['sparkling','intense','inspired']],
-  still:[['serene','tranquil','balanced'],['settled','relaxed','unhurried'],['hushed','meditative','introspective']],
-  dreamy:[['dreamy','weightless','ethereal'],['hazy','tender','languid'],['spellbound','entranced','suspended']],
-  deep:[['composed','reflective','grounded'],['nostalgic','poignant','pensive'],['introspective','brooding','mysterious']],
-  wistful:[['reflective','wistful','poignant'],['nostalgic','bittersweet','reminiscent'],['lonely','melancholic','forlorn']],
-  tension:[['uncertain','charged','guarded'],['ambivalent','aching','conflicted'],['unsettled','turbulent','apprehensive']],
-  comfort:[['reassured','soothed','gentle'],['comforted','cherished','embraced'],['consoled','held','hushed']],
-  uplift:[['refreshed','renewed','uplifted'],['hopeful','glad','reassured'],['inspired','awakened','sparkling']],
-  glow:[['radiant','delighted','joyful'],['hopeful','fond','appreciative'],['enchanted','inspired','entranced']],
-  introspect:[['pensive','contemplative','collected'],['reminiscent','nostalgic','poignant'],['introspective','solemn','brooding']],
-  suspended:[['weightless','serene','ethereal'],['languid','tender','hazy'],['suspended','spellbound','entranced']],
-  ambivalence:[['hesitant','uncertain','tentative'],['bittersweet','conflicted','ambivalent'],['torn','troubled','disquieted']]
-};
-function orbMoodTraits(o,motion){
-  const warm={red:1,pink:.85,yellow:.9,green:.25,blue:.04,purple:.22}[o.family]??.3;
-  const cool=1-warm,ic=o.internalContrast,bc=o.backgroundContrast;
-  const soft=clamp(.46*(1-ic)+.3*(1-o.sat)+.24*o.light);
-  return{
-    clear:clamp(.49*o.light+.28*bc+.23*(1-ic)),
-    warm:clamp(.64*warm+.36*soft),
-    lively:clamp(.53*o.sat+.31*ic+.16*motion),
-    still:clamp(.42*(1-motion)+.3*(1-o.sat)+.28*(1-ic)),
-    dreamy:clamp((o.family==='purple'?.55:o.family==='blue'?.2:.06)+.28*soft+.15*(1-motion)),
-    deep:clamp(.57*(1-o.light)+.25*ic+.18*(1-bc)),
-    wistful:clamp(.38*(1-o.sat)+.23*(1-o.light)+.2*warm+.19*(1-motion)),
-    tension:clamp(.38*ic+.33*o.sat+.29*motion)
-  };
-}
-function moodWordScores(idx){
-  const scene=sceneFeatures(idx),scores=new Map();if(!scene)return scores;
-  const bg=BACKGROUND_ORDER[S.ground]??0, motion=clamp(S.speed*S.drift/3);
-  const traits=scene.objects.map(o=>orbMoodTraits(o,motion));
-  const n=traits.length, mean=k=>traits.reduce((a,t)=>a+t[k],0)/n;
-  const pair=(a,b)=>{
-    if(n<2)return 0;let sum=0,div=0;
-    for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){
-      sum+=Math.max(traits[i][a]*traits[j][b],traits[j][a]*traits[i][b]);div++;
-    }
-    return clamp(sum/Math.max(1,div));
-  };
-  const triple=(a,b,c)=>{
-    if(n!==3)return 0;let best=0;
-    for(let i=0;i<3;i++)for(let j=0;j<3;j++)for(let k=0;k<3;k++)
-      if(i!==j&&i!==k&&j!==k)best=Math.max(best,traits[i][a]*traits[j][b]*traits[k][c]);
-    return clamp(best);
-  };
-  const put=(id,raw,strength=1)=>{
-    const words=MOOD_LEXICON[id]?.[bg];if(!words)return;
-    const score=Math.pow(clamp(raw),2.25)*strength;
-    words.forEach((word,i)=>scores.set(word,(scores.get(word)||0)+score*[.52,.3,.18][i]));
-  };
-  // 한 개의 빛망울은 개별 색채가 우선. 두 개부터 관계와 상호작용이 더 강해진다.
-  for(const key of ['clear','warm','lively','still','dreamy','deep','wistful','tension'])put(key,mean(key),n===1?.8:.16);
-  if(n>=2){
-    // 색의 조화/충돌은 대비 자체가 아니라 색상차·명도차·겹침의 관계에서 발생한다.
-    const contrast=clamp(.46*scene.hueGap+.36*scene.lightGap+.18*scene.hierarchy);
-    const cohesion=clamp(1-.58*scene.hueGap-.3*scene.lightGap+.18*scene.overlap);
-    put('comfort',pair('warm','still')*.75+pair('warm','clear')*.25,.95*cohesion);
-    put('uplift',pair('clear','lively'),1.05);
-    put('suspended',pair('dreamy','still'),.9);
-    put('introspect',pair('deep','still')*.7+pair('deep','wistful')*.3,.95);
-    put('ambivalence',pair('warm','deep')*.35+pair('tension','wistful')*.65,.85*(.5+.5*contrast));
-    put('tension',pair('tension','deep')*.6+pair('tension','lively')*.4,.8*(.4+.6*contrast));
-    put('glow',pair('warm','lively')*.5+pair('clear','warm')*.5,.48);
-    // 3개의 오브가 만들어내는 새로운 성격: 2개 조합의 이름을 그대로 반복하지 않는다.
-    if(n===3){
-      put('glow',triple('clear','warm','lively'),1.55);
-      put('comfort',triple('clear','warm','still'),1.35);
-      put('suspended',triple('dreamy','still','clear'),1.25);
-      put('introspect',triple('deep','still','wistful'),1.35);
-      put('uplift',triple('clear','lively','still'),1.2);
-      put('ambivalence',triple('tension','warm','deep'),1.45);
-    }
-    // 배경색은 강도와 해석의 방향을 보정하며 실제 RGB나 레이어를 변형하지 않는다.
-    if(S.ground==='ivory')put('comfort',mean('warm')*.45+mean('still')*.2,.25);
-    if(S.ground==='dark')put('introspect',mean('deep')*.48+mean('dreamy')*.2,.3);
-    if(S.ground==='white')put('clear',mean('clear')*.6,.24);
-  }
-  // 기존 장면 분석값(움직임/배치/크기/대비)을 남겨 같은 조합에서도 표현이 변할 수 있도록 한다.
-  const existing=baseFeelingWeights(idx),influence=n===1?.36:n===2?.12:.07;
-  for(const [word,weight] of existing)scores.set(word,(scores.get(word)||0)+weight*influence);
-  return scores;
+// 12개 주 감정에 종속된 유한 사전: 개별 빛망울, 2개, 3개, 배경, 콘트라스트.
+const MOOD_CHILDREN={"joyful":{"orb":["cheerful","sunny","delighted","playful","eager","buoyant"],"pair":["gleeful","sparkling","amused","enthusiastic"],"trio":["radiant","effervescent","jubilant","joyful"],"bg":["cheerful","fond","enchanted"],"soft":["glad","pleased","content"],"strong":["exuberant","jubilant","elated"]},"hopeful":{"orb":["hopeful","renewed","growing","receptive","curious","fresh"],"pair":["refreshed","awakened","upward-looking","replenished"],"trio":["optimistic","invigorated","bright-eyed","renewed"],"bg":["fresh","appreciative","expectant"],"soft":["reassured","relieved","optimistic"],"strong":["eager","inspired","uplifted"]},"passionate":{"orb":["ardent","fiery","intense","devoted","fervent","driven"],"pair":["impassioned","fierce","longing","devoted"],"trio":["passionate","burning","consumed","fervent"],"bg":["spirited","ardent","smoldering"],"soft":["sincere","yearning","impassioned"],"strong":["fierce","burning","consumed"]},"serene":{"orb":["clear","tranquil","still","balanced","collected","meditative"],"pair":["harmonious","attentive","unruffled","settled"],"trio":["restored","whole","centered","untroubled"],"bg":["clear","at ease","hushed"],"soft":["gentle","unhurried","placid"],"strong":["composed","lucid","focused"]},"comforted":{"orb":["warm","tender","safe","loving","embraced","soothed"],"pair":["comforted","cherished","trusting","embraced"],"trio":["nurtured","replenished","whole","grateful"],"bg":["reassured","comforted","held"],"soft":["gentle","soft","reassured"],"strong":["sincere","caring","cherished"]},"dreamy":{"orb":["dreamy","hazy","floating","ethereal","enchanted","imaginative"],"pair":["ethereal","enchanted","weightless","suspended"],"trio":["spellbound","entranced","wonderstruck","visionary"],"bg":["weightless","hazy","mysterious"],"soft":["drowsy","languid","suspended"],"strong":["entranced","awestruck","fascinated"]},"wistful":{"orb":["nostalgic","wistful","sentimental","longing","reflective","bittersweet"],"pair":["sentimental","poignant","wistful","reminiscent"],"trio":["bittersweet","heartsore","longing","deeply moved"],"bg":["reflective","nostalgic","longing"],"soft":["reminiscent","touched","mellow"],"strong":["poignant","aching","homesick"]},"melancholic":{"orb":["pensive","lonely","withdrawn","wistful","solemn","brooding"],"pair":["melancholic","lonely","reflective","withdrawn"],"trio":["desolate","forlorn","heavy-hearted","brooding"],"bg":["quiet","wistful","forlorn"],"soft":["quiet","contemplative","hushed"],"strong":["desolate","forlorn","heavy-hearted"]},"distant":{"orb":["detached","distant","reserved","remote","guarded","self-contained"],"pair":["independent","detached","reserved","remote"],"trio":["isolated","self-reliant","withdrawn","guarded"],"bg":["unbound","withdrawn","isolated"],"soft":["measured","withdrawn","quiet"],"strong":["isolated","exposed","watchful"]},"restless":{"orb":["uneasy","restless","watchful","uncertain","agitated","apprehensive"],"pair":["uneasy","charged","torn","watchful"],"trio":["restless","turbulent","overwhelmed","disquieted"],"bg":["watchful","apprehensive","troubled"],"soft":["hesitant","guarded","uncertain"],"strong":["unsettled","agitated","disquieted"]},"conflicted":{"orb":["ambivalent","torn","conflicted","uncertain","troubled","guarded"],"pair":["ambivalent","torn","divided","conflicted"],"trio":["troubled","turbulent","overwhelmed","disquieted"],"bg":["uncertain","bittersweet","troubled"],"soft":["hesitant","uncertain","tentative"],"strong":["charged","agitated","disquieted"]},"overwhelmed":{"orb":["intense","consumed","anguished","burdened","wounded","fierce"],"pair":["consumed","charged","weighed down","anguished"],"trio":["overwhelmed","turbulent","on edge","consumed"],"bg":["exposed","wounded","on edge"],"soft":["vulnerable","aching","troubled"],"strong":["overwhelmed","turbulent","agitated"]}};
+const BG_SLOT={white:0,ivory:1,dark:2};
+function moodSceneScores(idx){
+ const scene=sceneFeatures(idx),m=MOODS[moodIdx],words=MOOD_CHILDREN[m.id],scores=new Map();if(!scene)return scores;
+ const n=scene.objects.length,motion=clamp(S.speed*S.drift/3);
+ const avg=k=>scene.objects.reduce((sum,o)=>sum+o[k],0)/n;
+ const contrast=clamp(.36*clamp(avg('internalContrast')*1.7)+.29*clamp(avg('backgroundContrast')*1.5)+.22*scene.hueGap+.13*scene.lightGap);
+ const intensity=clamp(.64*contrast+.36*clamp(.6*avg('sat')+.25*contrast+.15*motion));
+ const harmony=clamp(1-scene.hueGap*.7-scene.lightGap*.35);
+ const add=(word,v)=>{if(v>0&&FEEL_KO[word])scores.set(word,(scores.get(word)||0)+v)};
+ const addGroup=(list,v)=>list.forEach((word,i)=>add(word,v*(1+(i%3)*.07)));
+ const bg=BG_SLOT[S.ground]??0;
+ if(n===1){add(words.orb[scene.target.idx],1.7);addGroup(words.soft,1-intensity);addGroup(words.strong,intensity);add(words.bg[bg],.48);}
+ else{
+  chosen.forEach(i=>add(words.orb[i],.10));
+  const p=[clamp(harmony*(.5+.5*scene.near)),clamp(.44*scene.hueGap+.36*scene.lightGap+.2*intensity),clamp(1-scene.near),clamp(.58*scene.overlap+.42*scene.balance)];
+  words.pair.forEach((w,i)=>add(w,(n===2?1.25:.29)*(.22+.78*p[i])));
+  if(n===3){const t=[clamp(harmony*(.45+.55*scene.balance)),clamp(.6*intensity+.4*scene.hueGap),clamp(1-scene.near*.45+.3*scene.hierarchy),clamp(.55*scene.overlap+.45*(1-contrast))];words.trio.forEach((w,i)=>add(w,2*(.22+.78*t[i])));}
+  addGroup(intensity>.58?words.strong:words.soft,.19);add(words.bg[bg],.48);
+ }
+ return scores; // 선택된 주 감정의 어휘 밖에서는 후보를 생성하지 않음
 }
 function feelingFor(idx){
-  const weights=moodWordScores(idx),entries=[];
-  const recentCount=feelingHistory.length;
-  for(const [word,weight] of weights){
-    if(word===feel?.text||!FEEL_KO[word])continue;
-    const last=feelingHistory.lastIndexOf(word),recent=last<0?1:.13+.53*(recentCount-1-last)/8;
-    entries.push([word,weight*clamp(recent,.13,1)]);
-  }
-  let roll=Math.random()*entries.reduce((sum,e)=>sum+e[1],0);
-  for(const [word,weight] of entries){roll-=weight;if(roll<=0)return word;}
-  return entries.at(-1)?.[0]||PRIMARY_MOOD_WORD[MOODS[moodIdx].id]||'calm';
+ const entries=[];for(const [word,w] of moodSceneScores(idx)){
+   if(word===feel?.text)continue;const age=feelingHistory.lastIndexOf(word),recent=age<0?1:.18+.38*(feelingHistory.length-1-age)/8;
+   entries.push([word,w*recent]);
+ }
+ let roll=Math.random()*entries.reduce((sum,e)=>sum+e[1],0);
+ for(const [word,w] of entries){roll-=w;if(roll<=0)return word;}
+ return entries.at(-1)?.[0]||MOODS[moodIdx].word;
 }
 function showPrimaryMood(){
-  const word=PRIMARY_MOOD_WORD[MOODS[moodIdx].id]||'serene';
-  if(feel)prevFeel={text:feel.text,t0:performance.now()};
-  feel={text:word,idx:chosen[0]??0,t0:performance.now()};
-  feelingHistory.push(word);if(feelingHistory.length>8)feelingHistory.shift();
+ const word=MOODS[moodIdx].word;if(feel)prevFeel={text:feel.text,t0:performance.now()};
+ feel={text:word,idx:chosen[0]??0,t0:performance.now()};feelingHistory.push(word);if(feelingHistory.length>8)feelingHistory.shift();
 }
 function showFeeling(idx){if(idx==null||!chosen.includes(idx))return;clearTimeout(feelingTimer);
   if(feel)prevFeel={text:feel.text,t0:performance.now()};
@@ -1633,7 +1559,7 @@ function queueFeelingUpdate(){clearTimeout(feelingTimer);if(!feel)return;
   feelingTimer=setTimeout(()=>{if(feel)showFeeling(chosen.includes(feel.idx)?feel.idx:chosen[0]);},160);
 }
 // 형용사는 다음 터치나 사용자 설정 변경 전까지 남아 있음 (이미지·영상·코드 저장에도 그대로). 새 단어가 나오면 이전 단어는 0.4초에 걸쳐 사라짐
-function feelingInk(){return MOODS[moodIdx].id==='calm'&&!groundColors().dark?'#333333':'#ffffff';}
+function feelingInk(){return groundColors().dark?'#ffffff':(['serene','comforted','dreamy','hopeful','distant'].includes(MOODS[moodIdx].id)?'#333333':'#ffffff');}
 function feelGlyph(ctx,W,H,text,alpha,sc){let sz=W*.15;const ff=z=>`italic 500 ${z}px "Cormorant Garamond","Noto Serif KR",Georgia,serif`;ctx.font=ff(sz);
   const tw=ctx.measureText(text).width;if(tw>W*.84){sz*=W*.84/tw;ctx.font=ff(sz);}
   ctx.save();ctx.globalAlpha=.7*clamp(alpha);ctx.fillStyle=feelingInk();ctx.textAlign='center';ctx.textBaseline='middle';
@@ -1641,6 +1567,10 @@ function feelGlyph(ctx,W,H,text,alpha,sc){let sz=W*.15;const ff=z=>`italic 500 $
   const ko=lang==='ko'?FEEL_KO[text]:'';if(ko){const ksz=document.body.classList.contains('wide-scene')?W*.035:W*10.7/Math.max(1,pc.clientWidth||W);ctx.font=`400 ${ksz}px "Pretendard","Noto Sans KR",sans-serif`;ctx.fillText(ko,0,sz*.55+ksz*.9);}
   ctx.restore();}
 function drawFeeling(ctx,W,H){const now=performance.now();
+ if(feel&&feel.text!==MOODS[moodIdx].word){ctx.save();ctx.fillStyle=feelingInk();ctx.globalAlpha=.75;ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.font='500 '+Math.max(11,W*.035)+'px "Pretendard","Noto Sans KR",sans-serif';
+ ctx.fillText(L(MOODS[moodIdx].name,MOODS[moodIdx].en),W/2,H/2-W*.19);ctx.restore();}
+
   if(prevFeel){const e=(now-prevFeel.t0)/1000;if(e>.4)prevFeel=null;else feelGlyph(ctx,W,H,prevFeel.text,1-e/.4,1);}
   if(!feel)return;const e=(now-feel.t0)/1000;feelGlyph(ctx,W,H,feel.text,Math.min(1,e/.5),.94+.06*Math.min(1,e/1.2));}
 if(document.fonts)document.fonts.load('italic 500 40px "Cormorant Garamond"','passionate').catch(()=>{});
@@ -1740,24 +1670,25 @@ const $=id=>document.getElementById(id);
 
 
 
-// 색: 누를 때마다 6개 빛망울 전체가 새 배색 세트로. 선명 → 아주 깊은 → 차분 → 섞인 → 부드러운 → 깊고 차분 순서로 돌아감
-const MOODS=[{id:'vivid',name:'생동감 있는',t:null},{id:'deep',name:'강렬한',t:{s:1.12,l:-.17,c:1.35}},// 차분한 색: 바깥은 밝고 옅게(저대비·저채도·고명도), 중심만 채도 높게 남겨 회색이 되지 않게
-  {id:'calm',name:'평온한',t:CALM},
-  {id:'mixed',name:'복합적인',t:'mix'},{id:'soft',name:'다정한',t:{s:.72,l:.1,c:.75}},{id:'dusk',name:'사색적인',t:{s:.65,l:-.12,c:1.1}}];
-const MIX=['deep','calm','vivid','dusk','deep','calm'];
-let moodIdx=2;
-const toneOf=id=>MOODS.find(m=>m.id===id).t;
-const MODES=['analog','comp','triad','mono'];
+// 기존 genPalette · toneOK · hueSet 색 생성 공식은 변경하지 않는다. 감정과 일치하는 기존 색 계열만 묶는다.
+const MOODS=[{"id":"joyful","name":"기쁜","en":"Joyful","word":"joyful","tone":"vivid","h":[37,52,17,330,68,22],"m":["analog","mono","analog","analog","analog","mono"]},{"id":"hopeful","name":"희망찬","en":"Hopeful","word":"hopeful","tone":"soft","h":[78,105,125,155,174,61],"m":["analog","analog","mono","analog","analog","analog"]},{"id":"passionate","name":"열정적인","en":"Passionate","word":"passionate","tone":"deep","h":[347,356,7,321,340,314],"m":["analog","mono","analog","analog","mono","analog"]},{"id":"serene","name":"평온한","en":"Serene","word":"serene","tone":"calm","h":[166,180,198,212,156,224],"m":["analog","mono","analog","mono","analog","analog"]},{"id":"comforted","name":"위로받은","en":"Comforted","word":"comforted","tone":"soft","h":[8,16,27,330,348,42],"m":["analog","analog","mono","analog","mono","analog"]},{"id":"dreamy","name":"꿈꾸는 듯한","en":"Dreamy","word":"dreamy","tone":"calm","h":[242,258,272,288,222,300],"m":["analog","mono","analog","analog","mono","analog"]},{"id":"wistful","name":"아련한","en":"Wistful","word":"wistful","tone":"dusk","h":[24,32,12,342,50,18],"m":["analog","mono","analog","analog","mono","analog"]},{"id":"melancholic","name":"서글픈","en":"Melancholic","word":"melancholic","tone":"dusk","h":[192,207,225,240,250,265],"m":["mono","analog","analog","mono","analog","analog"]},{"id":"distant","name":"거리감 있는","en":"Distant","word":"distant","tone":"calm","h":[195,219,229,185,245,205],"m":["mono","analog","mono","analog","mono","analog"]},{"id":"restless","name":"뒤숭숭한","en":"Restless","word":"restless","tone":"mixed","h":[60,85,325,270,345,28],"m":["comp","triad","comp","comp","triad","comp"]},{"id":"conflicted","name":"갈등하는","en":"Conflicted","word":"conflicted","tone":"mixed","h":[12,190,348,165,260,24],"m":["comp","comp","triad","comp","triad","comp"]},{"id":"overwhelmed","name":"압도된","en":"Overwhelmed","word":"overwhelmed","tone":"deep","h":[308,335,245,352,271,9],"m":["comp","triad","comp","comp","triad","comp"]}];
+const MOOD_TONES={vivid:null,deep:{s:1.12,l:-.17,c:1.35},calm:CALM,soft:{s:.72,l:.1,c:.75},dusk:{s:.65,l:-.12,c:1.1}};
+const MIXED_TONES=['deep','dusk','vivid','deep','vivid','dusk'];
+let moodIdx=3;const MODES=['analog','comp','triad','mono'];
 function cycleColors(){applyMood((moodIdx+1)%MOODS.length);}
-function applyMood(index){moodIdx=index;const m=MOODS[moodIdx],h0=R(0,360);KEY=KEY_BY_HUE[Math.floor(h0/30)%12];const modes=[...MODES,'analog','comp'].sort(()=>Math.random()-.5);
-  tiles.forEach((t,i)=>{t.combo={mode:modes[i],h:(h0+i*60+R(-12,12)+360)%360,tone:m.t==='mix'?toneOf(MIX[i]):m.t};retarget(t,1.2);});
-  S.combo=tiles[chosen[0]??0].combo;updateColorUI();showToast(m.name);if(typeof strum==='function')strum();showPrimaryMood();}
+function applyMood(index){
+ moodIdx=index;const m=MOODS[index];KEY=KEY_BY_HUE[Math.floor(m.h[0]/30)%12];
+ tiles.forEach((t,i)=>{const tone=m.tone==='mixed'?MIXED_TONES[i]:m.tone;
+   t.combo={mode:m.m[i],h:(m.h[i]+R(-5,5)+360)%360,tone:MOOD_TONES[tone]};retarget(t,1.2);});
+ S.combo=tiles[chosen[0]??0].combo;updateColorUI();showToast(L(m.name,m.en));
+ if(typeof strum==='function')strum();showPrimaryMood();
+}
 let toastT=0;
 function showToast(t){const el=document.getElementById('toast');if(!el)return;el.textContent=tr(t);el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),1600);}
 function updateColorUI(){if(chosen.length)S.combo=tiles[chosen[0]].combo;
   const cl=comboColors(S.combo), sw=document.getElementById('railSwatch');
   if(sw)sw.style.background=`radial-gradient(circle,${cl[3]} 0 18%,${cl[2]} 40%,${cl[1]} 62%,${cl[0]} 82%)`;
-  $('moodName').textContent=tr(MOODS[moodIdx].name);
+  $('moodName').textContent=L(MOODS[moodIdx].name,MOODS[moodIdx].en);
   $('palStrip').innerHTML=tiles.map(t=>{const c=comboColors(t.combo);return `<i style="background:radial-gradient(circle,${c[3]} 0 18%,${c[2]} 42%,${c[1]} 66%,${c[0]} 90%)"></i>`;}).join('');}
 $('colorCycle').addEventListener('click',cycleColors);
 $('colorBtn').addEventListener('click',()=>{if(curSheet)closeMSheet();cycleColors();});
