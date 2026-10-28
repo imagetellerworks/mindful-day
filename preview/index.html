@@ -333,13 +333,15 @@ body.about-open{overflow:hidden}
 .canvas-mood-choice{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:9;width:min(92%,640px);color:var(--choice-ink,#24212b);text-align:center;pointer-events:auto}
 .canvas-mood-choice .choice-question{font:400 12px/1.6 var(--f-body);margin:0 0 22px;word-break:keep-all}.canvas-mood-choice #moodChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;gap:18px}
 .canvas-mood-choice .mood-choice{display:flex;min-width:0;flex-direction:column;align-items:center;gap:7px;border:0;padding:10px 0;background:transparent;color:inherit;text-align:center;font:italic 500 clamp(26px,4.4vw,48px)/1.08 "Cormorant Garamond",Georgia,serif;cursor:pointer;text-shadow:none;-webkit-text-stroke:0}
-.canvas-mood-choice .mood-choice small{font:400 12px/1.5 var(--f-body);opacity:1;margin:0}.canvas-mood-choice .linkbtn{color:inherit;font-size:11px;font-weight:400;margin-top:22px;min-height:32px}.canvas-mood-choice .choice-status{margin:16px auto 0;max-width:300px;color:inherit;font-size:10px;opacity:.8;line-height:1.6}.canvas-mood-choice.is-chosen{top:65%}.canvas-mood-choice.is-chosen .choice-question{display:none}.research-tools{display:flex;flex-direction:column;gap:8px}.research-tools p{font-size:11px;line-height:1.6;margin:0;color:var(--ui-muted)}
+.canvas-mood-choice .mood-choice small{font:400 12px/1.5 var(--f-body);opacity:1;margin:0}.canvas-mood-choice .linkbtn{color:inherit;font-size:11px;font-weight:400;margin-top:22px;min-height:32px}.canvas-mood-choice .choice-status{margin:16px auto 0;max-width:300px;color:inherit;font-size:10px;opacity:.8;line-height:1.6}.canvas-mood-choice.is-chosen{top:65%}.canvas-mood-choice.is-orb-edit.is-chosen{top:80%}.canvas-mood-choice.is-chosen .choice-question{display:none}.research-tools{display:flex;flex-direction:column;gap:8px}.research-tools p{font-size:11px;line-height:1.6;margin:0;color:var(--ui-muted)}
 .study-mode #dock,.study-mode #menuCustomizeSlot{display:none}.study-mode .lab-badge span{display:none}
 .choice-confirmation{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 10px;margin-top:16px}.canvas-mood-choice .choice-confirmation .choice-status{margin:0}.reselect-choice{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:32px;padding:4px 0;border:0;background:transparent;color:inherit;font:400 11px/1.5 var(--f-body);cursor:pointer}.reselect-choice svg{flex:none}.reselect-choice:disabled{opacity:.45;cursor:wait}
 .choice-navigation{display:grid;grid-template-columns:26px minmax(0,1fr) 26px;gap:8px;align-items:center}.choice-arrow{display:grid;place-items:center;width:26px;min-height:48px;padding:0;border:0;background:transparent;color:inherit;cursor:pointer}.choice-arrow:disabled{opacity:.2;cursor:default}.choice-arrow svg{display:block;width:12px;height:30px}.canvas-mood-choice .mood-choice:disabled{opacity:.5;cursor:wait}
 .canvas-mood-choice.is-direction .choice-navigation{grid-template-columns:minmax(0,1fr)}.canvas-mood-choice .mood-choice.direction-choice{font:500 clamp(20px,3.4vw,30px)/1.25 var(--f-body)}.canvas-mood-choice .direction-choice small{max-width:11em;text-wrap:balance}.palette-readout{display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.5}.palette-readout p{margin:0;color:var(--ui-muted)}.palette-readout h4{margin:0;font-size:12px;font-weight:500}.palette-role{display:flex;align-items:center;gap:8px;margin-top:5px}.palette-role i{display:block;flex:none;width:18px;height:18px;border-radius:50%;border:1px solid var(--line)}.palette-role small{display:block;color:var(--ui-muted);font-size:10px}.palette-poetic{opacity:.65}
 .auto-mood-actions{position:absolute;left:50%;top:65%;transform:translate(-50%,-50%);z-index:9}.auto-mood-actions button{border:0;background:none;color:var(--choice-ink,#24212b);font:400 11px/1.6 var(--f-body);padding:8px;cursor:pointer}.new-palette-invite{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:9;width:min(86%,420px);color:var(--choice-ink,#24212b);text-align:center;pointer-events:none}.new-palette-invite p{font:400 13px/1.8 var(--f-body);margin:0;text-wrap:balance}.new-palette-invite strong{display:block;font-weight:500;margin-bottom:8px}.new-palette-invite .invite-actions{display:flex;justify-content:center;gap:22px;margin-top:18px}.new-palette-invite button{pointer-events:auto;min-height:40px;border:0;background:transparent;color:inherit;font:400 11px/1.6 var(--f-body);text-decoration:underline;text-underline-offset:4px;cursor:pointer}
 @media(max-width:360px){.is-story footer.site{gap:6px}.footer-exports{gap:4px}.lab-color-header #colorBtn .rl{font-size:10px}.lab-color-header #colorBtn .ic{width:18px;height:18px}.lab-color-header #soundBtn{width:30px}.mode-switch button{padding:8px 5px}}
+
+.poster-slot{position:relative}.orb-feeling-targets{position:absolute;inset:0;z-index:8;pointer-events:none}.orb-feeling-targets button{position:absolute;left:5%;width:90%;height:10%;transform:translateY(-50%);border:0;background:transparent;color:transparent;padding:0;cursor:pointer;pointer-events:auto}.orb-feeling-targets button:focus-visible{outline:1px solid var(--mobile-ink,#24212b);outline-offset:4px;border-radius:8px}.orb-feeling-targets button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.wide-scene .orb-feeling-targets{left:50%;right:auto;width:min(80%,480px);transform:translateX(-50%)}
 
 #slSize .ctl:not(:first-child){display:none}.mixing-mode #slSize .ctl{display:flex}
 </style>
@@ -359,7 +361,7 @@ body.about-open{overflow:hidden}
 <main class="app">
   <section class="story" id="story" aria-label="포스터 만들기">
     <div class="story-stage" id="storyStage">
-      <div class="poster-slot" id="posterSlot"></div>
+      <div class="poster-slot" id="posterSlot"><div class="orb-feeling-targets" id="orbFeelingTargets" role="group" aria-label="각 오브의 감정" hidden></div></div>
       <div class="guide" id="guide"><p><span class="guide-copy-ko">빛망울 하나에서<br>오늘의 감정과 닮은<br>표현을 찾아보세요.</span><span class="guide-copy-en" lang="en">One orb, many colors.<br>Find a feeling in the light.</span><small><span class="guide-copy-ko">터치하면 새로운 배색과 표현을 만나요.</span><span class="guide-copy-en">Touch to discover a new palette and expression.</span></small></p></div>
       <p class="toast" id="toast" aria-live="polite"></p><output class="lab-feeling-status" id="feelingStatus" aria-live="polite"></output>
       <div class="auto-mood-actions" id="autoMoodActions" hidden><button type="button" id="changeMood">감정 바꾸기</button></div>
@@ -371,7 +373,7 @@ body.about-open{overflow:hidden}
         <button type="button" class="linkbtn" id="reviewMoodPages" hidden>이전 보기 다시 살펴보기</button>
         <div class="choice-confirmation"><p class="choice-status" id="choiceStatus" role="status"></p><button type="button" class="reselect-choice" id="reselectMood" hidden><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1.7 8.5M4 4v6h6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="reselectLabel">다시 선택하기</span></button></div>
         <button type="button" class="linkbtn" id="retryResponse" hidden>응답 다시 저장하기</button>
-        <button type="button" class="linkbtn" id="resumeArtwork" hidden>다른 배색 보기</button>
+        <button type="button" class="linkbtn" id="resumeArtwork" hidden>다른 배색 보기</button><button type="button" class="linkbtn" id="closeOrbMood" hidden>닫기</button>
       </section>
     </div>
     <div class="menu-overlay" id="menuOverlay" role="region" aria-label="포스터 메뉴">
@@ -483,14 +485,14 @@ body.about-open{overflow:hidden}
 </dialog>
 
 <div class="export-layer" id="exportLayer"></div>
-<script src="single-orb-model.js"></script>
-<script src="palette-guide-data.js"></script>
-<script src="semantic-mixing-model.js"></script>
-<script src="color-name-context.js"></script>
-<script src="color-feedback-model.js"></script>
-<script src="feedback-store.js"></script>
-<script src="reviewed-palettes.js"></script>
-<script src="reviewed-palette-matcher.js"></script>
+<script src="single-orb-model.js?v=8a1b1e00f52b"></script>
+<script src="palette-guide-data.js?v=4e88c11c2f17"></script>
+<script src="semantic-mixing-model.js?v=218e73a6f5d5"></script>
+<script src="color-name-context.js?v=832ef39a2ad0"></script>
+<script src="color-feedback-model.js?v=ac8728990a69"></script>
+<script src="feedback-store.js?v=9a3ed8242f1f"></script>
+<script src="reviewed-palettes.js?v=c65eb4b1f10c"></script>
+<script src="reviewed-palette-matcher.js?v=6ecbf0a4db45"></script>
 <script>
 // ================= 언어 =================
 let lang="ko",languagePreference=null;
@@ -776,7 +778,7 @@ const CHECK='<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
 for(let i=0;i<N;i++){
   const el=document.createElement('button');el.type='button';el.className='tile';el.setAttribute('role','radio');el.setAttribute('aria-label',L(`빛망울 ${i+1}`,`Orb ${i+1}`));
   el.innerHTML=`<canvas></canvas><span class="check">${CHECK}</span>`;tilesBox.appendChild(el);
-  const cb={...TILE_COMBOS[i]}, reviewed=reviewedExploration?.next({avoid:tiles.filter(t=>t.reviewed).map(t=>reviewedExploration.identity(t.reviewed))})|| (typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher.mappings[i%ReviewedPaletteMatcher.mappings.length]:null), p=reviewed?reviewedOrbPalette(reviewed):gen(cb), t={reviewed,el,cv:el.querySelector('canvas'),combo:cb,from:p,to:p,cur:p,t0:0,dirty:true};t.ctx=t.cv.getContext('2d');tiles.push(t);
+  const cb={...TILE_COMBOS[i]}, reviewed=reviewedExploration?.next({avoid:tiles.filter(t=>t.reviewed).map(t=>reviewedExploration.identity(t.reviewed))})|| (typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher.mappings[i%ReviewedPaletteMatcher.mappings.length]:null), p=reviewed?reviewedOrbPalette(reviewed):gen(cb), t={reviewed,el,cv:el.querySelector('canvas'),combo:cb,from:p,to:p,cur:p,t0:0,dirty:true};t.ctx=t.cv.getContext('2d');if(reviewed)t.el.style.background=reviewed.scene.background;tiles.push(t);
   el.addEventListener('click',()=>toggle(i));
   el.addEventListener('keydown',e=>{
     const step=e.key==='ArrowRight'||e.key==='ArrowDown'?1:e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:0;
@@ -814,6 +816,8 @@ function setCanvasMode(mode){
   dismissNewPaletteInvite();
   S.canvasMode=mode;if(enteringSingle)S.szL=2.5;
   if(mode==='single'&&chosen.length>1){const slot=Math.max(0,chosen.indexOf(S.activeOrb)),idx=chosen[slot],pl=placements[slot];chosen=[idx];placements=[pl];pl.tj=1;pl.cs=SZ()[0];leaving=[];}
+  if(reviewedExploration&&mode==='mixing')alignReviewedCandidates(groundColors().bg);
+  if(reviewedExploration&&enteringSingle)activateReviewedPalette(tiles[chosen[0]]);
   if(enteringSingle&&placements[0]){placements[0].tj=1;placements[0].cs=S.szL;if(typeof syncSlider==='function')syncSlider('szL');}
   refreshTiles();showFeeling(chosen[0]);resize();
 }
@@ -822,8 +826,8 @@ function updateModeUI(){
   $('singleMode').textContent=L('싱글','Single');$('mixingMode').textContent=L('멀티','Multi');
   document.body.classList.toggle('mixing-mode',mixing);
 }
-function retarget(t,dur,userInitiated=true){const now=performance.now(),busy=now-t.t0<(t.dur||S.morph)*1000;t.from=t.cur;
-  const prepared=nextReviewedPalette(t,userInitiated);t.to=prepared?reviewedOrbPalette(prepared):gen(t.combo);t.reviewed=prepared;t.generated=!!reviewedExploration&&!prepared;t.exposureAt=null;
+function retarget(t,dur,userInitiated=true,preparedOverride=null){const now=performance.now(),busy=now-t.t0<(t.dur||S.morph)*1000;t.from=t.cur;
+  const prepared=preparedOverride||nextReviewedPalette(t,userInitiated);t.to=prepared?reviewedOrbPalette(prepared):gen(t.combo);t.reviewed=prepared;t.generated=!!reviewedExploration&&!prepared;t.exposureAt=null;if(t.el)t.el.style.background=prepared?.scene.background||'';
   if(chosen.includes(tiles.indexOf(t))){S.newPaletteInvited=false;activateReviewedPalette(t);}
   t.eo=busy;t.t0=now;t.dur=dur||0;t.meaningKey=null;if(chosen.includes(tiles.indexOf(t))){S.autoFeelingResult=null;dismissNewPaletteInvite();feel=null;prevFeel=null;syncFeelingStatus();}}
 function reviewedOrbPalette(row){return {trail:0,trailAng:0,layers:row.scene.orbs[0].layers.map(l=>({...l,col:[...l.col]}))};}
@@ -832,6 +836,7 @@ function nextReviewedPalette(tile,userInitiated){
   const all=explorationReferences(),avoid=tiles.filter(t=>t!==tile&&t.reviewed).map(t=>reviewedExploration.identity(t.reviewed));
   const category=S.exploreCategory;
   const row=reviewedExploration.next({avoid,background:S.canvasMode==='mixing'?groundColors().bg:undefined,category});
+  if(S.canvasMode==='mixing'&&!reviewedExploration.stats().complete&&row?.scene.background!==groundColors().bg){const same=all.filter(r=>r.scene.background===groundColors().bg);if(same.length)return pick(same);}
   if(row)return row;
   // Idle thumbnails remain curated. Only an intentional creation opens the generator.
   return !userInitiated&&all.length?all[Math.floor(Math.random()*all.length)]:null;
@@ -842,6 +847,26 @@ function activateReviewedPalette(tile){
   Object.assign(S,{hue:0,sat:1,light:0,contrast:1,soft:1});
   S.reviewedGround=tile.reviewed.scene.background;S.ground=S.reviewedGround==='#121019'?'dark':'white';S.autoFeelingCache=null;
   if(typeof renderGround==='function')renderGround();
+}
+function reviewedBinding(tile){
+  if(!tile?.reviewed||typeof ReviewedPaletteMatcher==='undefined')return null;
+  const word=ReviewedPaletteMatcher.word(tile.reviewed.wordKey);return word?{id:word.id,paletteKey:ReviewedPaletteMatcher.paletteKey(tile.reviewed.scene)}:null;
+}
+function alignReviewedCandidates(background){
+  if(!reviewedExploration||reviewedExploration.stats().complete||S.study||S.studyLoading)return;
+  const same=explorationReferences().filter(r=>r.scene.background===background);if(!same.length)return;
+  tiles.forEach((tile,i)=>{if(chosen.includes(i)||tile.reviewed?.scene.background===background)return;
+    const proposed=reviewedExploration.next({background,avoid:tiles.filter(t=>t!==tile&&t.reviewed).map(t=>reviewedExploration.identity(t.reviewed))}),row=proposed?.scene.background===background?proposed:pick(same),palette=reviewedOrbPalette(row);
+    tile.reviewed=row;tile.generated=false;tile.cur=tile.from=tile.to=palette;tile.exposureAt=null;tile.meaningKey=null;tile.dirty=true;tile.el.style.background=background;
+  });
+}
+function useReviewedGround(ground){
+  if(!reviewedExploration||reviewedExploration.stats().complete||S.study||S.studyLoading)return false;
+  const background=GROUNDS.find(g=>g[0]===ground)?.[2],same=explorationReferences().filter(r=>r.scene.background===background);if(!same.length)return false;
+  S.reviewedGround=background;S.ground=ground;
+  chosen.forEach(idx=>{const proposed=reviewedExploration.next({background,avoid:tiles.filter(t=>t!==tiles[idx]&&t.reviewed).map(t=>reviewedExploration.identity(t.reviewed))}),row=proposed?.scene.background===background?proposed:pick(same);retarget(tiles[idx],.9,true,row);});
+  if(S.canvasMode==='mixing')alignReviewedCandidates(background);
+  showFeeling(chosen[0]);updateColorUI();return true;
 }
 function recordReviewedExposure(match){
   if(!reviewedExploration)return;
@@ -961,8 +986,8 @@ function colorFamily(rgb){const [h,s]=rgb2hsl(rgb);return s<.08?'purple':h<18||h
 function matchOrb(idx){
   const t=tiles[idx];if(!t||t.cur!==t.to)return null;
   const layers=t.cur.layers.map(l=>({...l,col:tf(l.col).map(Math.round),soft:clamp(1-(1-l.soft)*S.soft,0,.95)}));
-  const background=groundColors().bg,key=JSON.stringify({layers,background,version:typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher.generation:0});
-  if(key!==t.meaningKey){t.meaning=typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher.matchOrb({layers,background}):SingleOrbMood.match({layers,background});t.meaningKey=key;}
+  const background=t.reviewed?.scene.background||groundColors().bg,binding=reviewedBinding(t),key=JSON.stringify({layers,background,binding,version:typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher.generation:0});
+  if(key!==t.meaningKey){t.meaning=typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher.matchOrb({layers,background,bindings:binding?[binding]:[]}):SingleOrbMood.match({layers,background});t.meaningKey=key;}
   return t.meaning;
 }
 function syncFeelingStatus(){
@@ -972,31 +997,60 @@ function syncFeelingStatus(){
   document.getElementById('poster').setAttribute('aria-label',(S.canvasMode==='mixing'?'Mixing · ':L('빛망울 하나 · ','One orb · '))+text);
 }
 function matchSceneFeeling(){
-  const scene=captureColorScene(false),key=JSON.stringify({referenceGeneration:typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher.generation:0,mode:scene.mode,background:scene.background,transform:scene.transform,orbs:scene.orbs.map(orb=>({...orb,position:{x:Math.round(orb.position.x*100)/100,y:Math.round(orb.position.y*100)/100},scale:Math.round(orb.scale*100)/100}))});
+  const scene=captureColorScene(false),bindings=typeof ReviewedPaletteMatcher!=='undefined'?chosen.map(i=>reviewedBinding(tiles[i])):[],key=JSON.stringify({bindings,referenceGeneration:typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher.generation:0,mode:scene.mode,background:scene.background,transform:scene.transform,orbs:scene.orbs.map(orb=>({...orb,position:{x:Math.round(orb.position.x*100)/100,y:Math.round(orb.position.y*100)/100},scale:Math.round(orb.scale*100)/100}))});
   if(S.autoFeelingCache?.key===key)return S.autoFeelingCache;
-  if(typeof ReviewedPaletteMatcher!=='undefined'){const active=tiles[chosen[0]]?.reviewed,preferred=scene.orbs.length===1&&active?{id:ReviewedPaletteMatcher.word(active.wordKey)?.id,paletteKey:ReviewedPaletteMatcher.paletteKey(active.scene)}:S.reviewedPreset;const result=ReviewedPaletteMatcher.resolve(scene,{records:typeof reviewedChoiceStore!=='undefined'&&reviewedChoiceStore?reviewedChoiceStore.list():[],preferred});return S.autoFeelingCache={key,scene,proposal:result,status:result.status,word:result.status.matched?result.word:null};}
+  if(typeof ReviewedPaletteMatcher!=='undefined'){const active=tiles[chosen[0]]?.reviewed,preferred=scene.orbs.length===1&&active?{id:ReviewedPaletteMatcher.word(active.wordKey)?.id,paletteKey:ReviewedPaletteMatcher.paletteKey(active.scene)}:S.reviewedPreset;const result=ReviewedPaletteMatcher.resolve(scene,{records:typeof reviewedChoiceStore!=='undefined'&&reviewedChoiceStore?reviewedChoiceStore.list():[],preferred,bindings});return S.autoFeelingCache={key,scene,proposal:result,status:result.status,word:result.status.matched?result.word:null};}
   const proposal=ColorFeedback.suggestPage(scene,{records:feedbackStore?feedbackStore.list():[],exploration:true}),status=ColorFeedback.coverage(proposal);
   return S.autoFeelingCache={key,scene,proposal,status,word:status.matched?proposal.candidates[0]:null};
 }
+function individualFeelingRows(scene){
+  if(typeof ReviewedPaletteMatcher==='undefined')return [];
+  const records=reviewedChoiceStore?reviewedChoiceStore.list():[];
+  return scene.orbs.map((orb,slot)=>{const idx=chosen[slot],single={...scene,mode:'single',orbs:[{...orb,slot:0}]},binding=reviewedBinding(tiles[idx]),result=ReviewedPaletteMatcher.resolve(single,{records,bindings:binding?[binding]:[]});return {idx,slot,word:result.status.matched?result.word:null};});
+}
+function feelingRowY(slot,count){return count===1?.5:(count===2?.455:.4)+slot*.11;}
+function renderOrbFeelingTargets(){
+  const box=$('orbFeelingTargets');if(!box)return;
+  const rows=S.orbFeelingRows||[],hidden=!rows.length||!S.canvasChoiceReady||S.reviewing||S.study||S.studyLoading||S.catalogLoading||menuOpen||imageBusy||['prep','making'].includes(vstate);
+  box.hidden=hidden;const key=JSON.stringify([hidden,lang,rows.map(r=>[r.idx,r.word?.id])]);if(box.dataset.key===key)return;box.dataset.key=key;box.replaceChildren();
+  if(hidden)return;box.setAttribute('aria-label',L('각 오브의 감정','Each orb’s feeling'));
+  rows.forEach((row,slot)=>{const b=document.createElement('button');b.type='button';b.style.top=(feelingRowY(slot,rows.length)*100)+'%';const name=row.word?row.word.en+(lang==='ko'?' · '+row.word.ko:''):L('이름 고르기','Choose a name');b.setAttribute('aria-label',L('오브 ','Orb ')+(slot+1)+' · '+name+L(' · 단어 바꾸기',' · Change word'));b.title=L('단어를 눌러 감정을 바꿔보세요.','Tap the word to change its feeling.');const text=document.createElement('span');text.textContent=name;b.append(text);b.addEventListener('click',()=>beginOrbMoodReview(row.idx));box.append(b);});
+}
+function drawIndividualFeelings(ctx,W,H,rows){
+  ctx.save();ctx.globalAlpha=1;ctx.textAlign='center';ctx.textBaseline='middle';const ink=feelingInk(ctx,W,H);
+  rows.forEach((row,slot)=>{const y=feelingRowY(slot,rows.length)*H,word=row.word;let size=W*.11;const text=word?.en||L('이름 고르기','Choose a name');ctx.font=`italic 500 ${size}px "Cormorant Garamond",Georgia,serif`;const tw=ctx.measureText(text).width;if(tw>W*.73){size*=W*.73/tw;ctx.font=`italic 500 ${size}px "Cormorant Garamond",Georgia,serif`;}
+    const tile=tiles[row.idx];if(tile){ctx.fillStyle=toHex(tf(tile.cur.layers[1].col));ctx.beginPath();ctx.arc(W*.085,y,W*.019,0,TAU);ctx.fill();ctx.fillStyle=toHex(tf(tile.cur.layers[3].col));ctx.beginPath();ctx.arc(W*.085,y,W*.008,0,TAU);ctx.fill();}
+    ctx.fillStyle=ink;ctx.fillText(text,W*.54,y);if(lang==='ko'&&word?.ko){ctx.font=`400 ${W*.031}px "Pretendard","Noto Sans KR",sans-serif`;ctx.fillText(word.ko,W*.54,y+size*.62+W*.022);}
+  });ctx.restore();
+}
+function beginOrbMoodReview(idx){
+  if(S.study||S.studyLoading||S.catalogLoading||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return;
+  const slot=chosen.indexOf(idx);if(slot<0)return;
+  const artworkScene=captureColorScene(),scene=ColorFeedback.canonicalScene({...artworkScene,mode:'single',orbs:[{...artworkScene.orbs[slot],slot:0}]}),model=typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher:ColorFeedback,choiceStore=typeof ReviewedPaletteMatcher!=='undefined'&&model===ReviewedPaletteMatcher?reviewedChoiceStore:feedbackStore;
+  const proposal=model.suggestPage(scene,{records:choiceStore?choiceStore.list():[],exploration:true});
+  feedbackReview={scene,artworkScene,targetIdx:idx,targetSlot:slot,feelings:JSON.parse(JSON.stringify(S.orbFeelingRows||[])),proposal,selectedWord:null,saved:false};S.reviewing=true;feel=null;prevFeel=null;dismissNewPaletteInvite();hideGuide();renderMoodChoices();syncFeelingStatus();drawPoster();drawMobileBackdrop();
+}
 function updateAutoMoodUI(){
   const unavailable=S.autoFeeling===false||S.reviewing||S.study||S.studyLoading||S.catalogLoading||!S.canvasChoiceReady||!S.autoFeelingResult;
-  $('autoMoodActions').hidden=!!unavailable||!!S.inviteVisible;
+  const catalogFlow=!!reviewedExploration&&(!reviewedExploration.stats().complete||!chosen.some(i=>tiles[i].generated));
+  $('autoMoodActions').hidden=!!unavailable||!!S.inviteVisible||catalogFlow;
   $('changeMood').textContent=S.autoFeelingResult?.status.matched?L('감정 바꾸기','Change feeling'):L('감정 붙이기','Name this feeling');
   $('autoMoodActions').style.setProperty('--choice-ink',groundColors().ink);
   $('newPaletteInvite').hidden=!S.inviteVisible||!!unavailable;
   $('newPaletteInvite').style.setProperty('--choice-ink',groundColors().ink);
   $('newPaletteTitle').textContent=L('처음 피어난 색이에요.','A new color has bloomed.');
   $('newPaletteQuestion').textContent=L('이 색에 당신만의 감정 이름을 붙여주세요.','Give this color a feeling of your own.');
-  $('nameNewPalette').textContent=L('감정 붙이기','Name this feeling');$('dismissNewPalette').textContent=L('계속 만들기','Keep creating');
+  $('nameNewPalette').textContent=L('감정 붙이기','Name this feeling');$('dismissNewPalette').textContent=L('계속 만들기','Keep creating');renderOrbFeelingTargets();
 }
 function dismissNewPaletteInvite(){S.inviteVisible=false;if(typeof updateAutoMoodUI==='function')updateAutoMoodUI();}
-function changeMoodWord(){if(S.study||S.studyLoading||S.catalogLoading)return;dismissNewPaletteInvite();beginMoodReview();}
+function changeMoodWord(){if(S.study||S.studyLoading||S.catalogLoading||reviewedExploration&&(!reviewedExploration.stats().complete||!chosen.some(i=>tiles[i].generated)))return;dismissNewPaletteInvite();beginMoodReview();}
 function showFeeling(idx){
   if(S.reviewing){if(reviewedExploration)tiles.forEach(t=>t.exposureAt=null);syncFeelingStatus();return;}
-  if(S.autoFeeling===false||S.study||S.studyLoading||S.catalogLoading||!chosen.length||chosen.some(i=>tiles[i].cur!==tiles[i].to)||placements.some(p=>p.touchMove||p.shakeMotion)){if(reviewedExploration)tiles.forEach(t=>t.exposureAt=null);feel=null;prevFeel=null;S.autoFeelingResult=null;updateAutoMoodUI();syncFeelingStatus();return;}
-  clearTimeout(feelingTimer);const match=matchSceneFeeling(),result=match.word;S.autoFeelingResult=match;
+  if(S.autoFeeling===false||S.study||S.studyLoading||S.catalogLoading||!chosen.length||chosen.some(i=>tiles[i].cur!==tiles[i].to)||placements.some(p=>p.touchMove||p.shakeMotion)){if(reviewedExploration)tiles.forEach(t=>t.exposureAt=null);feel=null;prevFeel=null;S.autoFeelingResult=null;S.orbFeelingRows=[];updateAutoMoodUI();syncFeelingStatus();return;}
+  clearTimeout(feelingTimer);const match=matchSceneFeeling();let result=match.word;S.autoFeelingResult=match;S.orbFeelingRows=individualFeelingRows(match.scene);
+  if(S.orbFeelingRows.length>1){const words=S.orbFeelingRows.map(r=>r.word).filter(Boolean);result=words.length?{id:'individual/'+words.map(w=>w.id).join('+'),en:words.map(w=>w.en).join(' · '),ko:words.map(w=>w.ko).join(' · ')}:null;}
   recordReviewedExposure(match);
-  const freshCreation=reviewedExploration&&reviewedExploration.stats().complete&&chosen.some(i=>tiles[i].generated);
+  const freshCreation=reviewedExploration&&S.canvasMode!=='mixing'&&reviewedExploration.stats().complete&&chosen.some(i=>tiles[i].generated);
   const inviteAllowed=!reviewedExploration?!result&&(S.creationTouches||0)>=3:freshCreation;
   if(S.canvasChoiceReady&&inviteAllowed&&!S.newPaletteInvited&&!menuOpen&&!imageBusy&&!['prep','rec','making'].includes(vstate)){S.newPaletteInvited=true;S.inviteVisible=true;hideGuide();}
   if(!result){feel=null;prevFeel=null;updateAutoMoodUI();syncFeelingStatus();return;}
@@ -1039,13 +1093,15 @@ function feelGlyph(ctx,W,H,text,alpha,sc){const display=typeof feel!=='undefined
   const ko=lang==='ko'?(typeof feel!=='undefined'&&feel?.text===text?feel.ko||FEEL_KO[text]:FEEL_KO[text]):'';if(ko){const ksz=document.body.classList.contains('wide-scene')?W*.035:W*10.7/Math.max(1,pc.clientWidth||W);ctx.font=`400 ${ksz}px "Pretendard","Noto Sans KR",sans-serif`;ctx.fillText(ko,0,sz*.55+ksz*.9);}
   ctx.restore();}
 function drawFeeling(ctx,W,H){const now=performance.now();
+  const rows=S.reviewing&&feedbackReview?.targetIdx!=null?feedbackReview.selectedWord?feedbackReview.feelings:[]:S.orbFeelingRows||[];
+  if(rows.length>1){drawIndividualFeelings(ctx,W,H,rows);return;}
   if(prevFeel){const e=(now-prevFeel.t0)/1000;if(e>.4)prevFeel=null;else feelGlyph(ctx,W,H,prevFeel.text,1-e/.4,1);}
   if(!feel)return;const e=(now-feel.t0)/1000;feelGlyph(ctx,W,H,feel.text,Math.min(1,e/.5),.94+.06*Math.min(1,e/1.2));}
 if(document.fonts)document.fonts.load('italic 500 40px "Cormorant Garamond"','passionate').catch(()=>{});
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let clock=0;
 function drawSceneOrbs(ctx,W,H,orbWidth=W){
-  if(S.reviewing&&feedbackReview){feedbackReview.scene.orbs.forEach(o=>drawOrb(ctx,{layers:o.rawLayers},o.position.x*W,o.position.y*H,o.scale*orbWidth));return;}
+  if(S.reviewing&&feedbackReview){(feedbackReview.artworkScene||feedbackReview.scene).orbs.forEach(o=>drawOrb(ctx,{layers:o.rawLayers},o.position.x*W,o.position.y*H,o.scale*orbWidth));return;}
   const T=reduce?0:clock*S.speed;
   leaving.forEach(l=>{const pl=l.pl,a=pl.amp*S.drift,x=pl.x+Math.sin(T*pl.f1*TAU+pl.ph1)*a,y=pl.y+Math.cos(T*pl.f2*TAU+pl.ph2)*a;drawOrb(ctx,tiles[l.idx].cur,x*W,y*H,Math.max(0,pl.cs)*orbWidth);});
   chosen.forEach((idx,i)=>{const pl=placements[i];if(!pl)return;
@@ -1186,14 +1242,15 @@ $('presets').addEventListener('click',e=>{const b=e.target.closest('[data-id]');
 // ================= 더 꾸미기 =================
 // 배경: bg 버튼을 누를 때마다 다음 색으로
 const GROUNDS=[['white','오프화이트','#e6e6e6','#1d1b26'],['dark','어두운 밤','#121019','#f2f0f3']];
-function cycleGround(){delete S.reviewedGround;if(S.reviewing)endMoodReview();const i=GROUNDS.findIndex(g=>g[0]===S.ground);S.ground=GROUNDS[(i+1)%GROUNDS.length][0];renderGround();}
+function cycleGround(){const i=GROUNDS.findIndex(g=>g[0]===S.ground);setGround(GROUNDS[(i+1)%GROUNDS.length][0]);}
+function setGround(ground){if(!GROUNDS.some(g=>g[0]===ground))return;if(S.reviewing)endMoodReview();if(useReviewedGround(ground)){renderGround();return;}delete S.reviewedGround;S.ground=ground;renderGround();showFeeling(chosen[0]);}
 function groundColors(){if(S.reviewedGround||S.study?.scene?.background){const bg=S.reviewedGround||S.study.scene.background,rgb=hex2rgb(bg),dark=(.2126*srgb2lin(rgb[0])+.7152*srgb2lin(rgb[1])+.0722*srgb2lin(rgb[2]))<.35;return{bg,ink:dark?'#f2f0f3':'#1d1b26',dark};}const g=GROUNDS.find(x=>x[0]===S.ground)||GROUNDS[0];
   return{bg:g[2],ink:g[3],dark:g[0]==='dark'};}
 function renderGround(){document.body.classList.toggle('dark-ground',groundColors().dark);const sw=document.getElementById('bgSwatch');if(sw){sw.style.background=groundColors().bg;}
   $('guide').style.setProperty('--guide-ink',groundColors().dark?'#ffffff':'#333333');
   document.body.style.setProperty('--mobile-ink',groundColors().ink);
   $('ground').innerHTML=GROUNDS.map(([v,n])=>`<button type="button" class="chip" data-v="${v}" aria-pressed="${S.ground===v}">${tr(n)}</button>`).join('');}
-$('ground').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;if(S.reviewing)endMoodReview();delete S.reviewedGround;S.ground=b.dataset.v;renderGround();if(feel)showFeeling(chosen.includes(feel.idx)?feel.idx:chosen[0]);});
+$('ground').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;setGround(b.dataset.v);});
 const f2=v=>v.toFixed(2), sg=v=>(v>=0?'+':'')+v;
 const SLIDERS={
   slSize:[['szL','첫 번째 빛망울',.3,2.8,.02,f2],['szM','두 번째 빛망울',.08,1.6,.01,f2],['szS','세 번째 빛망울',.04,1,.01,f2]],
@@ -1556,7 +1613,8 @@ function orb(o,cx,cy,size){var steps=o.trail>.01?18:1,tx=Math.cos(o.ta)*o.trail,
 function draw(now){var W=c.width,H=c.height,T=D.reduced?0:((D.clock||0)+(D.paused?0:(now-t0)/1000))*D.speed;x.fillStyle=D.bg;x.fillRect(0,0,W,H);
   D.orbs.forEach(function(o){var p=o.p,a=D.reduced?0:p.amp*D.drift,px=p.x+Math.sin(T*p.f1*TAU+p.ph1)*a,py=p.y+Math.cos(T*p.f2*TAU+p.ph2)*a,s=p.s*(1+.04*D.drift*Math.sin(T*.8+p.ph3));orb(o,px*W,py*H,s*W);});
   var pad=W*.07;drawHeader(x,W,pad,function(z){return font(D.ft,z);},function(z){return font(D.fs,z);},D.title,D.sub,D.ink);x.fillStyle=D.ink;x.textBaseline='top';x.textAlign='left';
-  if(D.feel){var fs2=W*.15;x.save();x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';var fw=x.measureText(D.feel[0]).width;if(fw>W*.84){fs2*=W*.84/fw;x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';}
+  if(D.feelings&&D.feelings.length>1){D.feelings.forEach(function(word,i){var yy=(D.feelings.length===2?.455:.4)+i*.11,sz=W*.11,txt=word[0];x.save();x.font='italic 500 '+sz+'px "Cormorant Garamond",Georgia,serif';var ww=x.measureText(txt).width;if(ww>W*.73){sz*=W*.73/ww;x.font='italic 500 '+sz+'px "Cormorant Garamond",Georgia,serif';}x.textAlign='center';x.textBaseline='middle';x.fillStyle=D.feelInk||D.ink;x.fillText(txt,W*.54,H*yy);if(word[1]){x.font='400 '+(W*.031)+'px "Pretendard",sans-serif';x.fillText(word[1],W*.54,H*yy+sz*.62+W*.022);}var o=D.orbs[i];if(o){x.fillStyle='rgb('+o.layers[1].c+')';x.beginPath();x.arc(W*.085,H*yy,W*.019,0,TAU);x.fill();x.fillStyle='rgb('+o.layers[3].c+')';x.beginPath();x.arc(W*.085,H*yy,W*.008,0,TAU);x.fill();}x.restore();});}
+  else if(D.feel){var fs2=W*.15;x.save();x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';var fw=x.measureText(D.feel[0]).width;if(fw>W*.84){fs2*=W*.84/fw;x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';}
     x.globalAlpha=1;x.fillStyle=D.feelInk||'#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(D.feel[0],W/2,H/2);if(D.feel[1]){x.font='400 '+(W*.034)+'px "Pretendard",sans-serif';x.fillText(D.feel[1],W/2,H/2+fs2*.55+W*.031);}x.restore();x.fillStyle=D.ink;x.textAlign='left';x.textBaseline='top';}
   var fz=W*.026;x.font=font(D.fs,fz);x.globalAlpha=.8;x.textBaseline='alphabetic';footer(x,W,H,pad,fz,function(z){return font(D.fs,z);},D.foot[0],D.foot[1]);
   requestAnimationFrame(draw);}
@@ -1572,7 +1630,8 @@ function buildCode(){
     orbs:chosen.map((idx,i)=>{const o=tiles[idx].cur,pl=placements[i];return{trail:r3(o.trail),ta:r3(o.trailAng),
       p:{x:r3((pl.lx??pl.x)-Math.sin(captureT*pl.f1*TAU+pl.ph1)*pl.amp*(reduce?0:S.drift)),y:r3((pl.ly??pl.y)-Math.cos(captureT*pl.f2*TAU+pl.ph2)*pl.amp*(reduce?0:S.drift)),s:r3(pl.cs??SZ()[i]*pl.tj),ph1:r3(pl.ph1),ph2:r3(pl.ph2),ph3:r3(pl.ph3),f1:r3(pl.f1),f2:r3(pl.f2),amp:r3(pl.amp)},
       layers:o.layers.map(L=>({c:tf(L.col).map(Math.round).join(','),r:r3(L.r),ox:r3(L.ox),oy:r3(L.oy),s:r3(clamp(1-(1-L.soft)*S.soft,0,.95)),a:r3(L.a)}))};})};
-  if(S.reviewing&&feedbackReview){D.drift=0;D.orbs=feedbackReview.scene.orbs.map(o=>({trail:0,ta:0,p:{x:o.position.x,y:o.position.y,s:o.scale,ph1:0,ph2:0,ph3:0,f1:0,f2:0,amp:0},layers:o.layers.map(l=>({c:l.col.join(','),r:l.r,ox:l.ox,oy:l.oy,s:l.soft,a:l.a}))}));}
+  const individualRows=S.reviewing&&feedbackReview?.targetIdx!=null?feedbackReview.feelings:S.orbFeelingRows||[];if(individualRows.length>1){D.feelings=individualRows.map(r=>[r.word?.en||'',lang==='ko'?r.word?.ko||'':'']);D.feel=null;}
+  if(S.reviewing&&feedbackReview){D.drift=0;D.orbs=(feedbackReview.artworkScene||feedbackReview.scene).orbs.map(o=>({trail:0,ta:0,p:{x:o.position.x,y:o.position.y,s:o.scale,ph1:0,ph2:0,ph3:0,f1:0,f2:0,amp:0},layers:o.layers.map(l=>({c:l.col.join(','),r:l.r,ox:l.ox,oy:l.oy,s:l.soft,a:l.a}))}));}
   const fams=[...new Set([...[ft,fs].filter(f=>f.id!=='pretendard').map(f=>f.id==='futura'?'family=Jost:wght@400;500':`family=${f.fam.replace(/ /g,'+')}:wght@${f.tw===f.sw?f.tw:Math.min(f.tw,f.sw)+';'+Math.max(f.tw,f.sw)}`),'family=Cormorant+Garamond:ital,wght@1,500'])];
   const esc=t=>t.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
   return `<!doctype html>
@@ -1854,7 +1913,7 @@ function renderMoodChoices(){
   if(feedbackReview)drawPoster();
   $('canvasMoodChoice').hidden=!feedbackReview;
   $('canvasMoodChoice').classList.toggle('is-chosen',!!feedbackReview?.selectedWord);
-  $('canvasMoodChoice').classList.toggle('is-direction',direction);
+  $('canvasMoodChoice').classList.toggle('is-direction',direction);$('canvasMoodChoice').classList.toggle('is-orb-edit',feedbackReview?.targetIdx!=null);
   $('canvasMoodChoice').style.setProperty('--choice-ink',feelingInk());
   $('choiceQuestion').textContent=direction?L('어느 쪽 느낌에 더 가까운가요?','Which direction feels closer?'):L('이 색에서 어떤 감정이 느껴지나요?','What feeling do these colors bring to mind?');
   $('skipMood').textContent=L('둘 다 아니에요','Neither fits');$('skipMood').hidden=!feedbackReview||!!feedbackReview.selectedWord||direction;
@@ -1864,7 +1923,8 @@ function renderMoodChoices(){
   $('previousMood').disabled=!feedbackReview||(feedbackReview.proposal.page||0)===0||!!feedbackReview.browsing;$('nextMood').disabled=!!feedbackReview?.browsing;$('skipMood').disabled=!!feedbackReview?.browsing;
   $('previousMood').setAttribute('aria-label',L('이전 감정 보기','Previous feelings'));$('nextMood').setAttribute('aria-label',L('다음 감정 보기','Next feelings'));
   $('resumeArtwork').hidden=!feedbackReview?.selectedWord;
-  $('resumeArtwork').textContent=S.study?L('내 배색 만들기','Make my own palette'):L('다른 배색 보기','Discover another palette');
+  $('resumeArtwork').textContent=feedbackReview?.targetIdx!=null?L('완료','Done'):S.study?L('내 배색 만들기','Make my own palette'):L('다른 배색 보기','Discover another palette');
+  $('closeOrbMood').hidden=feedbackReview?.targetIdx==null||!!feedbackReview?.selectedWord;$('closeOrbMood').textContent=L('닫기','Close');
   $('retryResponse').hidden=!feedbackReview?.sendError;
   $('reselectMood').hidden=!feedbackReview?.selectedWord;$('reselectMood').disabled=!!feedbackReview?.sending;
   $('reselectLabel').textContent=L('다시 선택하기','Choose again');$('reselectMood').setAttribute('aria-label',L('감정 다시 선택하기','Choose a feeling again'));
@@ -1906,7 +1966,7 @@ function chooseMoodWord(word){
     const record=(reviewed?ReviewedPaletteMatcher:ColorFeedback).makeFeedback({scene:feedbackReview.scene,proposal:feedbackReview.proposal,selectedWord:word,id,createdAt:new Date().toISOString()});
     feedbackReview.record=record;feedbackReview.selectedWord=word;feedbackReview.savedId=id;
     try{if(choiceStore){const saved=choiceStore.save(record);feedbackReview.saved=true;S.autoFeelingCache=null;if(!S.study)feedbackReview.savedId=saved.record.id;}}catch(error){feedbackStoreError=error.message;}
-    const named=feedbackReview.proposal.candidates.find(w=>w.id===word);feel={...named,text:word,idx:chosen[0],t0:performance.now()};prevFeel=null;
+    const named=feedbackReview.proposal.candidates.find(w=>w.id===word);if(feedbackReview.targetIdx!=null&&feedbackReview.feelings[feedbackReview.targetSlot])feedbackReview.feelings[feedbackReview.targetSlot].word=named;feel={...named,text:word,idx:chosen[0],t0:performance.now()};prevFeel=null;
     renderMoodChoices();syncFeelingStatus();if(S.study)sendStudyResponse();
   }catch(error){$('choiceStatus').textContent=L('선택을 기록하지 못했어요. 다시 선택해 주세요.','Could not record your choice. Please try again.');}
 }
@@ -1938,6 +1998,7 @@ async function navigateMoodPage(page,reject=false,options={}){
 function handleChoicePointer(e){e.stopPropagation();}
 function resumeArtwork(){
   if(S.study){location.assign('/');return;}
+  if(feedbackReview?.targetIdx!=null){endMoodReview();return;}
   endMoodReview();const t=tiles[chosen[0]];t.combo={mode:pick(MODES),h:R(0,360),tone:t.combo.tone};retarget(t,.9);updateColorUI();
 }
 async function researchJSON(path,body){
@@ -1981,18 +2042,26 @@ function loadCatalogScript(source){
 function applyCatalogScene(entry){
   const scene=ColorFeedback.canonicalScene(entry.scene),singleScale=entry.reviewedWord&&scene.mode==='single'?2.5:null;dismissNewPaletteInvite();
   if(S.reviewing)endMoodReview();
-  delete S.reviewedGround;delete S.reviewedPreset;Object.assign(S,scene.transform);if(entry.reviewedWord)S.reviewedGround=scene.background;S.canvasMode=scene.mode;S.ground=scene.background==='#121019'?'dark':'white';S.catalogSet=entry.id;S.autoFeelingCache=null;S.autoFeelingResult=null;
+  delete S.reviewedGround;delete S.reviewedPreset;Object.assign(S,scene.transform);if(entry.reviewedWord||entry.catalogReferences)S.reviewedGround=scene.background;S.canvasMode=scene.mode;S.ground=scene.background==='#121019'?'dark':'white';S.catalogSet=entry.id;S.autoFeelingCache=null;S.autoFeelingResult=null;
   scene.orbs.forEach((orb,i)=>{S[['szL','szM','szS'][i]]=singleScale??orb.scale;});const toneIndex=MOODS.findIndex(tone=>tone.id===entry.tone?.id);if(toneIndex>=0)moodIdx=toneIndex;
   chosen=scene.orbs.map((orb,i)=>i);leaving=[];placements=scene.orbs.map((orb,i)=>({...mkPl(i,[],[1,1]),x:orb.position.x,y:orb.position.y,tx:orb.position.x,ty:orb.position.y,lx:orb.position.x,ly:orb.position.y,cs:singleScale??orb.scale,tj:1}));
-  scene.orbs.forEach((orb,i)=>{const palette={trail:0,trailAng:0,layers:orb.rawLayers.map(layer=>({...layer,col:[...layer.col]}))},recipe=entry.recipe?.orbs?.[i];if(recipe)tiles[i].combo={mode:recipe.mode,h:recipe.hue,tone:toneOf(recipe.toneId)};tiles[i].cur=tiles[i].from=tiles[i].to=palette;tiles[i].t0=performance.now();tiles[i].dirty=true;tiles[i].meaningKey=null;tiles[i].reviewed=entry.reviewedWord&&typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher.mappings.find(r=>r.wordKey===entry.reviewedWord.key):null;tiles[i].generated=false;tiles[i].exposureAt=null;});
+  scene.orbs.forEach((orb,i)=>{const palette={trail:0,trailAng:0,layers:orb.rawLayers.map(layer=>({...layer,col:[...layer.col]}))},recipe=entry.recipe?.orbs?.[i];if(recipe)tiles[i].combo={mode:recipe.mode,h:recipe.hue,tone:toneOf(recipe.toneId)};tiles[i].cur=tiles[i].from=tiles[i].to=palette;tiles[i].t0=performance.now();tiles[i].dirty=true;tiles[i].meaningKey=null;tiles[i].reviewed=entry.catalogReferences?.[i]|| (entry.reviewedWord&&typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher.mappings.find(r=>r.wordKey===entry.reviewedWord.key):null);tiles[i].generated=false;tiles[i].exposureAt=null;tiles[i].el.style.background=tiles[i].reviewed?.scene.background||'';});
   if(entry.reviewedWord&&typeof ReviewedPaletteMatcher!=='undefined')S.reviewedPreset={paletteKey:ReviewedPaletteMatcher.paletteKey(captureColorScene(false)),id:entry.reviewedWord.id};
   S.activeOrb=chosen[0];S.catalogLoading=false;hideGuide();renderGround();refreshTiles();updateColorUI();Object.keys(FMT).forEach(syncSlider);resize();drawPoster();drawMobileBackdrop();showFeeling(chosen[0]);renderPaletteReadout();
+}
+function loadCuratedMultiSet(id){
+  if(!reviewedExploration||typeof ReviewedPaletteMatcher==='undefined')return false;
+  const parts=id.split('-'),count=Number(parts[1]),toneIndex=(Number(parts[2])-1)%MOODS.length,background=Number(parts[3])%2?'#e6e6e6':'#121019',all=explorationReferences().filter(r=>r.scene.background===background);if(all.length<count)return false;
+  let seed=2166136261;for(const c of id)seed=Math.imul(seed^c.charCodeAt(0),16777619);const selected=[],pool=all.slice();for(let i=0;i<count;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;selected.push(pool.splice(seed%pool.length,1)[0]);}
+  const positions=count===2?[[.34,.4,.9],[.68,.65,.8]]:[[.3,.28,.78],[.72,.45,.66],[.39,.73,.88]],scene={...selected[0].scene,mode:'mixing',aspect:[9,16],orbs:selected.map((r,i)=>({...r.scene.orbs[0],slot:i,position:{x:positions[i][0],y:positions[i][1]},scale:positions[i][2]}))};
+  applyCatalogScene({id:'curated:'+id,scene,catalogReferences:selected,tone:MOODS[toneIndex]});alignReviewedCandidates(background);return true;
 }
 async function loadMultiCatalogSet(){
   const params=new URLSearchParams(location.search),id=params.get('set');if(!id||params.has('study'))return false;
   S.catalogLoading=true;
   try{
     if(!/^multi-[23]-\d{2}-\d{2}$/.test(id))throw new Error('Unknown color set');
+    if(loadCuratedMultiSet(id))return true;
     if(typeof MultiColorCatalog==='undefined'){await loadCatalogScript('multi-color-catalog-data.js');await loadCatalogScript('multi-color-catalog.js');}
     const entry=MultiColorCatalog.get(id);if(!entry)throw new Error('Unknown color set');applyCatalogScene(entry);return true;
   }catch(error){showToast(L('배색 세트를 불러오지 못했어요. 직접 색을 만들어 보세요.','Could not load this set. You can keep creating colors.'));return false;}
@@ -2002,7 +2071,7 @@ let referenceRefreshAt=-Infinity,referenceRefreshBusy=false;
 async function refreshReviewedReferences(){
   if(location.hostname==='imagetellerworks.github.io'||typeof ReviewedPaletteMatcher==='undefined'||S.study||S.studyLoading||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate)||referenceRefreshBusy||performance.now()-referenceRefreshAt<1000)return;
   referenceRefreshAt=performance.now();referenceRefreshBusy=true;const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),2500);
-  try{const response=await fetch('/api/research/word-maps',{cache:'no-store',signal:controller.signal});if(!response.ok)return;const data=await response.json();if(ReviewedPaletteMatcher.replace(data)){Object.assign(FEEL_KO,ReviewedPaletteMatcher.FEEL_KO);S.autoFeelingCache=null;tiles.forEach(t=>t.meaningKey=null);if(S.canvasChoiceReady)showFeeling(chosen[0]);}}catch(error){/* The bundled, explicitly reviewed snapshot remains available offline. */}
+  try{const response=await fetch('/api/research/word-maps',{cache:'no-store',signal:controller.signal});if(!response.ok)return;const data=await response.json();if(ReviewedPaletteMatcher.replace(data)){Object.assign(FEEL_KO,ReviewedPaletteMatcher.FEEL_KO);S.autoFeelingCache=null;tiles.forEach(t=>{t.meaningKey=null;if(t.reviewed&&!ReviewedPaletteMatcher.mappings.some(r=>r.wordKey===t.reviewed.wordKey&&r.sceneKey===t.reviewed.sceneKey))t.reviewed=null;});if(S.canvasChoiceReady)showFeeling(chosen[0]);}}catch(error){/* The bundled, explicitly reviewed snapshot remains available offline. */}
   finally{clearTimeout(timer);referenceRefreshBusy=false;}
 }
 function loadReviewedPaletteSet(){
@@ -2024,6 +2093,7 @@ $('changeMood').addEventListener('click',changeMoodWord);
 $('nameNewPalette').addEventListener('click',changeMoodWord);
 $('dismissNewPalette').addEventListener('click',dismissNewPaletteInvite);
 $('resumeArtwork').addEventListener('click',resumeArtwork);
+$('closeOrbMood').addEventListener('click',()=>endMoodReview());
 $('retryResponse').addEventListener('click',sendStudyResponse);
 $('pinSurvey').addEventListener('click',async()=>{try{const scene=feedbackReview?.scene||captureColorScene();await researchJSON('/palettes');sessionStorage.setItem('mindful-day-survey-draft',JSON.stringify(scene));location.assign('/admin/#draft');}catch(error){$('researchStatus').textContent=L('조사 서버 미리보기(http://127.0.0.1:8787/)에서 조사 만들기를 이용해 주세요.','Create surveys from the research server preview at http://127.0.0.1:8787/.');}});
 $('exportChoices').addEventListener('click',()=>{if(!feedbackStore&&!reviewedChoiceStore)return;const blob=new Blob([JSON.stringify({schemaVersion:'mindful-day-choice-export/v2',legacy:feedbackStore?JSON.parse(feedbackStore.exportJSON()):null,reviewed:reviewedChoiceStore?JSON.parse(reviewedChoiceStore.exportJSON()):null})],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='mindful-day-color-choices.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});

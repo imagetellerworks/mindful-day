@@ -3,7 +3,7 @@
   "files": [
     {
       "path": "index.html",
-      "sha256": "0566a00510d8dac1a74569263bda66807ce1a861cb0d522b04b26c5005ed06b0"
+      "sha256": "fe1c5e9d9c3eeae5f91f1f653057021f8f5dd9bb9c104497f8f89d20d02b5d40"
     },
     {
       "path": "single-orb-model.js",
@@ -35,7 +35,7 @@
     },
     {
       "path": "reviewed-palette-matcher.js",
-      "sha256": "f01aec80d865e8fbf1aa4e2316cad71b85dae43e181d2dda03df24d2e9d347c7"
+      "sha256": "6ecbf0a4db45552c8a357959a6b6c7f8bfd21e9bbb81e51b5188c5225d00e3e9"
     },
     {
       "path": "fonts/Pretendard-Black.woff2",
