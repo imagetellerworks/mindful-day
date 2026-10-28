@@ -123,6 +123,13 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 
 footer.site{max-width:1040px;margin:28px auto 0;border-top:1px solid var(--line);padding-block:16px 8px;display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
 footer.site a{color:var(--ink);text-underline-offset:3px}
+footer.site{flex-direction:row;align-items:center;gap:10px}
+.footer-exports{display:flex;align-items:center;gap:6px}
+.quick-export{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:44px;min-height:44px;padding:0 12px;border:0;border-radius:12px;background:rgba(28,26,34,.6);color:#fff;cursor:pointer;font:500 11px/1 var(--f-body);-webkit-tap-highlight-color:transparent}
+.quick-export svg{display:block;width:19px;height:19px;flex:none}.quick-export:disabled{cursor:wait;color:rgba(255,255,255,.45)}
+.quick-export:focus-visible{outline:2px solid currentColor;outline-offset:3px}.quick-export.recording{background:rgba(174,31,50,.6)}
+.quick-export .stop-icon,.quick-record-time{display:none}.quick-export.recording .record-icon{display:none}.quick-export.recording .stop-icon,.quick-export.recording .quick-record-time{display:block}
+
 footer.site .mail{font-family:var(--f-mono);user-select:all}
 
 @media (min-width:860px){
@@ -141,7 +148,7 @@ footer.site .mail{font-family:var(--f-mono);user-select:all}
 .is-story #mobileBackdrop{display:block;position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:0;pointer-events:none}
 .is-story .app{position:relative;z-index:1;gap:14px;display:block}.is-story .editor{display:none}
 .is-story footer.site{position:fixed;z-index:2;left:max(16px,env(safe-area-inset-left,0px));right:calc(max(16px,env(safe-area-inset-right,0px)) + 64px);bottom:calc(10px + env(safe-area-inset-bottom,0px));max-width:none;margin:0;padding:0;border:0;gap:2px;font-size:11px;line-height:1.4;color:var(--mobile-ink,var(--muted))}
-.is-story footer.site{bottom:calc(16px + env(safe-area-inset-bottom,0px));font-size:12px}
+.is-story footer.site{bottom:calc(16px + env(safe-area-inset-bottom,0px));font-size:12px;gap:10px}
 .is-story footer.site a{color:inherit}
 .is-story .formats,.is-story .status{color:var(--mobile-ink,var(--muted))}
 .is-story .story{display:flex;flex-direction:column;gap:10px;padding-top:10px}
@@ -449,7 +456,10 @@ body.about-open{overflow:hidden}
   </div>
 </main>
 
-<footer class="site"><button type="button" class="about-link" id="aboutOpen" aria-haspopup="dialog" aria-controls="aboutDialog">About</button></footer>
+<footer class="site"><button type="button" class="about-link" id="aboutOpen" aria-haspopup="dialog" aria-controls="aboutDialog">About</button><div class="footer-exports" role="group" aria-label="빠른 저장">
+  <button type="button" class="quick-export" id="quickCapture" aria-label="이미지 캡처" title="이미지 캡처"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h3l1.5-2h7l1.5 2h3a1.5 1.5 0 0 1 1.5 1.5v10A1.5 1.5 0 0 1 20 19.5H4A1.5 1.5 0 0 1 2.5 18V8A1.5 1.5 0 0 1 4 6.5Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="12" cy="12.5" r="4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button>
+  <button type="button" class="quick-export" id="quickRecord" aria-label="영상 녹화" title="영상 녹화" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="record-icon" cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="1.4"/><circle class="record-icon" cx="12" cy="12" r="3.5" fill="currentColor"/><rect class="stop-icon" x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/></svg><span class="quick-record-time" id="quickRecordTime" aria-hidden="true"></span></button>
+</div></footer>
 
 <dialog class="about-dialog" id="aboutDialog" aria-labelledby="aboutTitle">
   <header class="about-header"><h2 id="aboutTitle"><span class="about-title-light">About</span> <span class="about-title-regular">Mindful Day</span></h2><button type="button" class="about-close" id="aboutClose" aria-label="About 닫기">×</button></header>
@@ -491,6 +501,7 @@ function readLanguagePreference(){
   try{const value=localStorage.getItem('mindful-day-original-lab-language');return value==='ko'||value==='en'?value:null;}catch(err){return null;}
 }
 const UI_EN={
+  "빠른 저장": "Quick save",
   "멀티 배색 200세트 살펴보기": "Explore 200 multi-orb sets",
   "후보색이 바뀌는 간격": "Candidate color interval",
   "하나만 선택": "Choose one",
@@ -1239,8 +1250,17 @@ const imageChoices=$('imageChoices'),imageChoiceBtns=[$('savePosterImg'),$('save
 function syncExportLayer(){exportLayer.classList.toggle('has-popup',!imageChoices.hidden||!sheet.hidden);}
 let imageBusy=false;
 function closeImageChoices(){imageChoices.hidden=true;imgBtn.setAttribute('aria-expanded','false');syncExportLayer();}
+function syncQuickExports(){
+  const capture=$('quickCapture'),video=$('quickRecord');if(!capture||!video)return;
+  capture.disabled=imgBtn.disabled;video.disabled=vidBtn.disabled;
+  const captureLabel=imageBusy?L('이미지 만드는 중…','Creating image…'):L('이미지 캡처','Capture image');
+  capture.setAttribute('aria-label',captureLabel);capture.title=captureLabel;capture.setAttribute('aria-busy',String(imageBusy));
+  const recording=vstate==='rec',time=recording?mss(recStart?(performance.now()-recStart)/1000:0):'';
+  const videoLabel=recording?L('녹화 끝내기','Stop recording')+' '+time:vstate==='prep'?L('녹화 준비 중…','Preparing recording…'):vstate==='making'?L('영상 만드는 중…','Creating video…'):L('영상 녹화','Record video');
+  video.classList.toggle('recording',recording);video.setAttribute('aria-pressed',String(recording));video.setAttribute('aria-label',videoLabel);video.title=videoLabel;$('quickRecordTime').textContent=time;
+}
 function syncImageButtons(){const locked=imageBusy||['prep','rec','making'].includes(vstate);
-  imgBtn.disabled=locked;imageChoiceBtns.forEach(b=>b.disabled=locked);$('resetSettings').disabled=locked;
+  imgBtn.disabled=locked;imageChoiceBtns.forEach(b=>b.disabled=locked);$('resetSettings').disabled=locked;syncQuickExports();
 }
 const canRecord=!!(window.MediaRecorder&&pc.captureStream);
 const mime=!canRecord?'':['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(m=>{try{return MediaRecorder.isTypeSupported(m);}catch(e){return false;}})||'';
@@ -1252,7 +1272,7 @@ const dlP=inClaude?Promise.race([window.claude.use('downloads').catch(()=>null),
 dlP.then(d=>{dl=d;dlReady=true;updateFormats();});
 function env(){return dl?'claude':(inClaude?(dlReady?'claude-link':'pending'):'web');}
 function vidAllowed(){return canRecord&&!!mime&&env()!=='claude-link';}
-function updateFormats(){if(vstate==='idle')vidBtn.disabled=imageBusy||!vidAllowed();}
+function updateFormats(){if(vstate==='idle')vidBtn.disabled=imageBusy||!vidAllowed();syncQuickExports();}
 const stamp=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;};
 let statusTimer=0;
 const say=(t,duration=0)=>{clearTimeout(statusTimer);statusEl.textContent=tr(t);if(duration)statusTimer=setTimeout(()=>{statusEl.textContent='';statusTimer=0;},duration);};
@@ -1296,7 +1316,7 @@ imgBtn.addEventListener('click',()=>{
   imageChoices.hidden=!open;imgBtn.setAttribute('aria-expanded',String(open));syncExportLayer();
 });
 async function saveImage(backgroundOnly=false){
-  if(imageBusy||imgBtn.disabled)return;imageBusy=true;syncImageButtons();vidBtn.disabled=true;
+  if(imageBusy||imgBtn.disabled)return;imageBusy=true;vidBtn.disabled=true;syncImageButtons();
   imgBtn.textContent=tr('이미지 만드는 중…');closeImageChoices();closeSheet();say('');
   try{
     if(!backgroundOnly)await warmFonts();
@@ -1308,6 +1328,7 @@ async function saveImage(backgroundOnly=false){
   }catch(err){say('이미지를 만들지 못했어요. 다시 눌러 주세요.');}
   finally{imageBusy=false;imgBtn.textContent=tr('이미지로 저장');setV(vstate);}
 }
+$('quickCapture').addEventListener('click',()=>saveImage(false));
 $('savePosterImg').addEventListener('click',()=>saveImage(false));
 $('saveBackgroundImg').addEventListener('click',()=>saveImage(true));
 document.addEventListener('pointerdown',e=>{if(!imageChoices.hidden&&!e.target?.closest?.('#imageChoices,#saveImg'))closeImageChoices();});
@@ -1341,9 +1362,11 @@ async function startRec(){
     if(!blob.size){setV('idle');say('영상을 만들지 못했어요. 다시 시도해 주세요.');return;}
     await deliver(blob,`mindfulday-${stamp()}.${recMime.includes('mp4')?'mp4':'webm'}`,'video');setV('done');};
   rec.start(250);recStart=performance.now();setV('rec');say('');
-  recTimer=setInterval(()=>{const s=(performance.now()-recStart)/1000;vidLabel.textContent=tr('끝내기')+' '+mss(s);if(s>=VID_MAX)stopRec();},250);}
+  recTimer=setInterval(()=>{const s=(performance.now()-recStart)/1000;vidLabel.textContent=tr('끝내기')+' '+mss(s);syncQuickExports();if(s>=VID_MAX)stopRec();},250);}
 function stopRec(){if(vstate!=='rec'||!rec)return;setV('making');say('');rec.stop();}
-vidBtn.addEventListener('click',()=>{if(vstate==='rec')stopRec();else if(vstate==='idle'||vstate==='done')startRec();});
+function toggleRecording(){if(vidBtn.disabled)return;if(vstate==='rec')stopRec();else if(vstate==='idle'||vstate==='done')return startRec();}
+vidBtn.addEventListener('click',toggleRecording);
+$('quickRecord').addEventListener('click',toggleRecording);
 
 // ================= 소리: 빛망울로 만드는 명상적 앰비언트 =================
 // 화성: 첫 빛망울 색 → 장조(색상환을 5도권에 대응). 진행은 장3도 중심 I · vi · Vsus4 · I6 · IVmaj7 · I 를 돌고,
