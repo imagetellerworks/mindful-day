@@ -339,7 +339,7 @@ body.about-open{overflow:hidden}
 .choice-navigation{display:grid;grid-template-columns:26px minmax(0,1fr) 26px;gap:8px;align-items:center}.choice-arrow{display:grid;place-items:center;width:26px;min-height:48px;padding:0;border:0;background:transparent;color:inherit;cursor:pointer}.choice-arrow:disabled{opacity:.2;cursor:default}.choice-arrow svg{display:block;width:12px;height:30px}.canvas-mood-choice .mood-choice:disabled{opacity:.5;cursor:wait}
 .canvas-mood-choice.is-direction .choice-navigation{grid-template-columns:minmax(0,1fr)}.canvas-mood-choice .mood-choice.direction-choice{font:500 clamp(20px,3.4vw,30px)/1.25 var(--f-body)}.canvas-mood-choice .direction-choice small{max-width:11em;text-wrap:balance}.palette-readout{display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.5}.palette-readout p{margin:0;color:var(--ui-muted)}.palette-readout h4{margin:0;font-size:12px;font-weight:500}.palette-role{display:flex;align-items:center;gap:8px;margin-top:5px}.palette-role i{display:block;flex:none;width:18px;height:18px;border-radius:50%;border:1px solid var(--line)}.palette-role small{display:block;color:var(--ui-muted);font-size:10px}.palette-poetic{opacity:.65}
 .auto-mood-actions{position:absolute;left:50%;top:65%;transform:translate(-50%,-50%);z-index:9}.auto-mood-actions button{border:0;background:none;color:var(--choice-ink,#24212b);font:400 11px/1.6 var(--f-body);padding:8px;cursor:pointer}.new-palette-invite{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:9;width:min(86%,420px);color:var(--choice-ink,#24212b);text-align:center;pointer-events:none}.new-palette-invite p{font:400 13px/1.8 var(--f-body);margin:0;text-wrap:balance}.new-palette-invite strong{display:block;font-weight:500;margin-bottom:8px}.new-palette-invite .invite-actions{display:flex;justify-content:center;gap:22px;margin-top:18px}.new-palette-invite button{pointer-events:auto;min-height:40px;border:0;background:transparent;color:inherit;font:400 11px/1.6 var(--f-body);text-decoration:underline;text-underline-offset:4px;cursor:pointer}
-@media(max-width:360px){.lab-color-header #colorBtn .rl{font-size:10px}.lab-color-header #colorBtn .ic{width:18px;height:18px}.lab-color-header #soundBtn{width:30px}.mode-switch button{padding:8px 5px}}
+@media(max-width:360px){.is-story footer.site{gap:6px}.footer-exports{gap:4px}.lab-color-header #colorBtn .rl{font-size:10px}.lab-color-header #colorBtn .ic{width:18px;height:18px}.lab-color-header #soundBtn{width:30px}.mode-switch button{padding:8px 5px}}
 
 #slSize .ctl:not(:first-child){display:none}.mixing-mode #slSize .ctl{display:flex}
 </style>
@@ -459,6 +459,7 @@ body.about-open{overflow:hidden}
 <footer class="site"><button type="button" class="about-link" id="aboutOpen" aria-haspopup="dialog" aria-controls="aboutDialog">About</button><div class="footer-exports" role="group" aria-label="빠른 저장">
   <button type="button" class="quick-export" id="quickCapture" aria-label="이미지 캡처" title="이미지 캡처"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h3l1.5-2h7l1.5 2h3a1.5 1.5 0 0 1 1.5 1.5v10A1.5 1.5 0 0 1 20 19.5H4A1.5 1.5 0 0 1 2.5 18V8A1.5 1.5 0 0 1 4 6.5Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="12" cy="12.5" r="4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button>
   <button type="button" class="quick-export" id="quickRecord" aria-label="영상 녹화" title="영상 녹화" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="record-icon" cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="1.4"/><circle class="record-icon" cx="12" cy="12" r="3.5" fill="currentColor"/><rect class="stop-icon" x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/></svg><span class="quick-record-time" id="quickRecordTime" aria-hidden="true"></span></button>
+  <button type="button" class="quick-export" id="quickCopyCode" aria-label="코드 복사" title="코드 복사"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </div></footer>
 
 <dialog class="about-dialog" id="aboutDialog" aria-labelledby="aboutTitle">
@@ -1253,6 +1254,7 @@ function closeImageChoices(){imageChoices.hidden=true;imgBtn.setAttribute('aria-
 function syncQuickExports(){
   const capture=$('quickCapture'),video=$('quickRecord');if(!capture||!video)return;
   capture.disabled=imgBtn.disabled;video.disabled=vidBtn.disabled;
+  const copy=$('quickCopyCode');if(copy){const label=L('코드 복사','Copy code');copy.setAttribute('aria-label',label);copy.title=label;}
   const captureLabel=imageBusy?L('이미지 만드는 중…','Creating image…'):L('이미지 캡처','Capture image');
   capture.setAttribute('aria-label',captureLabel);capture.title=captureLabel;capture.setAttribute('aria-busy',String(imageBusy));
   const recording=vstate==='rec',time=recording?mss(recStart?(performance.now()-recStart)/1000:0):'';
@@ -1595,8 +1597,12 @@ ${RUNTIME.trim().replace('FOOTER_SRC',footer.toString()+'\n'+drawHeader.toString
 `;}
 function showCode(code){closeSheet();const ta=document.createElement('textarea');ta.className='codebox';ta.readOnly=true;ta.value=code;ta.setAttribute('aria-label',tr('포스터 코드'));
   sheetPrev.appendChild(ta);shShare.hidden=true;sheetMsg.textContent=tr('자동 복사가 막혀 있어요. 코드를 전체 선택해 복사해 주세요.');sheet.hidden=false;syncExportLayer();ta.focus();ta.select();}
-$('copyCode').addEventListener('click',()=>{const code=buildCode(),done='코드를 복사했어요. 빈 .html 파일에 붙여 넣고 열면 지금 포스터가 떠다니며 재생돼요.';
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(()=>{closeSheet();say(done,7000);},()=>showCode(code));}else showCode(code);});
+function copyPosterCode(){const code=buildCode(),done='코드를 복사했어요. 빈 .html 파일에 붙여 넣고 열면 지금 포스터가 떠다니며 재생돼요.';
+  if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(code).then(()=>{closeSheet();say(done,7000);},()=>showCode(code));
+  showCode(code);
+}
+$('copyCode').addEventListener('click',copyPosterCode);
+$('quickCopyCode').addEventListener('click',copyPosterCode);
 
 // ================= 모바일 스토리형 배치 =================
 // 같은 조작 요소를 화면 폭에 따라 옮겨 씀 (PC: 단계 카드 / 모바일: 레일·시트·아래 막대)
