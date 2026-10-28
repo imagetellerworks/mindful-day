@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "mindful-day-mobile-preview/v1",
+  "files": [
+    {
+      "path": "index.html",
+      "sha256": "736d86ad39538098d8662ca87234be2df96fc1084cfa0cecfbdc07fcabd6d54a"
+    },
+    {
+      "path": "single-orb-model.js",
+      "sha256": "8a1b1e00f52b4d3f3d0705470488ed58ac0e6c30497b53b89ca7d754689d240f"
+    },
+    {
+      "path": "palette-guide-data.js",
+      "sha256": "4e88c11c2f17c2dd75116fc12cf852c4c244211651d6fe147405522b64f2a102"
+    },
+    {
+      "path": "semantic-mixing-model.js",
+      "sha256": "218e73a6f5d5bccf58eb5ff36cadf5c4c676240afe82405e3d6f9a49b07978bc"
+    },
+    {
+      "path": "color-name-context.js",
+      "sha256": "832ef39a2ad027210f04244de0c5acb5226618f9be03ac3e9d7c47e1575d4c2c"
+    },
+    {
+      "path": "color-feedback-model.js",
+      "sha256": "ac8728990a697ef90a62a84d1df2e6a4a3ec3e007cfc6905a31e00656c401f74"
+    },
+    {
+      "path": "feedback-store.js",
+      "sha256": "9a3ed8242f1f867af4eacb7399ae91b41384a910b5942a5dd913534984bfcc22"
+    },
+    {
+      "path": "reviewed-palettes.js",
+      "sha256": "c65eb4b1f10c1c7bb1091935dd9b9cccbd664bed3834ff5d9c824a7b12e7c1c4"
+    },
+    {
+      "path": "reviewed-palette-matcher.js",
+      "sha256": "f01aec80d865e8fbf1aa4e2316cad71b85dae43e181d2dda03df24d2e9d347c7"
+    },
+    {
+      "path": "fonts/Pretendard-Black.woff2",
+      "sha256": "c5fd0c3568fc1368a3edc0d0fbb36df029935954276e3573451b3bae09e27296"
+    },
+    {
+      "path": "fonts/Pretendard-Bold.woff2",
+      "sha256": "4609c3356e536fafe38f4add0daeceb3d8595d3057bce13c428c33ddbd43d362"
+    },
+    {
+      "path": "fonts/Pretendard-Medium.woff2",
+      "sha256": "d03481330eeba0659ab5b87f25ceb504a35de377dd90a0d0aba2982eb2d05e2c"
+    },
+    {
+      "path": "fonts/Pretendard-Regular.woff2",
+      "sha256": "fad853f7f47c6c8b103171e7193fa095708cdcd70850a71d93aa5379e8a61d63"
+    }
+  ]
+}
