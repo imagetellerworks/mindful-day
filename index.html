@@ -293,7 +293,6 @@ body.dark-ground{color-scheme:dark;--paper:#121019;--card:#201d28;--white:#24212
  .wide-scene .savebtns{grid-template-columns:1fr}
 }
 
-.about-analytics{margin-top:22px!important;padding-top:16px;border-top:1px solid var(--line);font-size:12px;line-height:1.7}.about-analytics button{margin-top:8px}
 .about-link{align-self:flex-start;min-width:48px;min-height:48px;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 body.about-open{overflow:hidden}
 .about-dialog{inset:0;width:min(80vw,760px);height:fit-content;max-width:80vw;max-height:80vh;max-height:80dvh;margin:auto;padding:0;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.3);color:var(--ui-ink);box-shadow:0 16px 60px rgba(0,0,0,.2);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px)}
@@ -427,7 +426,6 @@ body.about-open{overflow:hidden}
       <p>When you can't quite find the right words for how you're feeling, try gently touching the screen. Somewhere among the shifting light, colors, and sounds, you might discover a new way to express yourself.</p>
       <p>May these small movements of your fingertips become a quiet moment of meditation.</p>
     </section>
-    <div class="about-analytics"><p id="analyticsNotice">이 웹앱은 개선을 위해 체류 시간, 저장 버튼 사용, 작품 설정과 IP 기반의 대략적인 국가·도시를 무작위 방문 번호로 기록합니다. 이름·이메일·IP 원문·GPS 좌표·영상 원본은 통계에 저장하지 않습니다. 기록은 90일간 보관합니다.</p><button type="button" class="linkbtn" id="analyticsToggle">익명 사용 통계 끄기</button></div>
     <p class="about-credit">Designed by Jiin Ahn (<a href="mailto:jiin.imageteller@gmail.com">jiin.imageteller@gmail.com</a>)<br>Created with Claude Code &amp; Chat GPT</p>
   </div>
 </dialog>
@@ -445,12 +443,6 @@ function readLanguagePreference(){
   try{const value=localStorage.getItem('mindful-day-language');return value==='ko'||value==='en'?value:null;}catch(err){return null;}
 }
 const UI_EN={
-  "이 페이지는 수집 대상이 아니에요.": "This page is excluded from usage statistics.",
-  "이 웹앱은 개선을 위해 체류 시간, 저장 버튼 사용, 작품 설정과 IP 기반의 대략적인 국가·도시를 무작위 방문 번호로 기록합니다. 이름·이메일·IP 원문·GPS 좌표·영상 원본은 통계에 저장하지 않습니다. 기록은 90일간 보관합니다.": "To improve this app, we record visible time, save-button use, artwork settings, and an approximate country and city based on IP, using a random visit ID. Names, emails, raw IP addresses, GPS coordinates, and video files are not stored in the analytics database. Records are kept for 90 days.",
-  "익명 사용 통계 끄기": "Turn off anonymous usage statistics",
-  "익명 사용 통계 켜기": "Turn on anonymous usage statistics",
-  "브라우저 개인정보 설정에 따라 꺼져 있어요.": "Disabled by your browser privacy settings.",
-  "사용 통계 수집 준비 중": "Usage statistics are not active yet",
   "빛망울을 조합해 오늘의 감정과 가장 닮은 표현을 찾아보세요.": "Combine the orbs to find a word that feels like you today.",
   "‘무드’를 눌러 감정을 바꾸고 빛망울을 조합해보세요.": "Tap Mood to change the feeling, then combine the orbs to explore its nuances.",
   "빛망울을 조합해": "Combine the orbs to find",
@@ -625,7 +617,7 @@ function setLanguage(next,persist=true){
   statusEl.textContent=tr(statusEl.textContent);sheetMsg.textContent=tr(sheetMsg.textContent);document.getElementById('toast').textContent=tr(document.getElementById('toast').textContent);
   document.querySelectorAll('.sheet-prev [aria-label],.sheet-prev img').forEach(el=>{if(el.hasAttribute('aria-label'))el.setAttribute('aria-label',tr(el.getAttribute('aria-label')));if(el.alt)el.alt=tr(el.alt);});
   if(persist){languagePreference=lang;try{localStorage.setItem('mindful-day-language',lang);}catch(err){}}
-  updateShakeCoach();updateMenuToggle();updateAboutLanguage();syncFeelingStatus();if(typeof usageAnalytics!=='undefined')updateAnalyticsToggle(usageAnalytics.getState());fit=null;resize();drawPoster();drawMobileBackdrop();
+  updateShakeCoach();updateMenuToggle();updateAboutLanguage();syncFeelingStatus();fit=null;resize();drawPoster();drawMobileBackdrop();
 }
 
 // ================= 색 유틸 =================
@@ -2069,9 +2061,7 @@ function createUsageAnalytics(options,ctx=globalThis){
 
 const ANALYTICS_CONFIG={enabled:true,allowedOrigins:['https://imagetellerworks.github.io'],endpoint:'https://mindful-day-insights-imageteller.jiin-imageteller.chatgpt.site',version:'mindful-day-scene-v2'};
 function captureAnalyticsScene(format){return{schema:1,mood_id:MOODS[moodIdx].id,selected:chosen.map(i=>({palette_id:tiles[i].combo.paletteId,variant:tiles[i].combo.variant})),language:lang,word_ko:feel?(FEEL_KO[feel.text]||''):'',version:ANALYTICS_CONFIG.version,view:document.body.classList.contains('wide-scene')?'landscape':'portrait',background_only:format==='background',poster:captureReplayData(true)};}
-function updateAnalyticsToggle(state){const button=$('analyticsToggle');if(!button)return;button.disabled=!state.configured||state.privacyBlocked||state.excluded;button.textContent=tr(!state.configured?'사용 통계 수집 준비 중':state.privacyBlocked?'브라우저 개인정보 설정에 따라 꺼져 있어요.':state.excluded?'이 페이지는 수집 대상이 아니에요.':state.enabled?'익명 사용 통계 끄기':'익명 사용 통계 켜기');}
-const usageAnalytics=createUsageAnalytics({...ANALYTICS_CONFIG,language:()=>lang,captureScene:captureAnalyticsScene,onChange:updateAnalyticsToggle});
-$('analyticsToggle').addEventListener('click',()=>usageAnalytics.setEnabled(!usageAnalytics.getState().enabled));
+const usageAnalytics=createUsageAnalytics({...ANALYTICS_CONFIG,language:()=>lang,captureScene:captureAnalyticsScene});
 document.addEventListener('click',e=>{const button=e.target?.closest?.('button');if(!button||button.disabled)return;const id=button.id;
   if(id==='saveImg'&&button.getAttribute('aria-expanded')!=='true')usageAnalytics.track('image_open');
   else if(id==='savePosterImg')usageAnalytics.track('image_request',{format:'poster'});
@@ -2108,7 +2098,7 @@ $('langBtn').addEventListener('click',()=>setLanguage(lang==='ko'?'en':'ko'));
 languagePreference=readLanguagePreference();
 setLanguage(languagePreference||deviceLanguage(),false);
 addEventListener('languagechange',()=>{if(!languagePreference)setLanguage(deviceLanguage(),false);});
-updateAnalyticsToggle(usageAnalytics.getState());void usageAnalytics.start();
+void usageAnalytics.start();
 warmFonts();
 (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{fit=null;requestAnimationFrame(frame);});
 </script>
