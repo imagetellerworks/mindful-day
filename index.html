@@ -2067,7 +2067,7 @@ function createUsageAnalytics(options,ctx=globalThis){
  return{start,track,flush,setEnabled,getState:state};
 }
 
-const ANALYTICS_CONFIG={enabled:false,allowedOrigins:['https://imagetellerworks.github.io'],endpoint:'https://mindful-day-insights-imageteller.jiin-imageteller.chatgpt.site',version:'mindful-day-scene-v2'};
+const ANALYTICS_CONFIG={enabled:true,allowedOrigins:['https://imagetellerworks.github.io'],endpoint:'https://mindful-day-insights-imageteller.jiin-imageteller.chatgpt.site',version:'mindful-day-scene-v2'};
 function captureAnalyticsScene(format){return{schema:1,mood_id:MOODS[moodIdx].id,selected:chosen.map(i=>({palette_id:tiles[i].combo.paletteId,variant:tiles[i].combo.variant})),language:lang,word_ko:feel?(FEEL_KO[feel.text]||''):'',version:ANALYTICS_CONFIG.version,view:document.body.classList.contains('wide-scene')?'landscape':'portrait',background_only:format==='background',poster:captureReplayData(true)};}
 function updateAnalyticsToggle(state){const button=$('analyticsToggle');if(!button)return;button.disabled=!state.configured||state.privacyBlocked||state.excluded;button.textContent=tr(!state.configured?'사용 통계 수집 준비 중':state.privacyBlocked?'브라우저 개인정보 설정에 따라 꺼져 있어요.':state.excluded?'이 페이지는 수집 대상이 아니에요.':state.enabled?'익명 사용 통계 끄기':'익명 사용 통계 켜기');}
 const usageAnalytics=createUsageAnalytics({...ANALYTICS_CONFIG,language:()=>lang,captureScene:captureAnalyticsScene,onChange:updateAnalyticsToggle});
