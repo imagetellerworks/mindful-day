@@ -777,7 +777,7 @@ function drawOrb(ctx,p,cx,cy,size){
 function layoutOrbCaptions(orbs,W,H,measure){
   const gap=W*.028;
   return orbs.map(orb=>{
-    const side=orb.side||(orb.x<W/2?'right':'left'),fontSize=Math.max(W*.02,orb.radius*.23),koSize=Math.max(W*.014,fontSize*.56);
+    const side=orb.side||(orb.x<W/2?'right':'left'),textScale=orb.captionScale??1,baseFontSize=Math.max(W*.02,orb.radius*.23),fontSize=baseFontSize*textScale,koSize=Math.max(W*.014,baseFontSize*.56)*textScale;
     const enLines=[String(orb.en||'')],koLines=orb.ko?[String(orb.ko)]:[],width=Math.max(...enLines.map(t=>measure(t,fontSize,'en')),...koLines.map(t=>measure(t,koSize,'ko')),0);
     const height=fontSize*1.06+(koLines.length?koSize*.55+koSize*1.25:0);
     // Keep the caption attached to the orb, even when either extends beyond the canvas.
@@ -1082,7 +1082,7 @@ function renderOrbFeelingTargets(){
 function captionLayoutForRows(ctx,W,H,rows,orbWidth=W){
   const frozen=S.reviewing&&feedbackReview?(feedbackReview.artworkScene||feedbackReview.scene):null,T=reduce?0:clock*S.speed;
   const orbs=rows.map((row,i)=>{const slot=chosen.indexOf(row.idx),pl=placements[slot],tile=tiles[row.idx],held=frozen?.orbs[slot],scale=held?held.scale:(pl?.cs??SZ()[slot]*pl?.tj)*(1+.04*S.drift*Math.sin(T*.8+(pl?.ph3||0)));
-    return {x:(held?held.position.x:pl?.lx??pl?.x??.5)*W,y:(held?held.position.y:pl?.ly??pl?.y??.5)*H,radius:(held?held.layers[1].r:tile.cur.layers[1].r)*scale*orbWidth,en:row.word?.en||L('이름 고르기','Choose a name'),ko:lang==='ko'?row.word?.ko||'':'',side:pl?.captionSide};});
+    return {captionScale:slot===0?.5:.7,x:(held?held.position.x:pl?.lx??pl?.x??.5)*W,y:(held?held.position.y:pl?.ly??pl?.y??.5)*H,radius:(held?held.layers[1].r:tile.cur.layers[1].r)*scale*orbWidth,en:row.word?.en||L('이름 고르기','Choose a name'),ko:lang==='ko'?row.word?.ko||'':'',side:pl?.captionSide};});
   ctx.save();const layout=layoutOrbCaptions(orbs,W,H,(text,size,kind)=>{ctx.font=kind==='ko'?`400 ${size}px "Pretendard","Noto Sans KR",sans-serif`:`italic 500 ${size}px "Cormorant Garamond",Georgia,serif`;return ctx.measureText(text).width;});ctx.restore();
   layout.forEach((caption,i)=>{const pl=placements[chosen.indexOf(rows[i].idx)];if(pl)pl.captionSide=caption.side;});return layout;
 }
@@ -1685,7 +1685,7 @@ function orb(o,cx,cy,size){var steps=o.trail>.01?18:1,tx=Math.cos(o.ta)*o.trail,
     g.addColorStop(0,'rgba('+L.c+','+a+')');g.addColorStop(L.s,'rgba('+L.c+','+a+')');g.addColorStop(1,'rgba('+L.c+',0)');
     x.fillStyle=g;x.beginPath();x.arc(px,py,rad,0,TAU);x.fill();}});}
 function draw(now){var W=c.width,H=c.height,T=D.reduced?0:((D.clock||0)+(D.paused?0:(now-t0)/1000))*D.speed;x.fillStyle=D.bg;x.fillRect(0,0,W,H);
-  var poses=[];D.orbs.forEach(function(o,i){var p=o.p,a=D.reduced?0:p.amp*D.drift,px=p.x+Math.sin(T*p.f1*TAU+p.ph1)*a,py=p.y+Math.cos(T*p.f2*TAU+p.ph2)*a,s=p.s*(1+.04*D.drift*Math.sin(T*.8+p.ph3));orb(o,px*W,py*H,s*W);poses.push({x:px*W,y:py*H,radius:o.layers[1].r*s*W,en:D.feelings&&D.feelings[i]?D.feelings[i][0]:'',ko:D.feelings&&D.feelings[i]?D.feelings[i][1]:'',side:p.captionSide});});
+  var poses=[];D.orbs.forEach(function(o,i){var p=o.p,a=D.reduced?0:p.amp*D.drift,px=p.x+Math.sin(T*p.f1*TAU+p.ph1)*a,py=p.y+Math.cos(T*p.f2*TAU+p.ph2)*a,s=p.s*(1+.04*D.drift*Math.sin(T*.8+p.ph3));orb(o,px*W,py*H,s*W);poses.push({captionScale:i===0?.5:.7,x:px*W,y:py*H,radius:o.layers[1].r*s*W,en:D.feelings&&D.feelings[i]?D.feelings[i][0]:'',ko:D.feelings&&D.feelings[i]?D.feelings[i][1]:'',side:p.captionSide});});
   var pad=W*.07;drawHeader(x,W,pad,function(z){return font(D.ft,z);},function(z){return font(D.fs,z);},D.title,D.sub,D.ink);x.fillStyle=D.ink;x.textBaseline='top';x.textAlign='left';
   if(D.feelings&&D.feelings.length>1){var captions=layoutOrbCaptions(poses,W,H,function(text,size,kind){x.font=kind==='ko'?'400 '+size+'px "Pretendard",sans-serif':'italic 500 '+size+'px "Cormorant Garamond",Georgia,serif';return x.measureText(text).width;});captions.forEach(function(caption,i){D.orbs[i].p.captionSide=caption.side;x.save();x.fillStyle=D.ink;x.globalAlpha=1;x.textAlign=caption.align;x.textBaseline='top';var xx=caption.align==='left'?caption.left:caption.left+caption.width,yy=caption.top;x.font='italic 500 '+caption.fontSize+'px "Cormorant Garamond",Georgia,serif';caption.enLines.forEach(function(line){x.fillText(line,xx,yy);yy+=caption.fontSize*1.06;});yy+=caption.koSize*.55;x.font='400 '+caption.koSize+'px "Pretendard",sans-serif';caption.koLines.forEach(function(line){x.fillText(line,xx,yy);yy+=caption.koSize*1.25;});x.restore();});}
   else if(D.feel){var fs2=W*.15;x.save();x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';var fw=x.measureText(D.feel[0]).width;if(fw>W*.84){fs2*=W*.84/fw;x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';}
