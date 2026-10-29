@@ -807,6 +807,15 @@ function layoutOrbCaptions(orbs,W,H,measure){
   });
 }
 
+function layoutSingleFeelingTarget(word,ctx,W,H,wide=false){
+  const textWidth=wide?Math.min(W*.8,480):W;let size=textWidth*.15;
+  ctx.save();ctx.font=`italic 500 ${size}px "Cormorant Garamond",Georgia,serif`;let english=ctx.measureText(word.en||'').width;
+  if(english>textWidth*.84){size*=textWidth*.84/english;english=textWidth*.84;}
+  const koSize=wide?textWidth*.035:10.7;ctx.font=`400 ${koSize}px "Pretendard",sans-serif`;const korean=word.ko?ctx.measureText(word.ko).width:0;ctx.restore();
+  const width=Math.max(44,english+24,korean+24),top=H/2-size*.65-8,bottom=H/2+(word.ko?size*.55+koSize*1.6:size*.65)+8;
+  return {left:(W-width)/2,top,width,height:Math.max(44,bottom-top)};
+}
+
 // ================= 여섯 배색 중 오브 하나 선택 =================
 const CATALOG_CATEGORIES=[['joy','기쁨·장난','Joy & play'],['warmth','온기·다정함','Warmth & tenderness'],['calm','평온·휴식','Calm & rest'],['freshness','싱그러움·자연','Freshness & nature'],['attraction','매혹·아름다움','Attraction & beauty'],['dream','몽환·신비','Dream & mystery'],['reflection','사색·고요','Reflection & quiet'],['sadness','슬픔·상실','Sadness & loss'],['fear','긴장·두려움','Tension & fear'],['anger','분노·불만','Anger & discontent'],['ambivalence','양가·상충·혼돈','Ambivalence & chaos'],['resistance','반발·저항·불신','Resistance & distrust'],['clarity','명료함·안정','Clarity & stability'],['innovation','미래성·독창성','Innovation & originality'],['movement','역동성·유연함','Movement & flexibility'],['refinement','세련됨·절제','Refinement & restraint'],['intensity','강렬함·낯섦','Intensity & strangeness'],['personal','직접 정한 표현','Personal expression']].map(([id,ko,en])=>({id,ko,en}));
 const N=6, tilesBox=document.getElementById('tiles'), countEl=document.getElementById('count'), tiles=[];
@@ -1096,7 +1105,7 @@ function renderOrbFeelingTargets(){
   box.hidden=hidden;const key=JSON.stringify([hidden,lang,rows.map(r=>[r.idx,r.word?.id])]);
   if(box.dataset.key!==key){box.dataset.key=key;box.replaceChildren();if(!hidden){box.setAttribute('aria-label',L('각 오브의 감정','Each orb’s feeling'));rows.forEach((row,slot)=>{const b=document.createElement('button');b.type='button';const name=row.word?row.word.en+(lang==='ko'?' · '+row.word.ko:''):L('이름 고르기','Choose a name');b.setAttribute('aria-label',L('오브 ','Orb ')+(slot+1)+' · '+name+L(' · 단어 바꾸기',' · Change word'));b.title=L('단어를 눌러 감정을 바꿔보세요.','Tap the word to change its feeling.');const text=document.createElement('span');text.textContent=name;b.append(text);b.addEventListener('click',()=>beginOrbMoodReview(row.idx));box.append(b);});}}
   if(hidden)return;
-  if(rows.length===1){Object.assign(box.children[0].style,{left:'5%',top:'50%',width:'90%',height:'10%',transform:'translateY(-50%)'});return;}
+  if(rows.length===1){const bounds=pc.getBoundingClientRect(),word=rows[0].word||{},hit=layoutSingleFeelingTarget({en:word.en||'',ko:lang==='ko'?word.ko||'':''},px,bounds.width,bounds.height,document.body.classList.contains('wide-scene'));Object.assign(box.children[0].style,{left:hit.left+'px',top:hit.top+'px',width:hit.width+'px',height:hit.height+'px',transform:'none'});return;}
   const bounds=pc.getBoundingClientRect(),width=bounds.width,height=bounds.height,orbWidth=document.body.classList.contains('wide-scene')?Math.min(width,height*9/16):width,layout=captionLayoutForRows(px,width,height,rows,orbWidth);
   layout.forEach((caption,i)=>{const hitHeight=Math.max(44,caption.height+8);Object.assign(box.children[i].style,{left:(caption.left-5)+'px',top:(caption.top-(hitHeight-caption.height)/2)+'px',width:(caption.width+10)+'px',height:hitHeight+'px',transform:'none'});});
 }
@@ -2202,7 +2211,7 @@ const APP_TOUR_KEY='mindful-day-ui-tour-v1';
 const appTour={active:false,dismissed:false,step:0,wordOpened:false,originalMenuOpen:false,focus:null,nextAt:0};
 function appTourSeen(){try{return !!localStorage.getItem(APP_TOUR_KEY);}catch(error){return false;}}
 function appTourCopy(){return [
-  {title:L('터치로 색을 만나세요','Touch to discover colors'),body:L('오브나 빈 공간을 누르면 새로운 색과 감정을 만나요. 마음에 드는 배색을 찾아보세요.','Touch an orb or an empty area to discover a new palette and feeling. Find colors you like.')},
+  {title:L('터치로 색을 만나세요','Touch to discover colors'),body:L('단어 주변의 빈 공간이나 오브를 누르면 새로운 색과 감정을 만나요. 마음에 드는 배색을 찾아보세요.','Touch the space around the word or an orb to discover a new palette and feeling. Find colors you like.')},
   {title:L('감정 단어도 버튼이에요','The feeling is a button, too'),body:L(chosen.length>1?'오브 옆의 영어·한글 단어를 누르면 색은 그대로 두고 그 오브의 감정 표현만 다시 고를 수 있어요.':'가운데 영어·한글 단어를 누르면 색은 그대로 두고 감정 표현만 다시 고를 수 있어요.',chosen.length>1?'Click the English or Korean word beside an orb to choose another feeling for it, keeping its colors.':'Click the English or Korean word in the center to choose another feeling, keeping your colors.')},
   {title:L('마음에 든 순간을 저장하세요','Keep a moment you like'),body:L('메뉴를 열지 않아도 아래 세 버튼으로 저장할 수 있어요.','Use these three buttons without opening the menu.'),items:[['quickCapture',L('이미지 캡처 · 지금의 그림 저장','Capture · save the current image')],['quickRecord',L('영상 녹화 · 다시 누르면 녹화 종료','Record · press again to stop')],['quickCopyCode',L('코드 복사 · 움직이는 그림 가져가기','Copy code · keep your moving artwork')]]},
   {title:L('오른쪽 아래 메뉴를 열어보세요','Explore the menu at the bottom right'),body:L('카테고리, 싱글·멀티, 배경색과 소리를 한곳에서 바꿀 수 있어요. 다음을 누르면 메뉴를 보여드릴게요.','Change categories, Single/Multi, background and sound here. Next will show you the menu.')},
