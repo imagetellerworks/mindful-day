@@ -13,6 +13,8 @@ if(p.get('tour')!=='off'&&!p.has('study')&&!p.has('set')&&(p.get('tour')==='1'||
 @font-face{font-family:Pretendard;src:url('fonts/Pretendard-Light.woff2') format('woff2');font-style:normal;font-weight:300;font-display:swap;unicode-range:U+0020-007E,U+2018-2019}
 .experience-brand{display:none;position:fixed;left:40px;top:30px;z-index:20;color:var(--mobile-ink,var(--ink));pointer-events:none}.is-story .experience-brand:not([hidden]){display:block}.experience-wordmark{position:relative;display:inline-block;margin:0;font:600 17px/1.05 MindfulBrand,Pretendard,Arial,sans-serif;letter-spacing:.045em}.experience-wordmark .brand-dot{position:absolute;right:-17px;top:1px;width:8px;height:8px;border-radius:50%;background:#9da98d}.experience-tagline{margin:10px 0 0;font:300 12px/1.4 Pretendard,Arial,sans-serif;letter-spacing:0}
 @media(max-width:760px){.experience-brand{left:24px;top:24px}.experience-wordmark{font-size:15px}.experience-tagline{font-size:11px;margin-top:8px}}
+
+.tour-touch-cue{pointer-events:auto;cursor:pointer;padding:0;z-index:2}.tour-touch-cue:focus-visible,.tour-word-target:focus-visible{outline:2px solid #fff;outline-offset:6px}.tour-blocker{position:fixed;background:rgba(15,15,24,.66);pointer-events:auto}.tour-word-target{position:fixed;pointer-events:auto;border:1px solid rgba(255,255,255,.85);border-radius:14px;background:transparent;cursor:pointer;animation:tour-word-breathe 1.6s ease-in-out infinite}.tour-word-instruction{position:fixed;margin:0;width:min(320px,calc(100vw - 32px));color:#fff;font:400 15px/1.65 var(--f-body);text-align:center;white-space:pre-line;pointer-events:none}.tour-minimal-close{position:fixed;top:90px;right:16px;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--mobile-ink,var(--ink));font:300 28px var(--f-body);pointer-events:auto;cursor:pointer}#appTour[data-step="4"] .tour-minimal-close{color:#fff}@keyframes tour-word-breathe{0%,100%{border-color:rgba(255,255,255,.3);box-shadow:0 0 0 0 rgba(255,255,255,0)}50%{border-color:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.17)}}@media(prefers-reduced-motion:reduce){.tour-word-target{animation:none;border-color:#fff}}
 </style></head><body>
 <title>Mindful Day · Original Color Lab</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -513,7 +515,9 @@ body.about-open{overflow:hidden}
   <div class="welcome-copy"><h1 id="welcomeTitle">MINDFUL DAY</h1><div class="welcome-lines"><p id="welcomeQuestion">당신의 오늘 하루는 어떤 색인가요?</p><p id="welcomeDescription">오늘의 감정과 닮은 컬러를 찾아보세요.</p></div><button type="button" id="welcomeStart">시작하기</button></div>
 </dialog>
 <aside class="app-tour" id="appTour" hidden>
-  <div class="tour-highlight" id="tourHighlight" aria-hidden="true"></div><div class="tour-touch-cue" id="tourTouchCue" aria-hidden="true" hidden></div>
+  <div class="tour-highlight" id="tourHighlight" aria-hidden="true"></div><button type="button" class="tour-touch-cue" id="tourTouchCue" aria-label="터치해 색 바꾸기" hidden></button>
+  <div class="tour-blocker" id="tourBlockTop" hidden></div><div class="tour-blocker" id="tourBlockBottom" hidden></div><div class="tour-blocker" id="tourBlockLeft" hidden></div><div class="tour-blocker" id="tourBlockRight" hidden></div>
+  <button type="button" class="tour-word-target" id="tourWordTarget" aria-label="감정 다시 고르기" hidden></button><p class="tour-word-instruction" id="tourWordInstruction" role="status" hidden></p><button type="button" class="tour-minimal-close" id="tourMinimalClose" aria-label="안내 건너뛰기" hidden>×</button>
   <section class="tour-card" id="tourCard" role="dialog" aria-modal="false" aria-labelledby="tourTitle" aria-describedby="tourBody" aria-live="polite">
     <header><span class="tour-progress" id="tourProgress"></span><button type="button" class="tour-close" id="tourClose" aria-label="사용 안내 닫기"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></header>
     <h2 id="tourTitle"></h2><p id="tourBody"></p><p class="tour-touch-count" id="tourTouchCount" role="status" aria-live="polite" hidden></p><ul id="tourItems" hidden></ul>
@@ -1473,12 +1477,12 @@ function touchPoster(e){
   if(!chosen.length)toggle(0);
   const b=pc.getBoundingClientRect(), x=(e.clientX-b.left)/b.width, y=(e.clientY-b.top)/b.height;
   const hit=nearestOrb(x,y,b.width,b.height);if(hit<0)return;
-  S.creationTouches=(S.creationTouches||0)+1;dismissNewPaletteInvite();
+  if(!e.tutorial)S.creationTouches=(S.creationTouches||0)+1;dismissNewPaletteInvite();
   S.activeOrb=chosen[hit];moveOrbToTouch(hit,x,y);
   const t=tiles[chosen[hit]];t.combo={mode:pick(MODES),h:R(0,360),tone:t.combo.tone};retarget(t,.9);
   strum([hit]);
   showFeeling(chosen[hit]);
-  offerShakeAfterTouch();updateColorUI();
+  if(!e.tutorial)offerShakeAfterTouch();updateColorUI();
   if(typeof noteAppTourTouch==='function')noteAppTourTouch();
 }
 pc.addEventListener('pointerdown',touchPoster);
@@ -2321,10 +2325,10 @@ const appTour={active:false,dismissed:false,step:0,wordOpened:false,originalMenu
 function appTourSeen(){try{return !!localStorage.getItem(APP_TOUR_KEY);}catch(error){return false;}}
 function appTourCopy(){return [
   {title:L('터치로 색을 만나세요','Touch to discover colors'),body:L('반투명 원 주변을 세 번 터치해보세요. 색이 달라지고 컬러가 손끝을 따라와요.','Tap around the translucent circle three times. Discover changing colors as the color follows your touch.')},
-  {title:L('감정 단어도 버튼이에요','The feeling is a button, too'),body:L(chosen.length>1?'컬러 옆의 영어·한글 단어를 누르면 색은 그대로 두고 그 컬러의 감정 표현만 다시 고를 수 있어요.':'가운데 영어·한글 단어를 누르면 색은 그대로 두고 감정 표현만 다시 고를 수 있어요.',chosen.length>1?'Click the English or Korean word beside a color to choose another feeling for it, keeping its colors.':'Click the English or Korean word in the center to choose another feeling, keeping your colors.')},
   {title:L('마음에 든 순간을 저장하세요','Keep a moment you like'),body:L('아래 세 버튼으로 저장할 수 있어요.','Use these three buttons to save your artwork.'),items:[['quickCapture',L('이미지 캡처 · 지금의 그림 저장','Capture · save the current image')],['quickRecord',L('영상 녹화 · 다시 누르면 녹화 종료','Record · press again to stop')],['quickCopyCode',L('코드 복사 · 움직이는 그림 가져가기','Copy code · keep your moving artwork')]]},
   {title:L('오른쪽 아래 메뉴를 열어보세요','Explore the menu at the bottom right'),body:L('더 다양한 컬러와 감정을 탐색해보세요.','Explore more colors and feelings.')},
-  {title:L('원하는 방식으로 더 탐색해요','Explore your way'),body:L('다섯 분위기 중 하나를 고르고, 아래 컬러 목록을 좌우로 드래그해보세요. 싱글은 컬러 하나, 멀티는 최대 세 개를 조합해요. 배경과 소리도 여기서 바꿔요.','Choose one of five moods, then drag the color row left or right. Single uses one color; Multi combines up to three. Background and sound are here, too.')}
+  {title:L('원하는 방식으로 더 탐색해요','Explore your way'),body:L('다섯 분위기 중 하나를 고르고, 아래 컬러 목록을 좌우로 드래그해보세요. 싱글은 컬러 하나, 멀티는 최대 세 개를 조합해요. 배경과 소리도 여기서 바꿔요.','Choose one of five moods, then drag the color row left or right. Single uses one color; Multi combines up to three. Background and sound are here, too.')},
+  {title:L('감정을 다시 정의해보세요','Redefine this feeling'),body:L('감정 단어를 터치해\n이 감정을 다시 정의할 수 있어요.','Tap the feeling word\nto choose how these colors feel to you.')}
 ];}
 function appTourPlacement(rect,width,height,W,H){
   const pad=14,left=Math.max(pad,Math.min(W-width-pad,(rect.left+rect.right-width)/2));
@@ -2335,28 +2339,29 @@ function appTourPlacement(rect,width,height,W,H){
 function appTourTarget(){
   const rectOf=e=>e?.getBoundingClientRect(),p=rectOf(pc),rects=[];
   if(appTour.step===0){const x=Math.max(40,Math.min(innerWidth-40,p.left+p.width*.72)),y=Math.max(100,Math.min(innerHeight*.43,p.top+p.height*.27));return {left:x-28,right:x+28,top:y-28,bottom:y+28};}
-  if(appTour.step===1){for(const b of $('orbFeelingTargets').querySelectorAll('button')){const r=rectOf(b);if(r.width&&r.height&&r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight)rects.push(r);}if(!rects.length)return {left:p.left+p.width*.1,right:p.right-p.width*.1,top:p.top+p.height*.43,bottom:p.top+p.height*.57};}
-  else if(appTour.step===2)rects.push(...['quickCapture','quickRecord','quickCopyCode'].map(id=>rectOf($(id))));
-  else if(appTour.step===3)rects.push(rectOf($('menuToggle')));
+  if(appTour.step===4){for(const b of $('orbFeelingTargets').querySelectorAll('button')){const r=rectOf(b);if(r.width&&r.height&&r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight)rects.push(r);}if(!rects.length)return {left:p.left+p.width*.1,right:p.right-p.width*.1,top:p.top+p.height*.43,bottom:p.top+p.height*.57};}
+  else if(appTour.step===1)rects.push(...['quickCapture','quickRecord','quickCopyCode'].map(id=>rectOf($(id))));
+  else if(appTour.step===2)rects.push(rectOf($('menuToggle')));
   else rects.push(rectOf($('labColorHeader')),rectOf($('reviewedCatalogStrip')));
   const valid=rects.filter(r=>r&&r.width&&r.height);if(!valid.length)return {left:20,right:innerWidth-20,top:innerHeight*.35,bottom:innerHeight*.55};
   return {left:Math.min(...valid.map(r=>r.left)),right:Math.max(...valid.map(r=>r.right)),top:Math.min(...valid.map(r=>r.top)),bottom:Math.max(...valid.map(r=>r.bottom))};
 }
 function renderAppTour(){
   if(!appTour.active)return;const copy=appTourCopy()[appTour.step];
-  $('tourTouchCount').hidden=appTour.step!==0;$('tourTouchCount').textContent=appTour.touchCount+L(' / 3 터치',' / 3 touches');
+  $('tourCard').hidden=appTour.step===0||appTour.step===4;$('appTour').setAttribute('data-step',String(appTour.step));$('tourMinimalClose').hidden=appTour.step!==0&&appTour.step!==4;$('tourWordInstruction').textContent=copy.body;
+  $('tourTouchCount').hidden=true;$('tourTouchCount').textContent=appTour.touchCount+L(' / 3 터치',' / 3 touches');
   $('tourProgress').textContent=(appTour.step+1)+' / 5';$('tourTitle').textContent=copy.title;$('tourBody').textContent=copy.body;
   const items=$('tourItems');items.replaceChildren();for(const [id,text] of copy.items||[]){const row=document.createElement('li'),icon=$(id).querySelector('svg')?.cloneNode(true),label=document.createElement('span');if(icon){icon.setAttribute('aria-hidden','true');row.append(icon);}label.textContent=text;row.append(label);items.append(row);}items.hidden=!copy.items;
-  $('tourPrevious').textContent=L('이전','Back');$('tourPrevious').disabled=appTour.step===0;$('tourSkip').textContent=L('건너뛰기','Skip');$('tourNext').textContent=appTour.step===4?L('시작하기','Start creating'):appTour.step===3?L('메뉴 보기','Show menu'):L('다음','Next');$('tourClose').setAttribute('aria-label',L('사용 안내 닫기','Close guide'));
+  $('tourPrevious').textContent=L('이전','Back');$('tourPrevious').disabled=appTour.step===0;$('tourSkip').textContent=L('건너뛰기','Skip');$('tourNext').textContent=appTour.step===4?L('시작하기','Start creating'):appTour.step===2?L('메뉴 보기','Show menu'):L('다음','Next');$('tourClose').setAttribute('aria-label',L('사용 안내 닫기','Close guide'));
   appTour.nextAt=0;updateAppTour(performance.now(),true);
-  if(appTour.step===4&&typeof startCatalogPeek==='function')startCatalogPeek(true);
+  if(appTour.step===3&&typeof startCatalogPeek==='function')startCatalogPeek(true);
 }
 function startAppTour(){
   if(isAppWelcomeOpen())return false;
   if(S.study||S.studyLoading||S.catalogLoading||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return false;
   if(appTour.active)return true;appTour.active=true;appTour.step=0;appTour.touchCount=0;appTour.wordOpened=false;appTour.originalMenuOpen=menuOpen;appTour.focus=document.activeElement?.closest?.('#aboutDialog')?$('aboutOpen'):document.activeElement;
   hideGuide();dismissMenuGuide();clearTimeout(shake.offerTimer);$('shakeCoach').hidden=true;
-  setMenuOpen(false);$('appTour').hidden=false;renderAppTour();$('tourNext').focus({preventScroll:true});return true;
+  setMenuOpen(false);$('appTour').hidden=false;renderAppTour();$('tourTouchCue').focus({preventScroll:true});return true;
 }
 function endAppTour(completed=false){
   if(!appTour.active)return;appTour.active=false;appTour.dismissed=true;$('appTour').hidden=true;menuTipShown=true;
@@ -2365,7 +2370,7 @@ function endAppTour(completed=false){
 }
 function advanceAppTour(delta){
   if(!appTour.active)return;if(appTour.step+delta>4){endAppTour(true);return;}
-  appTour.step=Math.max(0,appTour.step+delta);if(appTour.step===0)appTour.touchCount=0;appTour.wordOpened=false;setMenuOpen(appTour.step===4);renderAppTour();$('tourNext').focus({preventScroll:true});
+  appTour.step=Math.max(0,appTour.step+delta);if(appTour.step===0)appTour.touchCount=0;appTour.wordOpened=false;setMenuOpen(appTour.step===3);renderAppTour();$(appTour.step===0?'tourTouchCue':appTour.step===4?'tourWordTarget':'tourNext').focus({preventScroll:true});
 }
 function noteAppTourTouch(){
   if(!appTour.active||appTour.step!==0||$('appTour').hidden)return;
@@ -2373,15 +2378,21 @@ function noteAppTourTouch(){
 }
 function updateAppTour(now,force=false){
   if(!appTour.active||!force&&now<appTour.nextAt)return;appTour.nextAt=now+100;
-  if(appTour.step===1&&S.reviewing)appTour.wordOpened=true;
-  if(appTour.step===1&&appTour.wordOpened&&!S.reviewing){advanceAppTour(1);return;}
+  if(appTour.step===4&&S.reviewing)appTour.wordOpened=true;
+  if(appTour.step===4&&appTour.wordOpened&&!S.reviewing){endAppTour(true);return;}
   const suspended=S.reviewing||imageBusy||['prep','rec','making'].includes(vstate)||aboutDialog.open||$('catalogCategoryDialog').open||!sheet.hidden||!imageChoices.hidden;
   $('appTour').hidden=suspended;if(suspended)return;
   if(appTour.step===0&&appTour.touchCount>=3&&(typeof tiles==='undefined'||chosen.every(i=>tiles[i].cur===tiles[i].to))){advanceAppTour(1);return;}
   const rect=appTourTarget(),W=innerWidth,H=innerHeight,ring=$('tourHighlight'),card=$('tourCard'),cue=$('tourTouchCue');
-  ring.hidden=appTour.step===0;cue.hidden=appTour.step!==0||appTour.touchCount>=3;if(appTour.step===0)Object.assign(cue.style,{left:((rect.left+rect.right)/2)+'px',top:((rect.top+rect.bottom)/2)+'px'});
+  ring.hidden=appTour.step===0||appTour.step===4;cue.setAttribute('aria-label',L('터치해 색 바꾸기','Tap to change the color')+' ('+appTour.touchCount+'/3)');cue.hidden=appTour.step!==0||appTour.touchCount>=3;if(appTour.step===0)Object.assign(cue.style,{left:((rect.left+rect.right)/2)+'px',top:((rect.top+rect.bottom)/2)+'px'});
   const left=Math.max(4,rect.left-7),top=Math.max(4,rect.top-7),right=Math.min(W-4,rect.right+7),bottom=Math.min(H-4,rect.bottom+7);
   Object.assign(ring.style,{left:left+'px',top:top+'px',width:Math.max(0,right-left)+'px',height:Math.max(0,bottom-top)+'px'});
+  const final=appTour.step===4,blocks=['tourBlockTop','tourBlockBottom','tourBlockLeft','tourBlockRight'];for(const id of blocks)$(id).hidden=!final;$('tourWordTarget').hidden=!final;$('tourWordInstruction').hidden=!final;
+  if(final){
+    const boxes=[{left:0,top:0,width:W,height:top},{left:0,top:bottom,width:W,height:H-bottom},{left:0,top,width:left,height:bottom-top},{left:right,top,width:W-right,height:bottom-top}];blocks.forEach((id,i)=>Object.assign($(id).style,Object.fromEntries(Object.entries(boxes[i]).map(([k,v])=>[k,Math.max(0,v)+'px']))));
+    Object.assign($('tourWordTarget').style,{left:left+'px',top:top+'px',width:(right-left)+'px',height:(bottom-top)+'px'});
+    const text=$('tourWordInstruction'),tw=Math.min(320,W-32);Object.assign(text.style,{left:Math.max(16,Math.min(W-tw-16,(left+right-tw)/2))+'px',top:Math.max(100,top-90)+'px'});return;
+  }
   const b=card.getBoundingClientRect(),pos=appTour.step===0?{left:W>=760?24:(W-b.width)/2,top:Math.max(14,H-b.height-100)}:appTourPlacement({left,top,right,bottom},b.width,b.height,W,H);Object.assign(card.style,{left:pos.left+'px',top:pos.top+'px'});
 }
 function offerAppTour(){
@@ -2389,6 +2400,12 @@ function offerAppTour(){
   const param=new URLSearchParams(location.search).get('tour');if(appTour.dismissed||param==='off'||param!=='1'&&appTourSeen()||document.hidden||chosen.length!==1)return;
   startAppTour();
 }
+$('tourTouchCue').addEventListener('animationiteration',()=>{if(!appTour.active||appTour.step!==0||$('appTour').hidden||document.hidden||appTour.touchCount>=3)return;const r=$('tourTouchCue').getBoundingClientRect();touchPoster({clientX:r.left+r.width/2,clientY:r.top+r.height/2,isPrimary:true,pointerType:'tutorial',button:0,target:$('tourTouchCue'),tutorial:true});});
+$('tourTouchCue').addEventListener('pointerdown',e=>{e.preventDefault();touchPoster(e);});
+$('tourTouchCue').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();const r=e.currentTarget.getBoundingClientRect();touchPoster({clientX:r.left+r.width/2,clientY:r.top+r.height/2,isPrimary:true,pointerType:'keyboard',button:0,target:e.currentTarget});}});
+$('tourWordTarget').addEventListener('click',()=>{const buttons=[...$('orbFeelingTargets').querySelectorAll('button')],button=buttons.find(b=>{const r=b.getBoundingClientRect();return r.width&&r.height&&r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight;});if(button)button.click();});
+$('tourMinimalClose').addEventListener('click',()=>endAppTour());
+addEventListener('keydown',e=>{if(appTour.active&&appTour.step===4&&!$('appTour').hidden&&e.key==='Tab'){e.preventDefault();$(document.activeElement===$('tourWordTarget')?'tourMinimalClose':'tourWordTarget').focus({preventScroll:true});}},true);
 $('tourNext').addEventListener('click',()=>advanceAppTour(1));$('tourPrevious').addEventListener('click',()=>advanceAppTour(-1));$('tourSkip').addEventListener('click',()=>endAppTour());$('tourClose').addEventListener('click',()=>endAppTour());
 $('replayAppTour').addEventListener('click',()=>{aboutDialog.close();openAppWelcome();});
 addEventListener('keydown',e=>{if(appTour.active&&!$('appTour').hidden&&e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();endAppTour();}},true);
