@@ -1,5 +1,12 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><script id="welcome-gate">
+(()=>{const p=new URLSearchParams(location.search);let seen=false;try{seen=!!localStorage.getItem('mindful-day-welcome-v1');}catch(error){}
+if(p.get('tour')!=='off'&&!p.has('study')&&!p.has('set')&&(p.get('tour')==='1'||!seen))document.documentElement.classList.add('welcome-pending');})();
+</script>
+<style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
 .app-tour{position:fixed;inset:0;z-index:90;pointer-events:none}.app-tour[hidden]{display:none}.tour-highlight{position:fixed;box-sizing:border-box;border:1px solid rgba(255,255,255,.95);border-radius:16px;box-shadow:0 0 0 9999px rgba(15,15,24,.24);pointer-events:none}.tour-card{position:fixed;box-sizing:border-box;width:min(340px,calc(100vw - 28px));max-height:calc(100dvh - 28px);overflow:auto;padding:20px;border:1px solid rgba(35,32,45,.12);border-radius:18px;background:rgba(246,246,247,.70);color:#24212b;box-shadow:0 10px 40px rgba(20,18,28,.14);pointer-events:auto;font:400 13px/1.65 var(--f-body);text-align:left;text-shadow:none;-webkit-text-stroke:0}.tour-card header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px}.tour-progress{font-size:11px;opacity:.6}.tour-close{display:grid;place-items:center;width:44px;height:44px;border:0;background:none;color:inherit;cursor:pointer}.tour-card h2{margin:0 0 8px;font:500 17px/1.45 var(--f-body);word-break:keep-all}.tour-card p{margin:0;word-break:keep-all}.tour-card ul{list-style:none;padding:0;margin:14px 0 0}.tour-card li{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:12px}.tour-card li svg{width:22px;height:22px;flex:none}.tour-card .stop-icon{display:none}.tour-card nav{display:flex;align-items:center;gap:10px;margin-top:18px}.tour-card nav button{min-height:44px;padding:8px 10px;border:0;border-radius:22px;font:400 12px/1.4 var(--f-body);cursor:pointer;color:inherit;background:transparent}.tour-card nav button:disabled{opacity:.3;cursor:default}.tour-card nav #tourNext{margin-left:auto;background:#24212b;color:#fff;padding-inline:18px}.tour-card nav #tourSkip{font-size:11px;opacity:.7}.tour-card button:focus-visible{outline:2px solid #655c93;outline-offset:3px}.about-tour{margin:18px 0}.about-tour button{border:0;background:none;padding:6px 0;color:inherit;text-decoration:underline;text-underline-offset:4px;font:400 12px/1.5 var(--f-body);cursor:pointer}
+
+.welcome-pending .lab-badge,.welcome-pending .brand,.welcome-pending #langBtn,.welcome-pending footer.site,.welcome-pending #menuToggle,.welcome-pending #mobilePosterFooter,.welcome-pending #orbFeelingTargets,.welcome-pending #canvasMoodChoice,.welcome-pending #newPaletteInvite,.welcome-pending #autoMoodActions,.welcome-pending #guide,.welcome-pending #menuGuide,.welcome-pending #shakeCoach{visibility:hidden!important;pointer-events:none!important}
+.app-welcome{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;border:0;padding:0;background:transparent;color:var(--welcome-ink,#24212b);text-align:center;overflow:auto}.app-welcome[open]{display:grid;place-items:center}.app-welcome::backdrop{background:var(--welcome-wash,rgba(230,230,230,.18));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}.welcome-copy{box-sizing:border-box;width:min(560px,100%);padding:40px 28px;display:flex;flex-direction:column;align-items:center}.welcome-copy h1{margin:0 0 32px;font:500 clamp(40px,8vw,68px)/1.15 Futura,"Futura PT",Jost,sans-serif;letter-spacing:-.025em;animation:welcome-reveal .65s ease both}.welcome-lines{animation:welcome-reveal .65s .2s ease both}.welcome-lines p{margin:0;word-break:keep-all;text-wrap:balance;font:400 15px/1.8 var(--f-body)}.welcome-lines #welcomeDescription{margin-top:6px;font-size:13px;opacity:.78}.welcome-copy button{margin-top:34px;min-height:48px;border:1px solid var(--welcome-ink,#24212b);border-radius:28px;padding:12px 32px;background:var(--welcome-ink,#24212b);color:var(--welcome-bg,#e6e6e6);font:400 13px/1.5 var(--f-body);cursor:pointer;animation:welcome-reveal .65s .4s ease both}.welcome-copy button:disabled{opacity:.45;cursor:wait}.welcome-copy button:focus-visible{outline:2px solid currentColor;outline-offset:5px}@keyframes welcome-reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){.welcome-copy h1,.welcome-lines,.welcome-copy button{animation:none}}
 </style></head><body>
 <title>Mindful Day · Original Color Lab</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -493,6 +500,9 @@ body.about-open{overflow:hidden}
 </dialog>
 
 
+<dialog class="app-welcome" id="appWelcome" aria-labelledby="welcomeTitle" aria-describedby="welcomeQuestion welcomeDescription">
+  <div class="welcome-copy"><h1 id="welcomeTitle">Mindful Day</h1><div class="welcome-lines"><p id="welcomeQuestion">당신의 오늘 하루는 어떤 색인가요?</p><p id="welcomeDescription">오늘의 감정과 닮은 컬러를 찾아보세요.</p></div><button type="button" id="welcomeStart">시작하기</button></div>
+</dialog>
 <aside class="app-tour" id="appTour" hidden>
   <div class="tour-highlight" id="tourHighlight" aria-hidden="true"></div>
   <section class="tour-card" id="tourCard" role="dialog" aria-modal="false" aria-labelledby="tourTitle" aria-describedby="tourBody" aria-live="polite">
@@ -705,6 +715,7 @@ function setLanguage(next,persist=true){
   document.querySelectorAll('.sheet-prev [aria-label],.sheet-prev img').forEach(el=>{if(el.hasAttribute('aria-label'))el.setAttribute('aria-label',tr(el.getAttribute('aria-label')));if(el.alt)el.alt=tr(el.alt);});
   if(persist){languagePreference=lang;try{localStorage.setItem('mindful-day-original-lab-language',lang);}catch(err){}}
   if(typeof appTour!=='undefined'){ $('replayAppTour').textContent=L('사용 방법 다시 보기','Show me how to use it');if(appTour.active)renderAppTour();}
+  if(typeof appWelcome!=='undefined'&&appWelcome.active)renderAppWelcome();
   updateShakeCoach();updateMenuToggle();updateAboutLanguage();updateModeUI();renderMoodChoices();showFeeling(chosen[0]);fit=null;resize();drawPoster();drawMobileBackdrop();
 }
 
@@ -960,7 +971,7 @@ function useReviewedGround(ground){
 }
 function recordReviewedExposure(match){
   if(!reviewedExploration)return;
-  if(!S.canvasChoiceReady||S.study||S.studyLoading||S.catalogLoading||S.reviewing||document.hidden){tiles.forEach(t=>t.exposureAt=null);return;}
+  if((typeof isAppWelcomeOpen==='function'&&isAppWelcomeOpen())||!S.canvasChoiceReady||S.study||S.studyLoading||S.catalogLoading||S.reviewing||document.hidden){tiles.forEach(t=>t.exposureAt=null);return;}
   const now=performance.now();tiles.forEach((t,i)=>{if(!chosen.includes(i))t.exposureAt=null;});
   chosen.forEach((idx,slot)=>{const tile=tiles[idx],row=tile.reviewed,component=match.proposal.components?.[slot];
     const exact=row&&component?.visible&&component.references?.some(r=>r.key===row.wordKey&&r.exact);
@@ -1101,7 +1112,7 @@ function individualFeelingRows(scene){
 function feelingRowY(slot,count){return count===1?.5:(count===2?.455:.4)+slot*.11;}
 function renderOrbFeelingTargets(){
   const box=$('orbFeelingTargets');if(!box)return;
-  const rows=S.orbFeelingRows||[],hidden=!rows.length||!S.canvasChoiceReady||S.reviewing||S.study||S.studyLoading||S.catalogLoading||menuOpen||imageBusy||['prep','rec','making'].includes(vstate)||chosen.some(i=>tiles[i].cur!==tiles[i].to);
+  const rows=S.orbFeelingRows||[],hidden=(typeof isAppWelcomeOpen==='function'&&isAppWelcomeOpen())||!rows.length||!S.canvasChoiceReady||S.reviewing||S.study||S.studyLoading||S.catalogLoading||menuOpen||imageBusy||['prep','rec','making'].includes(vstate)||chosen.some(i=>tiles[i].cur!==tiles[i].to);
   box.hidden=hidden;const key=JSON.stringify([hidden,lang,rows.map(r=>[r.idx,r.word?.id])]);
   if(box.dataset.key!==key){box.dataset.key=key;box.replaceChildren();if(!hidden){box.setAttribute('aria-label',L('각 오브의 감정','Each orb’s feeling'));rows.forEach((row,slot)=>{const b=document.createElement('button');b.type='button';const name=row.word?row.word.en+(lang==='ko'?' · '+row.word.ko:''):L('이름 고르기','Choose a name');b.setAttribute('aria-label',L('오브 ','Orb ')+(slot+1)+' · '+name+L(' · 단어 바꾸기',' · Change word'));b.title=L('단어를 눌러 감정을 바꿔보세요.','Tap the word to change its feeling.');const text=document.createElement('span');text.textContent=name;b.append(text);b.addEventListener('click',()=>beginOrbMoodReview(row.idx));box.append(b);});}}
   if(hidden)return;
@@ -1211,6 +1222,7 @@ function drawSceneOrbs(ctx,W,H,orbWidth=W){
     drawOrb(ctx,tiles[idx].cur,x*W,y*H,sc*orbWidth);});
 }
 function drawPosterText(ctx,W,H,G,screen=false){
+  if(typeof isAppWelcomeOpen==='function'&&isAppWelcomeOpen())return;
   drawFeeling(ctx,W,H);
   const pad=W*.07;
   drawHeader(ctx,W,pad,z=>fontStr(S.ft,'t',z),z=>fontStr(S.fs,'s',z),S.title||'',S.sub||'',G.ink);
@@ -1237,6 +1249,7 @@ function drawMobileBackdrop(){
   mobilePx.save();mobilePx.translate(r.left,r.top);
   if(document.body.classList.contains('wide-scene')){
     drawSceneOrbs(mobilePx,r.width,r.height,Math.min(r.width,r.height*9/16));
+    if(typeof isAppWelcomeOpen==='function'&&isAppWelcomeOpen()){mobilePx.restore();return;}
     const tw=Math.min(r.width*.8,480),pad=tw*.07;
     const multiRows=S.reviewing&&feedbackReview?.targetIdx!=null?feedbackReview.selectedWord?feedbackReview.feelings:[]:S.orbFeelingRows||[];if(multiRows.length>1)drawIndividualFeelings(mobilePx,r.width,r.height,multiRows,Math.min(r.width,r.height*9/16));
     mobilePx.save();mobilePx.translate((r.width-tw)/2,0);if(multiRows.length<=1)drawFeeling(mobilePx,tw,r.height);
@@ -1384,6 +1397,7 @@ function moveOrbToTouch(i,x,y){const pl=placements[i];if(!pl)return;
   pl.touchMove={x:pl.x,y:pl.y,t0:pl.touchAt};
 }
 function touchPoster(e){
+  if(typeof isAppWelcomeOpen==='function'&&isAppWelcomeOpen())return;
   if(S.studyLoading||S.study||e.target?.closest?.('#canvasMoodChoice'))return;
   if(e.isPrimary===false||e.pointerType==='mouse'&&e.button!==0)return;
   if(S.reviewing)endMoodReview();
@@ -1402,7 +1416,7 @@ function touchPoster(e){
 pc.addEventListener('pointerdown',touchPoster);
 document.addEventListener('pointerdown',e=>{
   if(!document.body.classList.contains('is-story')||e.target===pc)return;
-  if(e.target?.closest?.('button,input,select,textarea,summary,a,video,#dock,#storyBar,#more,#menuOverlay,#menuToggle,#menuGuide,#appTour,#exportLayer,#aboutDialog,footer'))return;
+  if(e.target?.closest?.('button,input,select,textarea,summary,a,video,#dock,#storyBar,#more,#menuOverlay,#menuToggle,#menuGuide,#appTour,#appWelcome,#exportLayer,#aboutDialog,footer'))return;
   touchPoster(e);
 });
 
@@ -2207,6 +2221,31 @@ $('exportChoices').addEventListener('click',()=>{if(!feedbackStore&&!reviewedCho
 $('more').addEventListener('toggle',()=>{if($('more').open)renderPaletteReadout();});
 
 // ================= 화면 사용 안내 =================
+const APP_WELCOME_KEY='mindful-day-welcome-v1';
+const appWelcome={active:document.documentElement.classList.contains('welcome-pending')};
+function isAppWelcomeOpen(){return appWelcome.active;}
+function renderAppWelcome(){
+  if(!appWelcome.active)return;const dialog=$('appWelcome'),G=groundColors();
+  $('welcomeQuestion').textContent=L('당신의 오늘 하루는 어떤 색인가요?','What color is your day today?');
+  $('welcomeDescription').textContent=L('오늘의 감정과 닮은 컬러를 찾아보세요.','Find a color that feels like your mood today.');
+  $('welcomeStart').textContent=L('시작하기','Begin');$('welcomeStart').disabled=!S.canvasChoiceReady;
+  dialog.style.setProperty('--welcome-ink',G.ink);dialog.style.setProperty('--welcome-bg',G.bg);dialog.style.setProperty('--welcome-wash',G.dark?'rgba(18,16,25,.18)':'rgba(230,230,230,.18)');
+  hideGuide();dismissMenuGuide();$('shakeCoach').hidden=true;
+  if(!dialog.open)dialog.showModal();if(S.canvasChoiceReady)$('welcomeStart').focus({preventScroll:true});
+}
+function openAppWelcome(){
+  if(S.study||S.studyLoading||S.catalogLoading||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return false;
+  if(appTour.active)endAppTour();appWelcome.active=true;document.documentElement.classList.add('welcome-pending');renderAppWelcome();drawPoster();drawMobileBackdrop();return true;
+}
+function beginFromWelcome(){
+  if(!appWelcome.active||!S.canvasChoiceReady)return false;
+  appWelcome.active=false;$('appWelcome').close();document.documentElement.classList.remove('welcome-pending');
+  try{localStorage.setItem(APP_WELCOME_KEY,'seen');}catch(error){}
+  drawPoster();drawMobileBackdrop();renderOrbFeelingTargets();startAppTour();return true;
+}
+$('welcomeStart').addEventListener('click',beginFromWelcome);
+$('appWelcome').addEventListener('cancel',e=>{e.preventDefault();beginFromWelcome();});
+
 const APP_TOUR_KEY='mindful-day-ui-tour-v1';
 const appTour={active:false,dismissed:false,step:0,wordOpened:false,originalMenuOpen:false,focus:null,nextAt:0};
 function appTourSeen(){try{return !!localStorage.getItem(APP_TOUR_KEY);}catch(error){return false;}}
@@ -2241,6 +2280,7 @@ function renderAppTour(){
   appTour.nextAt=0;updateAppTour(performance.now(),true);
 }
 function startAppTour(){
+  if(isAppWelcomeOpen())return false;
   if(S.study||S.studyLoading||S.catalogLoading||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return false;
   if(appTour.active)return true;appTour.active=true;appTour.step=0;appTour.wordOpened=false;appTour.originalMenuOpen=menuOpen;appTour.focus=document.activeElement?.closest?.('#aboutDialog')?$('aboutOpen'):document.activeElement;
   hideGuide();dismissMenuGuide();clearTimeout(shake.offerTimer);$('shakeCoach').hidden=true;
@@ -2267,11 +2307,12 @@ function updateAppTour(now,force=false){
   const b=card.getBoundingClientRect(),pos=appTourPlacement({left,top,right,bottom},b.width,b.height,W,H);Object.assign(card.style,{left:pos.left+'px',top:pos.top+'px'});
 }
 function offerAppTour(){
+  if(isAppWelcomeOpen()){renderAppWelcome();return;}
   const param=new URLSearchParams(location.search).get('tour');if(appTour.dismissed||param==='off'||param!=='1'&&appTourSeen()||document.hidden||chosen.length!==1)return;
   startAppTour();
 }
 $('tourNext').addEventListener('click',()=>advanceAppTour(1));$('tourPrevious').addEventListener('click',()=>advanceAppTour(-1));$('tourSkip').addEventListener('click',()=>endAppTour());$('tourClose').addEventListener('click',()=>endAppTour());
-$('replayAppTour').addEventListener('click',()=>{aboutDialog.close();startAppTour();});
+$('replayAppTour').addEventListener('click',()=>{aboutDialog.close();openAppWelcome();});
 addEventListener('keydown',e=>{if(appTour.active&&!$('appTour').hidden&&e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();endAppTour();}},true);
 addEventListener('resize',()=>{if(appTour.active)updateAppTour(performance.now(),true);});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.canvasChoiceReady&&!appTour.active)offerAppTour();});
@@ -2289,7 +2330,7 @@ setLanguage(languagePreference||deviceLanguage(),false);
 addEventListener('languagechange',()=>{if(!languagePreference)setLanguage(deviceLanguage(),false);});
 showFeeling(chosen[0]);
 warmFonts();
-(document.fonts?document.fonts.ready:Promise.resolve()).then(async()=>{fit=null;if(!await loadResearchStudy()){await refreshReviewedReferences();if(!loadReviewedPaletteSet())await loadMultiCatalogSet();}S.canvasChoiceReady=true;S.nextChoiceAt=performance.now()+1300;requestAnimationFrame(frame);setTimeout(offerAppTour,650);});
+(document.fonts?document.fonts.ready:Promise.resolve()).then(async()=>{fit=null;if(!await loadResearchStudy()){await refreshReviewedReferences();if(!loadReviewedPaletteSet())await loadMultiCatalogSet();}S.canvasChoiceReady=true;if(isAppWelcomeOpen())renderAppWelcome();S.nextChoiceAt=performance.now()+1300;requestAnimationFrame(frame);setTimeout(offerAppTour,650);});
 </script>
 
 </body></html>
