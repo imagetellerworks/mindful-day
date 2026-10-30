@@ -1,9 +1,9 @@
 {
-  "sourceCommit": "a9e4ab8158d48a4e027c419ed3569dd0a017e64c",
+  "sourceCommit": "24f65104d7929a0695c7717c129e0aa45b329d44",
   "files": [
     {
       "path": "index.html",
-      "sha256": "6f2114ed0f7f1d8ca65f11c541f4b6b073745e9544e4e275f0a2b02bb71d2ea5"
+      "sha256": "0b6dcf712bee797dc9e84fad4f2643ba7acb10cfd16668a6e7d4e2e48f3a1cd4"
     },
     {
       "path": "single-orb-model.js",
@@ -44,6 +44,10 @@
     {
       "path": "fonts/Pretendard-Bold.woff2",
       "sha256": "4609c3356e536fafe38f4add0daeceb3d8595d3057bce13c428c33ddbd43d362"
+    },
+    {
+      "path": "fonts/Pretendard-Light.woff2",
+      "sha256": "12cde037ec282ede74fb9889cb1e0fa861f81d50c5c40f255274f28743c55237"
     },
     {
       "path": "fonts/Pretendard-Medium.woff2",

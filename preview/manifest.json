@@ -3,7 +3,7 @@
   "files": [
     {
       "path": "index.html",
-      "sha256": "11bbc6fe991303ec033184f458fad3804aa1e682e45c2af12fcdebce1cbaaadc"
+      "sha256": "f6aba7fa06c252d9e81f2b79c5ddfebc9c26bc7b9e09278452011f03e0216b91"
     },
     {
       "path": "single-orb-model.js",
@@ -44,6 +44,10 @@
     {
       "path": "fonts/Pretendard-Bold.woff2",
       "sha256": "4609c3356e536fafe38f4add0daeceb3d8595d3057bce13c428c33ddbd43d362"
+    },
+    {
+      "path": "fonts/Pretendard-Light.woff2",
+      "sha256": "12cde037ec282ede74fb9889cb1e0fa861f81d50c5c40f255274f28743c55237"
     },
     {
       "path": "fonts/Pretendard-Medium.woff2",
