@@ -8,7 +8,7 @@ if(p.get('tour')!=='off'&&!p.has('study')&&!p.has('set')&&(p.get('tour')==='1'||
 .welcome-pending .lab-badge,.welcome-pending .brand,.welcome-pending #langBtn,.welcome-pending #appHome,.welcome-pending footer.site,.welcome-pending #menuToggle,.welcome-pending #mobilePosterFooter,.welcome-pending #orbFeelingTargets,.welcome-pending #canvasMoodChoice,.welcome-pending #newPaletteInvite,.welcome-pending #autoMoodActions,.welcome-pending #guide,.welcome-pending #menuGuide,.welcome-pending #shakeCoach{visibility:hidden!important;pointer-events:none!important}
 .app-welcome{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;border:0;padding:0;background:transparent;color:var(--welcome-ink,#24212b);text-align:center;overflow:auto}.app-welcome[open]{display:grid;place-items:center}.app-welcome::backdrop{background:var(--welcome-wash,rgba(230,230,230,.18));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}.welcome-copy{box-sizing:border-box;width:min(560px,100%);padding:40px 28px;display:flex;flex-direction:column;align-items:center}.welcome-copy h1{margin:0 0 32px;font:500 clamp(40px,8vw,68px)/1.15 Futura,"Futura PT",Jost,sans-serif;letter-spacing:-.025em;animation:welcome-reveal .65s ease both}.welcome-lines{animation:welcome-reveal .65s .2s ease both}.welcome-lines p{margin:0;word-break:keep-all;text-wrap:balance;font:400 15px/1.8 var(--f-body)}.welcome-lines #welcomeDescription{margin-top:6px;font-size:13px;opacity:.78}.welcome-copy button{margin-top:34px;min-height:48px;border:1px solid var(--welcome-ink,#24212b);border-radius:28px;padding:12px 32px;background:var(--welcome-ink,#24212b);color:var(--welcome-bg,#e6e6e6);font:400 13px/1.5 var(--f-body);cursor:pointer;animation:welcome-reveal .65s .4s ease both}.welcome-copy button:disabled{opacity:.45;cursor:wait}.welcome-copy button:focus-visible{outline:2px solid currentColor;outline-offset:5px}@keyframes welcome-reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){.welcome-copy h1,.welcome-lines,.welcome-copy button{animation:none}}
 .tour-touch-cue{position:fixed;width:56px;height:56px;box-sizing:border-box;border-radius:50%;border:1px solid rgba(255,255,255,.75);background:rgba(82,78,100,.28);box-shadow:inset 0 0 0 1px rgba(30,28,40,.12),0 0 22px rgba(255,255,255,.18);pointer-events:none;animation:tour-touch-breathe 1.6s ease-in-out infinite}.tour-touch-cue::after{content:'';position:absolute;inset:18px;border-radius:50%;background:rgba(255,255,255,.4)}.tour-touch-count{margin-top:8px!important;font-size:11px!important;opacity:.7}@keyframes tour-touch-breathe{0%,100%{transform:translate(-50%,-50%) scale(.72);opacity:.6}50%{transform:translate(-50%,-50%) scale(1.12);opacity:1}}@media(prefers-reduced-motion:reduce){.tour-touch-cue{animation:none;transform:translate(-50%,-50%);opacity:.7}}
-</style></head><body>
+</style><script>if(new URLSearchParams(location.search).get('showroom')==='1'){const s=document.createElement('style');s.textContent="html,body{margin:0!important;overflow:hidden!important;background:#f3f0f3!important}body *{visibility:hidden!important}#poster{visibility:visible!important;position:fixed!important;inset:0!important;display:block!important;width:100vw!important;height:100dvh!important;max-width:none!important;aspect-ratio:auto!important;opacity:1!important;border:0!important;border-radius:0!important;box-shadow:none!important;z-index:99999!important}";document.head.append(s)}</script></head><body>
 <title>Mindful Day</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@500;900&family=Nanum+Myeongjo:wght@400;800&family=Gowun+Batang:wght@400;700&family=Hahmlet:wght@400;800&family=Song+Myung&family=Black+Han+Sans&family=Gothic+A1:wght@500;900&family=IBM+Plex+Sans+KR:wght@500;700&family=Cormorant+Garamond:ital,wght@1,500&family=Jost:wght@300;400;500&display=swap">
@@ -1273,7 +1273,7 @@ function drawSceneOrbs(ctx,W,H,orbWidth=W){
     pl.lx=x;pl.ly=y;pl.lr=sc*.38;
     drawOrb(ctx,tiles[idx].cur,x*W,y*H,sc*orbWidth);});
 }
-function drawPosterText(ctx,W,H,G,screen=false){
+function drawPosterText(ctx,W,H,G,screen=false){if(new URLSearchParams(location.search).get('showroom')==='1')return;
   if(typeof isAppWelcomeOpen==='function'&&isAppWelcomeOpen())return;
   drawFeeling(ctx,W,H);
   const pad=W*.07;
@@ -1292,7 +1292,7 @@ function renderPoster(ctx,W,H,withText=true){const G=groundColors();
 }
 function drawPoster(){renderPoster(px,pc.width,pc.height);}
 // 모바일에서는 같은 장면을 화면 전체로 펼치되, 문구와 푸터는 기존 포스터 영역에 배치.
-function drawMobileBackdrop(){
+function drawMobileBackdrop(){if(new URLSearchParams(location.search).get('showroom')==='1')return;
   if(!document.body.classList.contains('is-story'))return;
   const r=pc.getBoundingClientRect();if(!r.width||!r.height)return;
   const d=mobileBackdrop.width/Math.max(1,innerWidth),G=groundColors();
@@ -1321,7 +1321,7 @@ function syncMobilePosterFooter(){
 
 // ================= 크기 맞추기 (저장 중에는 저장용 해상도를 유지) =================
 let lockSize=false;
-function resize(){const d=Math.min(devicePixelRatio||1,2);
+function resize(){const d=Math.min(devicePixelRatio||1,2);if(new URLSearchParams(location.search).get('showroom')==='1'){pc.width=Math.max(2,Math.round(innerWidth*d));pc.height=Math.max(2,Math.round(innerHeight*d));tiles.forEach(t=>{t.w=t.h=t.size=64;t.cv.width=t.cv.height=64;t.dirty=true});return;}
   // 모바일 스토리형: 무대 크기 안에서 9:16을 유지하도록 포스터 틀 크기를 직접 정함
   const st=document.getElementById('storyStage'), slot=document.getElementById('posterSlot');
   // 모바일: 포스터 + 빛망울 줄 + 도구 줄 + 저장 버튼이 한 화면에 들어가도록 포스터 크기를 정함 (펼침 창은 아래로 열림)
