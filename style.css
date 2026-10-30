@@ -112,3 +112,6 @@ body[data-gallery-view="ribbon"] .space{transform-style:flat;perspective:inherit
 /* Keep a ready card behind either edge; the fixed front window reveals it on rotation. */
 body[data-gallery-view="ribbon"] .stage{clip-path:inset(0 calc((100% - var(--ribbon-window,100%))/2))}
 body[data-gallery-view="ribbon"] .art-card.is-buffer{pointer-events:none}
+
+/* A portrait phone turns the same five-card arc from top to bottom. */
+body[data-gallery-view="ribbon"][data-ribbon-axis="vertical"] .stage{perspective:1800px;clip-path:inset(calc((100% - var(--ribbon-window,100%))/2) 0)}
