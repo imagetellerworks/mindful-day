@@ -103,8 +103,12 @@ body[data-gallery-view="ribbon"] .space{transform-style:flat;perspective:inherit
 }
 
 @media(max-width:760px){
- html:not(.portfolio-embed) main{overflow:hidden}
+ html:not(.portfolio-embed) main{overflow:hidden;overflow:clip}
  html:not(.portfolio-embed) .stage,html:not(.portfolio-embed) .immersive{mask-image:linear-gradient(90deg,transparent,rgba(0,0,0,.08) 22%,#000 68%);-webkit-mask-image:linear-gradient(90deg,transparent,rgba(0,0,0,.08) 22%,#000 68%)}
 }
 @media(max-width:760px){html:not(.portfolio-embed) body.lang-en .intro-copy{max-width:100%}}
 @media(max-width:360px){html:not(.portfolio-embed) body.lang-en .intro-copy{font-size:11px}}
+
+/* Keep a ready card behind either edge; the fixed front window reveals it on rotation. */
+body[data-gallery-view="ribbon"] .stage{clip-path:inset(0 calc((100% - var(--ribbon-window,100%))/2))}
+body[data-gallery-view="ribbon"] .art-card.is-buffer{pointer-events:none}

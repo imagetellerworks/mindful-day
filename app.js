@@ -59,7 +59,8 @@ function choose(index){target=index;if(view==='ribbon'){ribbonRequest=index;if(r
 function project(index){const width=stage.clientWidth,cardWidth=innerWidth<=760?177:innerWidth>=1600?265:228;const result=view==='ribbon'&&ribbonMotion?M.ribbonPose(index,ribbonMotion.from,ribbonMotion.to,ribbonMotion.elapsed,innerWidth<=760,width,cardWidth):M.geometry(view,index-position,index,position,innerWidth<=760,width,cardWidth);if(view==='wall'&&innerWidth<=760)result.y+=width/8.65*1.48*.5;return result;}
 function makeCard(index){
  const row=rows[M.mod(index,rows.length)],button=document.createElement('button');button.className='art-card';button.type='button';button.setAttribute('aria-label',row.en+' · '+row.ko);button.tabIndex=-1;
- const img=document.createElement('img');img.src=image(row);img.alt='';img.draggable=false;img.width=512;img.height=512;
+ const img=document.createElement('img');img.loading='eager';img.decoding='async';img.src=image(row);img.alt='';img.draggable=false;img.width=512;img.height=512;
+ if(view==='ribbon'&&typeof img.decode==='function')img.decode().catch(()=>{});
  const word=document.createElement('span');word.className='word';word.textContent=row.en;word.lang='en';const ko=document.createElement('span');ko.className='ko';ko.textContent=row.ko;
  const number=document.createElement('span');number.className='number';number.textContent=String(all.indexOf(row)+1).padStart(3,'0')+' / '+M.group(row.category,lang).toUpperCase();button.append(img,word,ko,number);
  button.addEventListener('click',()=>{if(performance.now()<suppressUntil)return;choose(index);});space.append(button);
@@ -81,7 +82,7 @@ function setView(next,automatic=false){
  view=next;ribbonMotion=null;ribbonRequest=null;ribbonHoldMs=0;if(view==='ribbon')position=target=Math.round(position);document.body.setAttribute('data-gallery-view',view);const pan=panByView[view];space.style.transform=`translate3d(${pan.x}px,${pan.y}px,0) scale(var(--gallery-fit,1))`;const row=rows.length?rows[M.mod(Math.round(position),rows.length)]:null;$('experienceLink').href=M.experienceUrl(row,view,experienceBase);history.replaceState(null,'','#'+view);document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));const n=M.views.indexOf(view)+1;const mobileCurrent=$('mobileViewCurrent');if(mobileCurrent)mobileCurrent.textContent=String(n).padStart(2,'0');$('viewCoordinate').textContent='0'+n+' / '+view.toUpperCase();updateImmersive();lastAuto=performance.now();if(!automatic)sequenceElapsed=0;
 }
 function frame(now){
- const dt=Math.min(40,now-(last||now));last=now;const fit=M.fitScale(view,stage.clientWidth,stage.clientHeight,innerWidth<=760,innerWidth<=760?177:innerWidth>=1600?265:228,innerWidth<=760?950:innerWidth>=1600?1600:1300);if(Math.abs(fit-lastFit)>.001){space.style.setProperty('--gallery-fit',String(fit));lastFit=fit;}
+ const dt=Math.min(40,now-(last||now));last=now;const mobile=innerWidth<=760,cardWidth=mobile?177:innerWidth>=1600?265:228,perspective=mobile?950:innerWidth>=1600?1600:1300;const fit=M.fitScale(view,stage.clientWidth,stage.clientHeight,mobile,cardWidth,perspective);if(view==='ribbon')document.documentElement.style.setProperty('--ribbon-window',(M.ribbonWindowSpan(mobile,cardWidth,perspective)*fit+1)+'px');if(Math.abs(fit-lastFit)>.001){space.style.setProperty('--gallery-fit',String(fit));lastFit=fit;}
  if(!document.hidden&&!$('aboutDialog').open){
  const canRun=playing&&!drag&&now>pausedUntil&&!document.activeElement?.matches('input')&&!reduced.matches;
  const sequence=M.sequenceStep(view,sequenceElapsed,dt,canRun&&rows.length>0);sequenceElapsed=sequence.elapsed;if(sequence.changed)setView(sequence.view,true);document.documentElement.style.setProperty('--sequence-progress',String(sequenceElapsed/M.viewDuration));
@@ -99,7 +100,7 @@ function frame(now){
  if(rows.length){ensureCards();for(const card of cards.values()){
  const dest=project(card.index),k=reduced.matches||drag?.moved||view==='ribbon'&&ribbonMotion?1:1-Math.pow(.0002,dt/1000),s=card.state;for(const key in dest)if(key!=='layer')s[key]+=(dest[key]-s[key])*k;
  card.button.style.transform=`translate(-50%,-50%) translate3d(${s.x}px,${s.y}px,${s.z}px) rotateX(${s.rx}deg) rotateY(${s.ry}deg) rotateZ(${s.rz}deg) scale(${s.scale})`;
- card.button.style.opacity=s.opacity;card.button.style.visibility=s.opacity<.015?'hidden':'visible';card.button.style.zIndex=String(dest.layer??Math.round(s.z+1000));const current=card.index===Math.round(position);card.button.classList.toggle('is-current',current);card.button.setAttribute('aria-current',String(current));card.button.tabIndex=current?0:-1;
+ card.button.style.opacity=s.opacity;card.button.style.visibility=s.opacity<.015?'hidden':'visible';card.button.style.zIndex=String(dest.layer??Math.round(s.z+1000));const current=card.index===Math.round(position),buffer=view==='ribbon'&&Math.abs(card.index-Math.round(position))>(mobile?1:2);card.button.classList.toggle('is-buffer',buffer);card.button.setAttribute('aria-hidden',String(buffer));card.button.classList.toggle('is-current',current);card.button.setAttribute('aria-current',String(current));card.button.tabIndex=current?0:-1;
  }selection();}
  }
  requestAnimationFrame(frame);

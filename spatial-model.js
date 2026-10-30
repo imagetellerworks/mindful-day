@@ -16,13 +16,14 @@ function dragOffset(view,dx,dy,mobile,stageWidth){
  return 0;
 }
 const ribbonSpans=new Map();
-function ribbonSpan(mobile,cardWidth,perspective){
- const key=[mobile,cardWidth,perspective].join(':');if(ribbonSpans.has(key))return ribbonSpans.get(key);
- const edge=mobile?1.5:2.5;let extent=0;
+function ribbonSpan(mobile,cardWidth,perspective,edge=mobile?1.5:2.5){
+ const key=[mobile,cardWidth,perspective,edge].join(':');if(ribbonSpans.has(key))return ribbonSpans.get(key);
+ let extent=0;
  for(let i=0;i<=40;i++){const d=edge*i/40,g=geometry('ribbon',d,d,0,mobile,390,cardWidth),a=g.ry*Math.PI/180;
   for(const sign of [-1,1]){const local=sign*cardWidth*g.scale/2;extent=Math.max(extent,Math.abs((g.x+local*Math.cos(a))*perspective/(perspective-g.z+local*Math.sin(a))));}}
  const span=extent*2;ribbonSpans.set(key,span);return span;
 }
+function ribbonWindowSpan(mobile,cardWidth,perspective){return ribbonSpan(mobile,cardWidth,perspective,mobile?1:2);}
 function fitScale(view,width,height,mobile,cardWidth=mobile?177:228,perspective=mobile?950:1300){
  if(view==='ribbon')return Math.min(.85*fitScale('helix',width,height,mobile),(width-(mobile?24:32))/ribbonSpan(mobile,cardWidth,perspective));
  if(!mobile||view==='canvas')return 1;
@@ -35,7 +36,7 @@ function geometry(view,d,index,position,mobile,stageWidth=mobile?390:1000,cardWi
  else if(view==='ribbon'){
   const degrees=mobile?34:24,step=degrees*Math.PI/180,angle=d*step,gap=mobile?18:24,radius=(cardWidth*1.4+gap)/(2*Math.tan(step/2));
   x=Math.sin(angle)*radius;y=0;z=(Math.cos(angle)-1)*radius;ry=d*degrees;scale=1.4;
-  opacity=Math.max(0,Math.min(1,((mobile?1.5:2.5)-Math.abs(d))/.3));
+  opacity=Math.max(0,Math.min(1,((mobile?2.5:3.5)-Math.abs(d))/.35));
  }
  else if(view==='helix'){x=Math.sin(d*.78)*r*.66;y=d*(mobile?60:83);z=(Math.cos(d*.78)-1)*r*.75;ry=-Math.sin(d*.45)*30;rx=-9;rz=d*4;scale=.85;opacity=Math.min(1,Math.max(0,(5-Math.abs(d))/1.5));}
  else{const columns=8,pitch=stageWidth/8.65;x=(mod(index,columns)-(columns-1)/2)*pitch;y=(Math.floor(index/columns)-position/columns)*pitch*1.48;z=-35;ry=-4;rx=7;rz=-4;scale=pitch*.88/cardWidth;opacity=1;}
@@ -51,5 +52,5 @@ function ribbonPose(index,from,to,elapsed,mobile,stageWidth,cardWidth){
  return geometry('ribbon',index-position,index,position,mobile,stageWidth,cardWidth);
 }
 function flowDelta(view,dt){const rate={ribbon:.00018,helix:.00018,wall:.0038}[view]||0;return Math.max(0,dt)*rate;}
-const api={groups,mod,group,filterRows,geometry,views,viewDuration,sequenceStep,experienceUrl,dragOffset,fitScale,ribbonHold,ribbonDuration,ribbonPosition,ribbonPose,flowDelta};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
+const api={groups,mod,group,filterRows,geometry,views,viewDuration,sequenceStep,experienceUrl,dragOffset,fitScale,ribbonWindowSpan,ribbonHold,ribbonDuration,ribbonPosition,ribbonPose,flowDelta};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
 })(typeof window==='object'?window:this);
