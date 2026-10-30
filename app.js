@@ -21,8 +21,7 @@ const opening=['fresh','ethereal','romantic','original','bold','dreamy','progres
 function layoutExperienceLink(){
  if(new URLSearchParams(location.search).get('cards')==='1')return;
  const link=$('experienceLink'),intro=document.querySelector('.intro');
- if(innerWidth>760){if(link.parentElement!==intro)intro.append(link);}
- else if(link.parentElement!==document.querySelector('main'))document.querySelector('main').insertBefore(link,document.querySelector('.collection-tools'));
+ if(link.parentElement!==intro)intro.append(link);
 }
 addEventListener('resize',layoutExperienceLink);
 function applyLanguage(){
@@ -32,7 +31,7 @@ function applyLanguage(){
  $('collectionCount').textContent=ko?'219가지 색, 저마다의 감정':'219 COLORS, COUNTLESS PERSPECTIVES';$('footerQuote').textContent=ko?'색은 말보다 먼저 마음에 닿습니다.':'COLOR IS A LANGUAGE WITHOUT WORDS.';
  $('experienceLink').firstChild.nodeValue=ko?'체험하기 ':'Experience ';
  for(const option of $('filter').options)option.textContent=option.value==='all'?(ko?'모든 감정':'All feelings'):(ko?M.groups[option.value].ko:M.groups[option.value].label);
- const names=ko?{canvas:'캔버스',ribbon:'펼침',helix:'나선',wall:'모아보기'}:{canvas:'Canvas',ribbon:'Ribbon',helix:'Helix',wall:'Wall'};document.querySelectorAll('[data-view]').forEach(button=>{button.innerHTML='<span>0'+(M.views.indexOf(button.dataset.view)+1)+'</span>'+names[button.dataset.view];});
+ const names=ko?{canvas:'캔버스',ribbon:'펼침',helix:'나선',wall:'모아보기'}:{canvas:'Canvas',ribbon:'Ribbon',helix:'Helix',wall:'Wall'};document.querySelectorAll('[data-view]').forEach(button=>{button.innerHTML='<span>0'+(M.views.indexOf(button.dataset.view)+1)+'</span>'+names[button.dataset.view];button.setAttribute('aria-label',names[button.dataset.view]);button.title=names[button.dataset.view];});
  $('languageBtn').setAttribute('aria-label',ko?'Switch to English':'한국어로 전환');document.querySelectorAll('[data-language]').forEach(el=>el.classList.toggle('active',el.dataset.language===lang));document.querySelectorAll('[data-about-lang]').forEach(el=>el.hidden=el.dataset.aboutLang!==lang);document.querySelectorAll('[data-about-choice]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.aboutChoice===lang)));
  cards.forEach(card=>card.button.remove());cards.clear();if(rows.length){focusedId='';selection();}updatePlaying();
 }
@@ -79,7 +78,7 @@ function filter(resetTimer=true){
  if(resetTimer!==false)pauseForInput();rows=M.filterRows(all,$('filter').value,'');cards.forEach(card=>card.button.remove());cards.clear();position=target=0;ribbonMotion=null;ribbonRequest=null;ribbonHoldMs=0;focusedId='';$('empty').hidden=!!rows.length;$('total').textContent=String(rows.length).padStart(3,'0');$('prev').disabled=$('next').disabled=rows.length<2;selection();
 }
 function setView(next,automatic=false){
- view=next;ribbonMotion=null;ribbonRequest=null;ribbonHoldMs=0;if(view==='ribbon')position=target=Math.round(position);document.body.setAttribute('data-gallery-view',view);const pan=panByView[view];space.style.transform=`translate3d(${pan.x}px,${pan.y}px,0) scale(var(--gallery-fit,1))`;const row=rows.length?rows[M.mod(Math.round(position),rows.length)]:null;$('experienceLink').href=M.experienceUrl(row,view,experienceBase);history.replaceState(null,'','#'+view);document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));const n=M.views.indexOf(view)+1;$('viewCoordinate').textContent='0'+n+' / '+view.toUpperCase();updateImmersive();lastAuto=performance.now();if(!automatic)sequenceElapsed=0;
+ view=next;ribbonMotion=null;ribbonRequest=null;ribbonHoldMs=0;if(view==='ribbon')position=target=Math.round(position);document.body.setAttribute('data-gallery-view',view);const pan=panByView[view];space.style.transform=`translate3d(${pan.x}px,${pan.y}px,0) scale(var(--gallery-fit,1))`;const row=rows.length?rows[M.mod(Math.round(position),rows.length)]:null;$('experienceLink').href=M.experienceUrl(row,view,experienceBase);history.replaceState(null,'','#'+view);document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));const n=M.views.indexOf(view)+1;const mobileCurrent=$('mobileViewCurrent');if(mobileCurrent)mobileCurrent.textContent=String(n).padStart(2,'0');$('viewCoordinate').textContent='0'+n+' / '+view.toUpperCase();updateImmersive();lastAuto=performance.now();if(!automatic)sequenceElapsed=0;
 }
 function frame(now){
  const dt=Math.min(40,now-(last||now));last=now;const fit=M.fitScale(view,stage.clientWidth,stage.clientHeight,innerWidth<=760,innerWidth<=760?177:innerWidth>=1600?265:228,innerWidth<=760?950:innerWidth>=1600?1600:1300);if(Math.abs(fit-lastFit)>.001){space.style.setProperty('--gallery-fit',String(fit));lastFit=fit;}
