@@ -1,5 +1,16 @@
 'use strict';
 (()=>{
+// Safari toolbars and the keyboard can change the visual viewport independently.
+let viewportFrame=0;
+function syncVisibleViewport(){
+ viewportFrame=0;const viewport=window.visualViewport;
+ // Pinch zoom must not reflow the page under the user's fingers.
+ if(viewport&&Math.abs(viewport.scale-1)>.01)return;
+ const height=Math.min(innerHeight,viewport?.height||innerHeight);
+ if(height>0)document.documentElement.style.setProperty('--visible-height',height+'px');
+}
+function queueVisibleViewport(){if(!viewportFrame)viewportFrame=requestAnimationFrame(syncVisibleViewport);}
+syncVisibleViewport();addEventListener('resize',queueVisibleViewport);addEventListener('pageshow',queueVisibleViewport);window.visualViewport?.addEventListener('resize',queueVisibleViewport);
 const $=id=>document.getElementById(id),M=AtlasModel,stage=$('stage'),space=$('space'),reduced=matchMedia('(prefers-reduced-motion: reduce)'),cache=new Map(),inkCache=new Map(),cards=new Map();
 let all=[],rows=[],position=0,target=0,view=M.views.includes(location.hash.slice(1))?location.hash.slice(1):'ribbon',playing=!reduced.matches,drag=null,suppressUntil=0,last=0,lastAuto=0,pausedUntil=0,focusedId='',announcementTimer=0,sequenceElapsed=0;
 const LANGUAGE_KEY='mindful-day-language-v2';let lang='ko';try{const saved=localStorage.getItem(LANGUAGE_KEY);if(saved==='en'||saved==='ko')lang=saved;}catch{}

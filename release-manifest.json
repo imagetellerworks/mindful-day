@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "app.js",
-      "sha256": "8d3b20dd8085b4ae651e6b087cd1236e2a7dbb6b5d744a0b2385039bb9c3844d"
+      "sha256": "8b4f9d76b84d459891d1db5e07e0ed65f7e28f6fc52eaa0902b225f5abadf75f"
     },
     {
       "path": "assets/Pretendard-Regular.woff2",
@@ -108,7 +108,7 @@
     },
     {
       "path": "index.html",
-      "sha256": "80c3502d1577c5b638c1afbe3d324ce2779ae89100ce598049bccd073c5df120"
+      "sha256": "a3b2d2eadaf68062d4e7e80e6cd436d7d1753079654e2b68d9dcda44deae30f0"
     },
     {
       "path": "landing-route.js",
@@ -140,7 +140,7 @@
     },
     {
       "path": "style.css",
-      "sha256": "9659a42b9e30b1eeeca4c0b10130d2ae86fa90873580337315302d2168185079"
+      "sha256": "4a796530c8070c10aac42a09a456caaad1086943e5cb3d21889a57624909e8e0"
     },
     {
       "path": "tests/home-experience.test.cjs",
