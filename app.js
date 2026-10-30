@@ -12,7 +12,7 @@ function syncVisibleViewport(){
 function queueVisibleViewport(){if(!viewportFrame)viewportFrame=requestAnimationFrame(syncVisibleViewport);}
 syncVisibleViewport();addEventListener('resize',queueVisibleViewport);addEventListener('pageshow',queueVisibleViewport);window.visualViewport?.addEventListener('resize',queueVisibleViewport);
 const $=id=>document.getElementById(id),M=AtlasModel,stage=$('stage'),space=$('space'),reduced=matchMedia('(prefers-reduced-motion: reduce)'),cache=new Map(),inkCache=new Map(),cards=new Map();
-let all=[],rows=[],position=0,target=0,view=M.views.includes(location.hash.slice(1))?location.hash.slice(1):'canvas',playing=!reduced.matches,drag=null,suppressUntil=0,last=0,lastAuto=0,pausedUntil=0,focusedId='',announcementTimer=0,sequenceElapsed=0;
+let all=[],rows=[],position=0,target=0,view=M.views.includes(location.hash.slice(1))?location.hash.slice(1):'canvas',playing=!reduced.matches,drag=null,suppressUntil=0,last=0,lastAuto=0,pausedUntil=0,focusedId='',announcementTimer=0;
 const LANGUAGE_KEY='mindful-day-language-v2';let lang='ko';try{const saved=localStorage.getItem(LANGUAGE_KEY);if(saved==='en'||saved==='ko')lang=saved;}catch{}
 const experienceBase=(location.hostname==='imagetellerworks.github.io'||((location.hostname==='127.0.0.1'||location.hostname==='localhost')&&location.pathname.startsWith('/mindful-day/')))?new URL('experience/',location.href).href:'https://imagetellerworks.github.io/mindful-day/experience/';
 const opening=['fresh','ethereal','romantic','original','bold','dreamy','progressive','magical','sensual','harmonious','high voltage','heavenly','forbidden','unique','cosmic majesty','playful','crisp','ravishing','fiery','serene','otherworldly','kinetic','enraptured','clear'];
@@ -49,10 +49,10 @@ function updateImmersive(){
  if(immersiveWord!==row.id){image(row);immersiveSlot=1-immersiveSlot;const imgs=[$('immersiveA'),$('immersiveB')];imgs[immersiveSlot].src=image(row,true);imgs.forEach((img,i)=>img.classList.toggle('on',i===immersiveSlot));immersiveWord=row.id;$('immersiveName').textContent=row.en;$('immersiveKo').textContent=row.ko;$('immersiveName').parentElement.style.color=inkCache.get(row.id);}
 }
 function updatePlaying(){
- document.body.classList.toggle('sequence-playing',playing);$('interactionNote').textContent=lang==='ko'?(playing?'자동 전환 · 천천히 둘러보세요':'일시 정지 · 천천히 둘러보세요'):(playing?'AUTO SEQUENCE · EXPLORE AT YOUR PACE':'PAUSED · EXPLORE AT YOUR PACE');
+ document.body.classList.toggle('sequence-playing',playing);$('interactionNote').textContent=lang==='ko'?(playing?'자동 재생 · 천천히 둘러보세요':'일시 정지 · 천천히 둘러보세요'):(playing?'AUTO PLAY · EXPLORE AT YOUR PACE':'PAUSED · EXPLORE AT YOUR PACE');
  $('play').setAttribute('aria-pressed',String(playing));$('play').setAttribute('aria-label',playing?'자동 시퀀스 일시 정지':'자동 시퀀스 재생');$('play').innerHTML=playing?'<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5v10M13 5v10"/></svg>':'<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 5 8 5-8 5z"/></svg>';
 }
-function pauseForInput(){pausedUntil=performance.now()+6500;lastAuto=performance.now();sequenceElapsed=0;}
+function pauseForInput(){pausedUntil=performance.now()+6500;lastAuto=performance.now();}
 function go(delta){if(rows.length<2)return;target=Math.round(target)+delta;pauseForInput();}
 function choose(index){target=index;pauseForInput();}
 function project(index){const width=stage.clientWidth,cardWidth=innerWidth<=760?177:innerWidth>=1600?265:228;return M.geometry(view,index-position,index,position,innerWidth<=760,width,cardWidth);}
@@ -76,15 +76,15 @@ function selection(){
 function filter(resetTimer=true){
  if(resetTimer!==false)pauseForInput();rows=M.filterRows(all,$('filter').value,'');cards.forEach(card=>card.button.remove());cards.clear();position=target=0;focusedId='';$('empty').hidden=!!rows.length;$('total').textContent=String(rows.length).padStart(3,'0');$('prev').disabled=$('next').disabled=rows.length<2;selection();
 }
-function setView(next,automatic=false){
- view=next;const row=rows.length?rows[M.mod(Math.round(position),rows.length)]:null;$('experienceLink').href=M.experienceUrl(row,view,experienceBase);history.replaceState(null,'','#'+view);document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));const n=M.views.indexOf(view)+1;$('viewCoordinate').textContent='0'+n+' / '+view.toUpperCase();updateImmersive();if(view!=='wall')target=Math.round(target);lastAuto=performance.now();if(!automatic)pauseForInput();
+function setView(next){
+ view=next;const row=rows.length?rows[M.mod(Math.round(position),rows.length)]:null;$('experienceLink').href=M.experienceUrl(row,view,experienceBase);history.replaceState(null,'','#'+view);document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));const n=M.views.indexOf(view)+1;$('viewCoordinate').textContent='0'+n+' / '+view.toUpperCase();updateImmersive();lastAuto=performance.now();
 }
 function frame(now){
  const dt=Math.min(40,now-(last||now));last=now;
  if(!document.hidden&&!$('aboutDialog').open){
  const canRun=playing&&!drag&&now>pausedUntil&&!document.activeElement?.matches('input')&&!reduced.matches;
- const sequence=M.sequenceStep(view,sequenceElapsed,dt,canRun&&rows.length>0);sequenceElapsed=sequence.elapsed;if(sequence.changed)setView(sequence.view,true);document.documentElement.style.setProperty('--sequence-progress',String(sequenceElapsed/10000));
- if(canRun&&rows.length>1){if(view==='wall')target+=dt*.0038;else if(now-lastAuto>5000){target=Math.round(target)+1;lastAuto=now;}}
+ // Keep the selected view and advance its virtual card index continuously.
+ if(canRun&&rows.length>1){if(view==='canvas'){if(now-lastAuto>5000){target=Math.round(target)+1;lastAuto=now;}}else target+=M.flowDelta(view,dt);}
  const ease=reduced.matches?1:1-Math.pow(.001,dt/1000);if(drag?.moved)position=target;else position+=(target-position)*ease;if(Math.abs(target-position)<.0005)position=target;
  if(rows.length){ensureCards();for(const card of cards.values()){
  const dest=project(card.index),k=reduced.matches||drag?.moved?1:1-Math.pow(.0002,dt/1000),s=card.state;for(const key in dest)s[key]+=(dest[key]-s[key])*k;
@@ -95,17 +95,17 @@ function frame(now){
  requestAnimationFrame(frame);
 }
 $('languageBtn').addEventListener('click',()=>{lang=lang==='ko'?'en':'ko';try{localStorage.setItem(LANGUAGE_KEY,lang);}catch{}applyLanguage();pauseForInput();});
-$('prev').addEventListener('click',()=>go(-1));$('next').addEventListener('click',()=>go(1));$('play').addEventListener('click',()=>{playing=!playing;lastAuto=performance.now();updatePlaying();});
+$('prev').addEventListener('click',()=>go(-1));$('next').addEventListener('click',()=>go(1));$('play').addEventListener('click',()=>{playing=!playing;lastAuto=performance.now();if(playing)pausedUntil=0;updatePlaying();});
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>setView(button.dataset.view)));
 $('filter').addEventListener('change',filter);
-function key(e){if(e.target.closest('input,select,dialog')||e.target.closest('.view-switch,.play-button,.nav-arrow,.about-trigger'))return;if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();go(1);}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();go(-1);}else if(e.key==='Home'){e.preventDefault();choose(0);}else if(e.key==='End'){e.preventDefault();choose(rows.length-1);}else if(e.code==='Space'){e.preventDefault();playing=!playing;updatePlaying();}}
+function key(e){if(e.target.closest('input,select,dialog')||e.target.closest('.view-switch,.play-button,.nav-arrow,.about-trigger'))return;if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();go(1);}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();go(-1);}else if(e.key==='Home'){e.preventDefault();choose(0);}else if(e.key==='End'){e.preventDefault();choose(rows.length-1);}else if(e.code==='Space'){e.preventDefault();playing=!playing;if(playing)pausedUntil=0;updatePlaying();}}
 document.addEventListener('keydown',key);
 stage.addEventListener('pointerdown',e=>{if(e.isPrimary===false||e.button!==0||!rows.length)return;pauseForInput();drag={id:e.pointerId,x:e.clientX,y:e.clientY,start:target,moved:false,lastOffset:0,lastTime:performance.now(),velocity:0};});
 stage.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.hypot(dx,dy)>5&&!drag.moved){drag.moved=true;stage.setPointerCapture(e.pointerId);stage.classList.add('dragging');}if(drag.moved){e.preventDefault();const now=performance.now(),offset=M.dragOffset(view,dx,dy,innerWidth<=760,stage.clientWidth);drag.velocity=(offset-drag.lastOffset)/Math.max(8,now-drag.lastTime);drag.lastOffset=offset;drag.lastTime=now;target=drag.start+offset;}});
 function stopDrag(e){if(!drag||drag.id!==e.pointerId)return;const ended=drag;drag=null;if(ended.moved){suppressUntil=performance.now()+220;const cap=view==='wall'?16:view==='helix'?3:2,inertia=e.type==='pointercancel'||e.type==='lostpointercapture'?0:Math.max(-cap,Math.min(cap,ended.velocity*160));target=view==='wall'?target+inertia:Math.round(target+inertia);if(stage.hasPointerCapture(e.pointerId))stage.releasePointerCapture(e.pointerId);}stage.classList.remove('dragging');pauseForInput();}
 stage.addEventListener('pointerup',stopDrag);stage.addEventListener('pointercancel',stopDrag);stage.addEventListener('lostpointercapture',e=>{if(drag?.id===e.pointerId)stopDrag(e);});
 stage.addEventListener('wheel',e=>{if(e.ctrlKey||!e.deltaX&&!e.deltaY)return;e.preventDefault();pauseForInput();target+=M.dragOffset(view,-e.deltaX,-e.deltaY,innerWidth<=760,stage.clientWidth);},{passive:false});
-stage.addEventListener('pointerleave',()=>{if(!drag)target=Math.round(target);});
+stage.addEventListener('pointerleave',()=>{if(!drag&&!playing)target=Math.round(target);});
 document.querySelectorAll('[data-about-choice]').forEach(button=>button.addEventListener('click',()=>{const language=button.dataset.aboutChoice;document.querySelectorAll('[data-about-lang]').forEach(section=>section.hidden=section.dataset.aboutLang!==language);document.querySelectorAll('[data-about-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.aboutChoice===language)));}));
 $('aboutBtn').addEventListener('click',()=>{$('aboutDialog').showModal();});$('closeAbout').addEventListener('click',()=>{$('aboutDialog').close();});$('aboutDialog').addEventListener('click',e=>{if(e.target===$('aboutDialog')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});$('aboutDialog').addEventListener('close',pauseForInput);
 reduced.addEventListener('change',()=>{if(reduced.matches){playing=false;updatePlaying();}});document.addEventListener('visibilitychange',()=>{last=performance.now();lastAuto=last;});
