@@ -9,12 +9,13 @@ if(p.get('tour')!=='off'&&!p.has('study')&&!p.has('set')&&(p.get('tour')==='1'||
 .app-welcome{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;border:0;padding:0;background:transparent;color:var(--welcome-ink,#24212b);text-align:center;overflow:auto}.app-welcome[open]{display:grid;place-items:center}.app-welcome::backdrop{background:var(--welcome-wash,rgba(230,230,230,.18));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}.welcome-copy{box-sizing:border-box;width:min(560px,100%);padding:40px 28px;display:flex;flex-direction:column;align-items:center}.welcome-copy h1{margin:0 0 32px;font:400 clamp(24px,4.8vw,40.8px)/.99 'Libre Baskerville',Georgia,"Times New Roman",serif;letter-spacing:-.055em;white-space:nowrap;animation:welcome-reveal .65s ease both}.welcome-copy h1 em{font-weight:400}.welcome-lines{animation:welcome-reveal .65s .2s ease both}.welcome-lines p{margin:0;word-break:keep-all;text-wrap:balance;font:400 15px/1.8 var(--f-body)}.welcome-lines #welcomeDescription{margin-top:6px;font-size:13px;opacity:.78}.welcome-copy button{margin-top:34px;min-height:48px;border:0;border-radius:28px;padding:12px 32px;background:var(--welcome-ink,#24212b);color:var(--welcome-bg,#e6e6e6);font:400 13px/1.5 var(--f-body);cursor:pointer;animation:welcome-reveal .65s .4s ease both}.welcome-copy button:disabled{opacity:.45;cursor:wait}.welcome-copy button:focus-visible{outline:none;box-shadow:none}@keyframes welcome-reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){.welcome-copy h1,.welcome-lines,.welcome-copy button{animation:none}}
 .tour-touch-cue{position:fixed;width:56px;height:56px;box-sizing:border-box;border-radius:50%;border:1px solid rgba(255,255,255,.75);background:rgba(82,78,100,.28);box-shadow:inset 0 0 0 1px rgba(30,28,40,.12),0 0 22px rgba(255,255,255,.18);pointer-events:none;animation:tour-touch-breathe 1.6s ease-in-out infinite}.tour-touch-cue::after{content:'';position:absolute;inset:18px;border-radius:50%;background:rgba(255,255,255,.4)}.tour-touch-count{margin-top:8px!important;font-size:11px!important;opacity:.7}@keyframes tour-touch-breathe{0%,100%{transform:translate(-50%,-50%) scale(.72);opacity:.6}50%{transform:translate(-50%,-50%) scale(1.12);opacity:1}}@media(prefers-reduced-motion:reduce){.tour-touch-cue{animation:none;transform:translate(-50%,-50%);opacity:.7}}
 
+@font-face{font-family:PretendardFeeling;src:url('fonts/Pretendard-Korean-Light.woff2') format('woff2');font-weight:300;font-display:swap}
 @font-face{font-family:MindfulBrand;src:url('fonts/Pretendard-Regular.woff2') format('woff2');font-weight:100 900;font-display:swap}
 @font-face{font-family:Pretendard;src:url('fonts/Pretendard-Light.woff2') format('woff2');font-style:normal;font-weight:300;font-display:swap;unicode-range:U+0020-007E,U+2018-2019}
 .experience-brand{display:none;position:fixed;left:40px;top:30px;z-index:20;color:var(--mobile-ink,var(--ink));pointer-events:none}.is-story .experience-brand:not([hidden]){display:block}.experience-wordmark{position:relative;display:inline-block;margin:0;font:600 17px/1.05 MindfulBrand,Pretendard,Arial,sans-serif;letter-spacing:.045em}.experience-wordmark .brand-dot{position:absolute;right:-17px;top:1px;width:8px;height:8px;border-radius:50%;background:#9da98d}.experience-tagline{margin:10px 0 0;font:300 12px/1.4 Pretendard,Arial,sans-serif;letter-spacing:0}
 @media(max-width:760px){.experience-brand{left:24px;top:24px}.experience-wordmark{font-size:15px}.experience-tagline{font-size:11px;margin-top:8px}}
 
-.tour-touch-cue{pointer-events:auto;cursor:pointer;padding:0;z-index:2}.tour-touch-cue:focus-visible{outline:2px solid #fff;outline-offset:6px}.tour-word-target:focus-visible{outline:none;border-color:#fff}.tour-blocker{position:fixed;background:transparent;pointer-events:auto}.tour-word-target{position:fixed;pointer-events:auto;border:1px solid rgba(255,255,255,.85);border-radius:14px;background:transparent;box-shadow:0 0 0 9999px rgba(15,15,24,.66);cursor:pointer;animation:tour-word-breathe 1.6s ease-in-out infinite}.tour-word-instruction{position:fixed;margin:0;width:min(320px,calc(100vw - 32px));color:#fff;font:400 15px/1.65 var(--f-body);text-align:center;white-space:pre-line;pointer-events:none}.tour-minimal-close{position:fixed;top:90px;right:16px;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--mobile-ink,var(--ink));font:300 28px var(--f-body);pointer-events:auto;cursor:pointer}#appTour[data-step="4"] .tour-minimal-close{color:#fff}@keyframes tour-word-breathe{0%,100%{border-color:rgba(255,255,255,.3)}50%{border-color:#fff}}@media(prefers-reduced-motion:reduce){.tour-word-target{animation:none;border-color:#fff}}
+.tour-touch-cue{pointer-events:auto;cursor:pointer;padding:0;z-index:2}.tour-touch-cue:focus-visible{outline:2px solid #fff;outline-offset:6px}.tour-word-target:focus-visible{outline:none;border-color:#fff}.tour-blocker{position:fixed;background:transparent;pointer-events:auto}.tour-word-target{position:fixed;pointer-events:auto;border:1px solid rgba(255,255,255,.85);border-radius:14px;background:transparent;box-shadow:0 0 0 9999px rgba(15,15,24,.66);cursor:pointer;animation:tour-word-breathe 1.6s ease-in-out infinite}.tour-word-instruction{position:fixed;margin:0;width:min(320px,calc(100vw - 32px));color:#fff;font:400 15px/1.65 var(--f-body);text-align:center;white-space:pre-line;pointer-events:none}.tour-minimal-close{position:fixed;top:90px;right:16px;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--mobile-ink,var(--ink));font:300 28px var(--f-body);pointer-events:auto;cursor:pointer}#appTour[data-stage="rename"] .tour-minimal-close{color:#fff}@keyframes tour-word-breathe{0%,100%{border-color:rgba(255,255,255,.3)}50%{border-color:#fff}}@media(prefers-reduced-motion:reduce){.tour-word-target{animation:none;border-color:#fff}}
 
 #appTour[data-step="1"] .tour-card{width:max-content;max-width:min(310px,calc(100vw - 28px));padding:14px 16px}#appTour[data-step="1"] #tourTitle{display:none}#appTour[data-step="1"] .tour-card header{margin-bottom:6px}#appTour[data-step="1"] .tour-close{width:32px;height:32px}#appTour[data-step="1"] .tour-card nav{margin-top:10px}.tour-touch-instruction{position:fixed;width:min(290px,calc(100vw - 32px));margin:0;color:var(--mobile-ink,var(--ink));font:400 12px/1.55 var(--f-body);text-align:center;pointer-events:none}.tour-shake-enable{position:fixed;transform:translateX(-50%);padding:6px 12px;border:0;border-bottom:1px solid currentColor;background:transparent;color:var(--mobile-ink,var(--ink));font:400 12px/1.5 var(--f-body);pointer-events:auto;cursor:pointer}
 
@@ -376,6 +377,9 @@ body.about-open{overflow:hidden}
 
 .tour-shake-active #autoMoodActions,.tour-shake-active #orbFeelingTargets{visibility:hidden!important;pointer-events:none!important}
 .tour-shake-next{min-width:80px;min-height:44px;padding:8px 18px;border:0;border-radius:22px;background:#24212b;color:#fff;text-decoration:none}.tour-shake-enable{min-height:44px;padding:8px 18px;border:1px solid currentColor;border-radius:22px;text-decoration:none}.tour-shake-next:focus-visible,.tour-shake-enable:focus-visible{outline:none;box-shadow:none}
+.app-tour[data-stage="category"] .tour-card,.app-tour[data-stage="slider"] .tour-card,.app-tour[data-stage="mode"] .tour-card,.app-tour[data-stage="menu"] .tour-card{width:max-content;max-width:min(290px,calc(100vw - 28px));padding:12px 16px}
+.app-tour .tour-card header{margin:0}.app-tour .tour-card header .tour-close{position:absolute;right:4px;top:3px;width:28px;height:28px}.app-tour .tour-card p{padding-right:16px;white-space:pre-line}.app-tour .tour-card nav:has(button:not([hidden])){margin-top:12px}.app-tour .tour-card nav:not(:has(button:not([hidden]))){display:none}
+.canvas-mood-choice .mood-choice small{font-family:PretendardFeeling,Pretendard,sans-serif;font-weight:300;letter-spacing:-.05em}
 </style>
 
 <header class="experience-brand" id="experienceBrand" aria-label="MINDFUL DAY"><h1 class="experience-wordmark">MINDFUL<br>DAY<span class="brand-dot" aria-hidden="true"></span></h1><p class="experience-tagline" id="experienceTagline">What’s your mood today?</p></header>
@@ -532,6 +536,7 @@ body.about-open{overflow:hidden}
   </section>
 </aside>
 <div class="export-layer" id="exportLayer"></div>
+<script src="adaptive-guide.js?v=403f528b2837"></script>
 <script src="single-orb-model.js?v=8a1b1e00f52b"></script>
 <script src="palette-guide-data.js?v=4e88c11c2f17"></script>
 <script src="semantic-mixing-model.js?v=218e73a6f5d5"></script>
@@ -814,13 +819,21 @@ function drawOrb(ctx,p,cx,cy,size){
   }
 }
 
+function koreanFeelingWidth(ctx,text,size){ctx.save();ctx.font=`300 ${size}px "PretendardFeeling","Pretendard",sans-serif`;ctx.letterSpacing='0px';const width=ctx.measureText(text).width-Math.max(0,Array.from(text).length-1)*size*.05;ctx.restore();return width;}
+function drawKoreanFeeling(ctx,text,x,y,size){
+ ctx.save();ctx.font=`300 ${size}px "PretendardFeeling","Pretendard",sans-serif`;
+ if('letterSpacing' in ctx){ctx.letterSpacing=(-size*.05)+'px';ctx.fillText(text,x,y);}
+ else{const width=koreanFeelingWidth(ctx,text,size),align=ctx.textAlign;let left=x-(align==='center'?width/2:align==='right'||align==='end'?width:0);ctx.textAlign='left';for(const char of text){ctx.fillText(char,left,y);left+=ctx.measureText(char).width-size*.05;}}
+ ctx.restore();
+}
+
 // Shared by the live canvas, hit areas, and exported HTML.
 function layoutOrbCaptions(orbs,W,H,measure){
   const gap=W*.028,pad=W*.025,placed=[];
   const intersects=(box,circle)=>{const x=Math.max(box.left,Math.min(circle.x,box.left+box.width)),y=Math.max(box.top,Math.min(circle.y,box.top+box.height));return Math.hypot(x-circle.x,y-circle.y)<(circle.avoidRadius??circle.radius)+gap*.5;};
   const overlaps=(a,b)=>a.left<b.left+b.width+gap*.5&&a.left+a.width+gap*.5>b.left&&a.top<b.top+b.height+gap*.5&&a.top+a.height+gap*.5>b.top;
   return orbs.map((orb,index)=>{
-    const preferred=orb.side||(orb.x<W/2?'right':'left'),textScale=orb.captionScale??1,baseFontSize=Math.max(W*.02,orb.radius*.23),fontSize=baseFontSize*textScale,koSize=Math.max(W*.014,baseFontSize*.56)*textScale;
+    const preferred=orb.side||(orb.x<W/2?'right':'left'),textScale=orb.captionScale??1,baseFontSize=Math.max(W*.02,orb.radius*.23),fontSize=baseFontSize*textScale,koSize=Math.max(W*.014,baseFontSize*.56)*textScale*(orb.koScale??1);
     const enLines=[String(orb.en||'')],koLines=orb.ko?[String(orb.ko)]:[],width=Math.max(...enLines.map(t=>measure(t,fontSize,'en')),...koLines.map(t=>measure(t,koSize,'ko')),0);
     const height=fontSize*1.06+(koLines.length?koSize*.55+koSize*1.25:0),idealTop=orb.y-height/2,others=orbs.filter((_,i)=>i!==index),options=[];
     const parentRadius=orb.avoidRadius??orb.radius,parentVisible=orb.x+parentRadius>0&&orb.x-parentRadius<W&&orb.y+parentRadius>0&&orb.y-parentRadius<H;
@@ -842,7 +855,7 @@ function layoutSingleFeelingTarget(word,ctx,W,H,wide=false){
   const textWidth=wide?Math.min(W*.8,480):W;let size=textWidth*.15;
   ctx.save();ctx.font=`italic 500 ${size}px "Cormorant Garamond",Georgia,serif`;let english=ctx.measureText(word.en||'').width;
   if(english>textWidth*.84){size*=textWidth*.84/english;english=textWidth*.84;}
-  const koSize=wide?textWidth*.035:10.7;ctx.font=`400 ${koSize}px "Pretendard",sans-serif`;const korean=word.ko?ctx.measureText(word.ko).width:0;ctx.restore();
+  const koSize=wide?textWidth*.035:10.7;const korean=word.ko?koreanFeelingWidth(ctx,word.ko,koSize):0;ctx.restore();
   const width=Math.max(44,english+24,korean+24),top=H/2-size*.65-8,bottom=H/2+(word.ko?size*.55+koSize*1.6:size*.65)+8;
   return {left:(W-width)/2,top,width,height:Math.max(44,bottom-top)};
 }
@@ -913,14 +926,14 @@ function selectReviewedCatalogWord(key){
   if(existing!=null){toggle(existing);renderReviewedCatalog();return;}
   if(S.canvasMode!=='mixing'){const idx=chosen[0]??0;if(!chosen.length)toggle(idx);retarget(tiles[idx],.65,true,row);S.activeOrb=idx;}
   else{const idx=tiles.findIndex((t,i)=>!chosen.includes(i)),tile=tiles[idx],palette=reviewedOrbPalette(row);Object.assign(tile,{reviewed:row,generated:false,cur:palette,from:palette,to:palette,dirty:true,meaningKey:null,exposureAt:null});tile.el.style.background=row.scene.background;Object.assign(S,{hue:0,sat:1,light:0,contrast:1,soft:1});toggle(idx);}
-  showFeeling(chosen[0]);updateColorUI();refreshTiles();renderReviewedCatalog();
+  showFeeling(chosen[0]);updateColorUI();refreshTiles();renderReviewedCatalog();noteAppTourAction('palette');
 }
 function closeCatalogCategories(restoreFocus=false){
   const dialog=$('catalogCategoryDialog');if(dialog.open)dialog.close();$('colorBtn').setAttribute('aria-expanded','false');if(restoreFocus)$('colorBtn').focus({preventScroll:true});
 }
 function chooseCatalogCategory(id){
   const category=catalogCategoryFor(id);if(!category)return;S.catalogCategory=category.id;S.exploreCategory=category.members.slice();closeCatalogCategories(true);
-  if(S.canvasMode!=='mixing'){const row=catalogRowsForCategory()[0];if(row)selectReviewedCatalogWord(row.wordKey);}updateColorUI();renderReviewedCatalog();
+  if(S.canvasMode!=='mixing'){const row=catalogRowsForCategory()[0];if(row)selectReviewedCatalogWord(row.wordKey);}updateColorUI();renderReviewedCatalog();noteAppTourAction('category');
 }
 function positionCatalogDropdown(){
   const dialog=$('catalogCategoryDialog');if(!dialog.open)return;const anchor=$('colorBtn').getBoundingClientRect(),bounds=dialog.getBoundingClientRect(),pad=12;
@@ -962,11 +975,13 @@ function updateCatalogPeek(now){
   const r=strip.getBoundingClientRect();Object.assign(hint.style,{left:(r.left+r.width/2)+'px',top:Math.max(8,r.top-27)+'px'});
 }
 function setupCatalogDrag(){
-  const strip=$('reviewedCatalogStrip');if(!strip||strip.dataset.dragReady)return;strip.dataset.dragReady='true';let drag=null,suppressUntil=0;
+  const strip=$('reviewedCatalogStrip');if(!strip||strip.dataset.dragReady)return;strip.dataset.dragReady='true';let drag=null,suppressUntil=0,touchStart=null;
+  strip.addEventListener('pointerdown',e=>{touchStart={x:e.clientX,y:e.clientY};});
+  strip.addEventListener('pointerup',e=>{if(touchStart&&Math.abs(e.clientX-touchStart.x)>8&&typeof noteAppTourAction==='function')noteAppTourAction('browse');touchStart=null;});
   strip.addEventListener('pointerdown',e=>{if(typeof stopCatalogPeek==='function')stopCatalogPeek();if(e.pointerType!=='mouse'||e.button!==0)return;drag={id:e.pointerId,x:e.clientX,scroll:strip.scrollLeft,moved:false};});
   strip.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;const delta=e.clientX-drag.x;if(Math.abs(delta)>5&&!drag.moved){drag.moved=true;strip.setPointerCapture(e.pointerId);strip.classList.add('is-dragging');}if(drag.moved){e.preventDefault();strip.scrollLeft=drag.scroll-delta;}});
   const stop=e=>{if(!drag||drag.id!==e.pointerId)return;if(drag.moved){suppressUntil=performance.now()+180;if(strip.hasPointerCapture(e.pointerId))strip.releasePointerCapture(e.pointerId);}drag=null;strip.classList.remove('is-dragging');};
-  strip.addEventListener('wheel',()=>{if(typeof stopCatalogPeek==='function')stopCatalogPeek();},{passive:true});strip.addEventListener('keydown',()=>{if(typeof stopCatalogPeek==='function')stopCatalogPeek();});
+  strip.addEventListener('wheel',()=>{if(typeof stopCatalogPeek==='function')stopCatalogPeek();if(typeof noteAppTourAction==='function')noteAppTourAction('browse');},{passive:true});strip.addEventListener('keydown',()=>{if(typeof stopCatalogPeek==='function')stopCatalogPeek();});
   strip.addEventListener('pointerup',stop);strip.addEventListener('pointercancel',stop);strip.addEventListener('click',e=>{if(performance.now()<suppressUntil){e.preventDefault();e.stopPropagation();}},true);
 }
 function refreshTiles(){
@@ -985,7 +1000,7 @@ function setCanvasMode(mode){
   if(reviewedExploration&&mode==='mixing')alignReviewedCandidates(groundColors().bg);
   if(reviewedExploration&&enteringSingle)activateReviewedPalette(tiles[chosen[0]]);
   if(enteringSingle&&placements[0]){placements[0].tj=1;placements[0].cs=S.szL;if(typeof syncSlider==='function')syncSlider('szL');}
-  refreshTiles();showFeeling(chosen[0]);resize();
+  refreshTiles();showFeeling(chosen[0]);resize();noteAppTourAction('mode');
 }
 function updateModeUI(){
   const mixing=S.canvasMode==='mixing';$('singleMode').setAttribute('aria-pressed',String(!mixing));$('mixingMode').setAttribute('aria-pressed',String(mixing));
@@ -1090,7 +1105,7 @@ const fontOf=id=>FONTS.find(f=>f.id===id)||FONTS[0];
 function fontStr(id,role,size){const f=role==='t'&&/^mindful\s*day$/i.test(String(S.title||'').trim())?{fam:'MindfulBrand',tw:600,sw:400}:role==='s'&&/^what[’']s your mood today\?$/i.test(String(S.sub||'').trim())?{fam:'Pretendard',tw:600,sw:300}:fontOf(id);return `${role==='t'?f.tw:f.sw} ${size}px "${f.fam}","Pretendard","Noto Sans KR",sans-serif`;}
 let fit=null;
 function warmFonts(){fit=null;if(!document.fonts)return Promise.resolve();
-  return Promise.all([document.fonts.load(fontStr(S.ft,'t',40),S.title||'A'),document.fonts.load(fontStr(S.fs,'s',40),S.sub||'A')]).catch(()=>{});}
+  return Promise.all([document.fonts.load('300 20px "PretendardFeeling"','감정'),document.fonts.load(fontStr(S.ft,'t',40),S.title||'A'),document.fonts.load(fontStr(S.fs,'s',40),S.sub||'A')]).catch(()=>{});}
 if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',()=>{fit=null;alignLanguageToggle();});
 [['Black',900],['Bold',700],['Medium',500],['Regular',400]].forEach(([n,w])=>{
   fetch(`fonts/Pretendard-${n}.woff2`).then(r=>r.ok?r.arrayBuffer():Promise.reject()).then(buf=>new FontFace('Pretendard',buf,{weight:String(w)}).load())
@@ -1196,15 +1211,15 @@ function renderOrbFeelingTargets(){
 function captionLayoutForRows(ctx,W,H,rows,orbWidth=W){
   const frozen=S.reviewing&&feedbackReview?(feedbackReview.artworkScene||feedbackReview.scene):null,T=reduce?0:clock*S.speed;
   const orbs=rows.map((row,i)=>{const slot=chosen.indexOf(row.idx),pl=placements[slot],tile=tiles[row.idx],held=frozen?.orbs[slot],scale=held?held.scale:(pl?.cs??SZ()[slot]*pl?.tj)*(1+.04*S.drift*Math.sin(T*.8+(pl?.ph3||0)));
-    return {captionScale:slot===0?.5:.7,x:(held?held.position.x:pl?.lx??pl?.x??.5)*W,y:(held?held.position.y:pl?.ly??pl?.y??.5)*H,radius:(held?held.layers[1].r:tile.cur.layers[1].r)*scale*orbWidth,avoidRadius:Math.max(...(held?held.layers:tile.cur.layers).map(l=>l.r+Math.hypot(l.ox,l.oy)))*scale*orbWidth,en:row.word?.en||L('이름 고르기','Choose a name'),ko:lang==='ko'?row.word?.ko||'':'',side:pl?.captionSide};});
-  ctx.save();const layout=layoutOrbCaptions(orbs,W,H,(text,size,kind)=>{ctx.font=kind==='ko'?`400 ${size}px "Pretendard","Noto Sans KR",sans-serif`:`italic 500 ${size}px "Cormorant Garamond",Georgia,serif`;return ctx.measureText(text).width;});ctx.restore();
+    return {captionScale:slot===0?.5:.7,koScale:slot===0?.7:1,x:(held?held.position.x:pl?.lx??pl?.x??.5)*W,y:(held?held.position.y:pl?.ly??pl?.y??.5)*H,radius:(held?held.layers[1].r:tile.cur.layers[1].r)*scale*orbWidth,avoidRadius:Math.max(...(held?held.layers:tile.cur.layers).map(l=>l.r+Math.hypot(l.ox,l.oy)))*scale*orbWidth,en:row.word?.en||L('이름 고르기','Choose a name'),ko:lang==='ko'?row.word?.ko||'':'',side:pl?.captionSide};});
+  ctx.save();const layout=layoutOrbCaptions(orbs,W,H,(text,size,kind)=>{if(kind==='ko')return koreanFeelingWidth(ctx,text,size);ctx.font=`italic 500 ${size}px "Cormorant Garamond",Georgia,serif`;return ctx.measureText(text).width;});ctx.restore();
   layout.forEach((caption,i)=>{const pl=placements[chosen.indexOf(rows[i].idx)];if(pl)pl.captionSide=caption.side;});return layout;
 }
 function drawIndividualFeelings(ctx,W,H,rows,orbWidth=W){
   if(typeof isShakeTourOpen==='function'&&isShakeTourOpen())return;
   const layout=captionLayoutForRows(ctx,W,H,rows,orbWidth);ctx.save();ctx.globalAlpha=1;ctx.textBaseline='top';ctx.fillStyle=groundColors().ink;
   layout.forEach(caption=>{const x=caption.align==='left'?caption.left:caption.left+caption.width;ctx.textAlign=caption.align;ctx.font=`italic 500 ${caption.fontSize}px "Cormorant Garamond",Georgia,serif`;let y=caption.top;
-    caption.enLines.forEach(line=>{ctx.fillText(line,x,y);y+=caption.fontSize*1.06;});y+=caption.koSize*.55;ctx.font=`400 ${caption.koSize}px "Pretendard","Noto Sans KR",sans-serif`;caption.koLines.forEach(line=>{ctx.fillText(line,x,y);y+=caption.koSize*1.25;});
+    caption.enLines.forEach(line=>{ctx.fillText(line,x,y);y+=caption.fontSize*1.06;});y+=caption.koSize*.55;caption.koLines.forEach(line=>{drawKoreanFeeling(ctx,line,x,y,caption.koSize);y+=caption.koSize*1.25;});
   });ctx.restore();
 }
 function beginOrbMoodReview(idx){
@@ -1212,7 +1227,7 @@ function beginOrbMoodReview(idx){
   const slot=chosen.indexOf(idx);if(slot<0)return;
   const artworkScene=captureColorScene(),scene=ColorFeedback.canonicalScene({...artworkScene,mode:'single',orbs:[{...artworkScene.orbs[slot],slot:0}]}),model=typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher:ColorFeedback,choiceStore=typeof ReviewedPaletteMatcher!=='undefined'&&model===ReviewedPaletteMatcher?reviewedChoiceStore:feedbackStore;
   const proposal=model.suggestPage(scene,{records:choiceStore?choiceStore.list():[],exploration:true});
-  feedbackReview={scene,artworkScene,targetIdx:idx,targetSlot:slot,feelings:JSON.parse(JSON.stringify(S.orbFeelingRows||[])),proposal,selectedWord:null,saved:false};S.reviewing=true;feel=null;prevFeel=null;dismissNewPaletteInvite();hideGuide();renderMoodChoices();syncFeelingStatus();drawPoster();drawMobileBackdrop();
+  feedbackReview={scene,artworkScene,targetIdx:idx,targetSlot:slot,feelings:JSON.parse(JSON.stringify(S.orbFeelingRows||[])),proposal,selectedWord:null,saved:false};S.reviewing=true;noteAppTourAction('review-open');feel=null;prevFeel=null;dismissNewPaletteInvite();hideGuide();renderMoodChoices();syncFeelingStatus();drawPoster();drawMobileBackdrop();
 }
 function updateAutoMoodUI(){
   const unavailable=S.autoFeeling===false||S.reviewing||S.study||S.studyLoading||S.catalogLoading||!S.canvasChoiceReady||!S.autoFeelingResult;
@@ -1274,7 +1289,7 @@ function feelGlyph(ctx,W,H,text,alpha,sc){const display=typeof feel!=='undefined
   const tw=ctx.measureText(display).width;if(tw>W*.84){sz*=W*.84/tw;ctx.font=ff(sz);}
   ctx.save();ctx.globalAlpha=clamp(alpha);ctx.fillStyle=feelingInk(ctx,W,H);ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.translate(W/2,H/2);ctx.scale(sc,sc);ctx.fillText(display,0,0);
-  const ko=lang==='ko'?(typeof feel!=='undefined'&&feel?.text===text?feel.ko||FEEL_KO[text]:FEEL_KO[text]):'';if(ko){const ksz=document.body.classList.contains('wide-scene')?W*.035:W*10.7/Math.max(1,pc.clientWidth||W);ctx.font=`400 ${ksz}px "Pretendard","Noto Sans KR",sans-serif`;ctx.fillText(ko,0,sz*.55+ksz*.9);}
+  const ko=lang==='ko'?(typeof feel!=='undefined'&&feel?.text===text?feel.ko||FEEL_KO[text]:FEEL_KO[text]):'';if(ko){const ksz=document.body.classList.contains('wide-scene')?W*.035:W*10.7/Math.max(1,pc.clientWidth||W);drawKoreanFeeling(ctx,ko,0,sz*.55+ksz*.9,ksz);}
   ctx.restore();}
 function drawFeeling(ctx,W,H){if(typeof isShakeTourOpen==='function'&&isShakeTourOpen())return;const now=performance.now();
   const rows=S.reviewing&&feedbackReview?.targetIdx!=null?feedbackReview.selectedWord?feedbackReview.feelings:[]:S.orbFeelingRows||[];
@@ -1574,7 +1589,7 @@ imgBtn.addEventListener('click',()=>{
   imageChoices.hidden=!open;imgBtn.setAttribute('aria-expanded',String(open));syncExportLayer();
 });
 async function saveImage(backgroundOnly=false){
-  if(imageBusy||imgBtn.disabled)return;imageBusy=true;vidBtn.disabled=true;syncImageButtons();
+  if(imageBusy||imgBtn.disabled)return;noteAppTourAction('export');imageBusy=true;vidBtn.disabled=true;syncImageButtons();
   imgBtn.textContent=tr('이미지 만드는 중…');closeImageChoices();closeSheet();say('');
   try{
     if(!backgroundOnly)await warmFonts();
@@ -1602,7 +1617,7 @@ function setV(s){vstate=s;
   vidLabel.textContent=s==='rec'?tr('끝내기')+' '+mss(recStart?(performance.now()-recStart)/1000:0):tr({idle:'영상으로 저장',prep:'준비 중…',making:'만드는 중…',done:'영상 다시 저장'}[s]);}
 const mss=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 async function startRec(){
-  setV('prep');closeImageChoices();closeSheet();say('');
+  noteAppTourAction('export');setV('prep');closeImageChoices();closeSheet();say('');
   await warmFonts();
   lockSize=true;pc.width=VID_W;pc.height=VID_H;fit=null;drawPoster();
   let stream;
@@ -1811,11 +1826,11 @@ function orb(o,cx,cy,size){var steps=o.trail>.01?18:1,tx=Math.cos(o.ta)*o.trail,
     g.addColorStop(0,'rgba('+L.c+','+a+')');g.addColorStop(L.s,'rgba('+L.c+','+a+')');g.addColorStop(1,'rgba('+L.c+',0)');
     x.fillStyle=g;x.beginPath();x.arc(px,py,rad,0,TAU);x.fill();}});}
 function draw(now){var W=c.width,H=c.height,T=D.reduced?0:((D.clock||0)+(D.paused?0:(now-t0)/1000))*D.speed;x.fillStyle=D.bg;x.fillRect(0,0,W,H);
-  var poses=[];D.orbs.forEach(function(o,i){var p=o.p,a=D.reduced?0:p.amp*D.drift,px=p.x+Math.sin(T*p.f1*TAU+p.ph1)*a,py=p.y+Math.cos(T*p.f2*TAU+p.ph2)*a,s=p.s*(1+.04*D.drift*Math.sin(T*.8+p.ph3));orb(o,px*W,py*H,s*W);poses.push({captionScale:i===0?.5:.7,x:px*W,y:py*H,radius:o.layers[1].r*s*W,avoidRadius:Math.max.apply(null,o.layers.map(function(l){return l.r+Math.hypot(l.ox,l.oy); }))*s*W,en:D.feelings&&D.feelings[i]?D.feelings[i][0]:'',ko:D.feelings&&D.feelings[i]?D.feelings[i][1]:'',side:p.captionSide});});
+  var poses=[];D.orbs.forEach(function(o,i){var p=o.p,a=D.reduced?0:p.amp*D.drift,px=p.x+Math.sin(T*p.f1*TAU+p.ph1)*a,py=p.y+Math.cos(T*p.f2*TAU+p.ph2)*a,s=p.s*(1+.04*D.drift*Math.sin(T*.8+p.ph3));orb(o,px*W,py*H,s*W);poses.push({captionScale:i===0?.5:.7,koScale:i===0?.7:1,x:px*W,y:py*H,radius:o.layers[1].r*s*W,avoidRadius:Math.max.apply(null,o.layers.map(function(l){return l.r+Math.hypot(l.ox,l.oy); }))*s*W,en:D.feelings&&D.feelings[i]?D.feelings[i][0]:'',ko:D.feelings&&D.feelings[i]?D.feelings[i][1]:'',side:p.captionSide});});
   var pad=W*.07;drawHeader(x,W,pad,function(z){return font(D.ft,z);},function(z){return font(D.fs,z);},D.title,D.sub,D.ink);x.fillStyle=D.ink;x.textBaseline='top';x.textAlign='left';
-  if(D.feelings&&D.feelings.length>1){var captions=layoutOrbCaptions(poses,W,H,function(text,size,kind){x.font=kind==='ko'?'400 '+size+'px "Pretendard",sans-serif':'italic 500 '+size+'px "Cormorant Garamond",Georgia,serif';return x.measureText(text).width;});captions.forEach(function(caption,i){D.orbs[i].p.captionSide=caption.side;x.save();x.fillStyle=D.ink;x.globalAlpha=1;x.textAlign=caption.align;x.textBaseline='top';var xx=caption.align==='left'?caption.left:caption.left+caption.width,yy=caption.top;x.font='italic 500 '+caption.fontSize+'px "Cormorant Garamond",Georgia,serif';caption.enLines.forEach(function(line){x.fillText(line,xx,yy);yy+=caption.fontSize*1.06;});yy+=caption.koSize*.55;x.font='400 '+caption.koSize+'px "Pretendard",sans-serif';caption.koLines.forEach(function(line){x.fillText(line,xx,yy);yy+=caption.koSize*1.25;});x.restore();});}
+  if(D.feelings&&D.feelings.length>1){var captions=layoutOrbCaptions(poses,W,H,function(text,size,kind){if(kind==='ko')return koreanFeelingWidth(x,text,size);x.font='italic 500 '+size+'px "Cormorant Garamond",Georgia,serif';return x.measureText(text).width;});captions.forEach(function(caption,i){D.orbs[i].p.captionSide=caption.side;x.save();x.fillStyle=D.ink;x.globalAlpha=1;x.textAlign=caption.align;x.textBaseline='top';var xx=caption.align==='left'?caption.left:caption.left+caption.width,yy=caption.top;x.font='italic 500 '+caption.fontSize+'px "Cormorant Garamond",Georgia,serif';caption.enLines.forEach(function(line){x.fillText(line,xx,yy);yy+=caption.fontSize*1.06;});yy+=caption.koSize*.55;caption.koLines.forEach(function(line){drawKoreanFeeling(x,line,xx,yy,caption.koSize);yy+=caption.koSize*1.25;});x.restore();});}
   else if(D.feel){var fs2=W*.15;x.save();x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';var fw=x.measureText(D.feel[0]).width;if(fw>W*.84){fs2*=W*.84/fw;x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';}
-    x.globalAlpha=1;x.fillStyle=D.feelInk||'#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(D.feel[0],W/2,H/2);if(D.feel[1]){x.font='400 '+(W*.034)+'px "Pretendard",sans-serif';x.fillText(D.feel[1],W/2,H/2+fs2*.55+W*.031);}x.restore();x.fillStyle=D.ink;x.textAlign='left';x.textBaseline='top';}
+    x.globalAlpha=1;x.fillStyle=D.feelInk||'#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(D.feel[0],W/2,H/2);if(D.feel[1]){drawKoreanFeeling(x,D.feel[1],W/2,H/2+fs2*.55+W*.031,W*.034);}x.restore();x.fillStyle=D.ink;x.textAlign='left';x.textBaseline='top';}
   var fz=W*.026;x.font=font(D.fs,fz);x.globalAlpha=.8;x.textBaseline='alphabetic';footer(x,W,H,pad,fz,function(z){return font(D.fs,z);},D.foot[0],D.foot[1]);
   requestAnimationFrame(draw);}
 addEventListener('resize',size);
@@ -1844,20 +1859,20 @@ function buildCode(){
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 ${fams.length?`<link rel="stylesheet" href="https://fonts.googleapis.com/css2?${fams.join('&')}&display=swap">`:''}
 <link rel="stylesheet" href="https://imagetellerworks.github.io/mindful-day/assets/fonts/serif.css?v=1">
-<style>@font-face{font-family:MindfulBrand;src:url(https://imagetellerworks.github.io/mindful-day/experience/fonts/Pretendard-Regular.woff2) format("woff2");font-weight:100 900}@font-face{font-family:Pretendard;src:url(https://imagetellerworks.github.io/mindful-day/experience/fonts/Pretendard-Light.woff2) format("woff2");font-weight:300;unicode-range:U+0020-007E,U+2018-2019}html,body{margin:0;height:100%;background:${bg}}body{display:grid;place-items:center;overflow:hidden}canvas{display:block;width:min(100vw,calc(100vh*9/16));width:min(100vw,calc(100dvh*9/16));aspect-ratio:9/16}</style>
+<style>@font-face{font-family:PretendardFeeling;src:url(https://imagetellerworks.github.io/mindful-day/experience/fonts/Pretendard-Korean-Light.woff2) format("woff2");font-weight:300}@font-face{font-family:MindfulBrand;src:url(https://imagetellerworks.github.io/mindful-day/experience/fonts/Pretendard-Regular.woff2) format("woff2");font-weight:100 900}@font-face{font-family:Pretendard;src:url(https://imagetellerworks.github.io/mindful-day/experience/fonts/Pretendard-Light.woff2) format("woff2");font-weight:300;unicode-range:U+0020-007E,U+2018-2019}html,body{margin:0;height:100%;background:${bg}}body{display:grid;place-items:center;overflow:hidden}canvas{display:block;width:min(100vw,calc(100vh*9/16));width:min(100vw,calc(100dvh*9/16));aspect-ratio:9/16}</style>
 </head>
 <body>
 <canvas id="c" role="img" aria-label="${esc(D.title)}"></canvas>
 <scr${'ipt'}>
 var D=${JSON.stringify(D).replace(/</g,'\\u003c')};
-${RUNTIME.trim().replace('FOOTER_SRC',footer.toString()+'\n'+drawHeader.toString()).replace('CAPTION_LAYOUT_SRC',()=>layoutOrbCaptions.toString())}
+${RUNTIME.trim().replace('FOOTER_SRC',footer.toString()+'\n'+drawHeader.toString()).replace('CAPTION_LAYOUT_SRC',()=>koreanFeelingWidth.toString()+'\n'+drawKoreanFeeling.toString()+'\n'+layoutOrbCaptions.toString())}
 <\/script>
 </bo${'dy'}>
 </html>
 `;}
 function showCode(code){closeSheet();const ta=document.createElement('textarea');ta.className='codebox';ta.readOnly=true;ta.value=code;ta.setAttribute('aria-label',tr('포스터 코드'));
   sheetPrev.appendChild(ta);shShare.hidden=true;sheetMsg.textContent=tr('자동 복사가 막혀 있어요. 코드를 전체 선택해 복사해 주세요.');sheet.hidden=false;syncExportLayer();ta.focus();ta.select();}
-function copyPosterCode(){const code=buildCode(),done='코드를 복사했어요. 빈 .html 파일에 붙여 넣고 열면 지금 포스터가 떠다니며 재생돼요.';
+function copyPosterCode(){noteAppTourAction('export');const code=buildCode(),done='코드를 복사했어요. 빈 .html 파일에 붙여 넣고 열면 지금 포스터가 떠다니며 재생돼요.';
   if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(code).then(()=>{closeSheet();say(done,7000);},()=>showCode(code));
   showCode(code);
 }
@@ -1907,9 +1922,9 @@ function setMenuOpen(open){if(!open&&$('catalogCategoryDialog').open)closeCatalo
   updateMenuToggle();if(menuOpen)renderReviewedCatalog();
   if(!menuOpen){if($('more').open&&!wideScene.matches){$('more').open=false;syncCustomizePanel();}closeMSheet();closeImageChoices();closeSheet();}
   resize();drawPoster();drawMobileBackdrop();
-  if(typeof startCatalogPeek==='function'){if(menuOpen)startCatalogPeek();else stopCatalogPeek();}
+  if(typeof startCatalogPeek==='function'){if(menuOpen&&(!appTour?.active||tourStage()==='slider'))startCatalogPeek();else stopCatalogPeek();}
 }
-$('menuToggle').addEventListener('click',()=>{if(customPanelOpen){$('more').open=false;syncCustomizePanel();}else setMenuOpen(!menuOpen);});
+$('menuToggle').addEventListener('click',()=>{if(customPanelOpen){$('more').open=false;syncCustomizePanel();}else{setMenuOpen(!menuOpen);if(menuOpen)noteAppTourAction('menu');}});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen&&!customPanelOpen){e.preventDefault();setMenuOpen(false);$('menuToggle').focus({preventScroll:true});}});
 function alignLanguageToggle(){const button=$('langBtn');if(!button)return;let center;
   if(document.body.classList.contains('is-story')&&/^mindful\s*day$/i.test(String(S.title||'').trim())){const r=$('experienceBrand').querySelector('h1').getBoundingClientRect();const actions=$('experienceHeaderActions');actions.style.top=r.top+'px';button.style.top='';return;
@@ -1958,13 +1973,13 @@ async function enableShake(){
   try{
     const Motion=window.DeviceMotionEvent;
     const permission=typeof Motion.requestPermission==='function'?await Motion.requestPermission():'granted';
-    if(permission==='granted'){connectShake();if(typeof appTour!=='undefined'&&appTour.active&&appTour.step===0)renderAppTour();else showShakeCoach();}
+    if(permission==='granted'){connectShake();if(appTour?.active&&isShakeTourOpen()){noteAppTourAction('enable');renderAppTour();}else showShakeCoach();}
     else{shake.denied=true;updateShakeCoach();}
   }catch(err){shake.denied=true;updateShakeCoach();}
   finally{shake.busy=false;updateShakeCoach();if(typeof appTour!=='undefined'&&isShakeTourOpen()){renderAppTour();if(shake.denied)$('tourShakeNext').focus({preventScroll:true});}}
 }
 function offerShakeAfterTouch(){
-  if(typeof appTour!=='undefined'&&appTour.active)return;
+  if(appTour?.active||appTourSeen())return;
   if(shake.offered)return;shake.offered=true;if(!mobileMotionAvailable()){setTimeout(offerMenuGuide,1800);return;}
   // iPhone의 권한 요청은 안내의 명시적인 버튼 탭 안에서만 실행.
   if(typeof window.DeviceMotionEvent.requestPermission!=='function')connectShake();
@@ -2032,7 +2047,7 @@ function randomShakeMood(force=12,vector=[12,0,0]){
   if(!chosen.length)toggle(0);
   shake.activeUntil=performance.now()+1700;kickShakeOrbs(vector,force);
   cycleGround();
-  const choices=MOODS.map((_,i)=>i).filter(i=>i!==moodIdx);applyMood(pick(choices));dismissShakeCoach();if(typeof appTour!=='undefined'&&appTour.active&&appTour.step===0&&appTour.phase==='shake')advanceAppTour(1);
+  const choices=MOODS.map((_,i)=>i).filter(i=>i!==moodIdx);applyMood(pick(choices));dismissShakeCoach();noteAppTourAction('shake');
 }
 $('shakeEnable').addEventListener('click',enableShake);
 $('shakeClose').addEventListener('click',dismissShakeCoach);
@@ -2122,7 +2137,7 @@ function renderMoodChoices(){
   $('canvasMoodChoice').classList.toggle('is-chosen',!!feedbackReview?.selectedWord);
   $('canvasMoodChoice').classList.toggle('is-direction',direction);$('canvasMoodChoice').classList.toggle('is-orb-edit',feedbackReview?.targetIdx!=null);
   $('canvasMoodChoice').style.setProperty('--choice-ink',feelingInk());
-  $('choiceQuestion').textContent=direction?L('어느 쪽 느낌에 더 가까운가요?','Which direction feels closer?'):L('이 색에서 어떤 감정이 느껴지나요?','What feeling do these colors bring to mind?');
+  $('choiceQuestion').textContent=direction?L('어느 쪽 느낌에 더 가까운가요?','Which direction feels closer?'):L('이 색에서 어떤 감정이 더 떠오르나요?','What other feeling do these colors bring to mind?');
   $('skipMood').textContent=L('둘 다 아니에요','Neither fits');$('skipMood').hidden=!feedbackReview||!!feedbackReview.selectedWord||direction;
   $('reviewMoodPages').hidden=!direction;$('reviewMoodPages').disabled=!!feedbackReview?.browsing;$('reviewMoodPages').textContent=L('이전 보기 다시 살펴보기','Revisit previous words');
   $('choiceNavigation').hidden=!feedbackReview||!!feedbackReview.selectedWord;
@@ -2332,107 +2347,121 @@ function beginFromWelcome(){
 $('welcomeStart').addEventListener('click',beginFromWelcome);
 $('appWelcome').addEventListener('cancel',e=>{e.preventDefault();beginFromWelcome();});
 
-const APP_TOUR_KEY='mindful-day-ui-tour-v1';
-const appTour={active:false,dismissed:false,step:0,phase:'touch',wordOpened:false,originalMenuOpen:false,focus:null,nextAt:0,touchCount:0};
-function isShakeTourOpen(){return appTour.active&&appTour.step===0&&appTour.phase==='shake';}
+const APP_TOUR_KEY='mindful-day-ui-tour-v2';
+var appTour={active:false,dismissed:false,step:0,phase:'touch',flow:null,originalMenuOpen:false,focus:null,nextAt:0};
+function tourStage(){return appTour?.flow?.stage||'done';}
+function isShakeTourOpen(){return !!appTour?.active&&['shake','practice'].includes(tourStage());}
 function appTourSeen(){try{return !!localStorage.getItem(APP_TOUR_KEY);}catch(error){return false;}}
-function appTourCopy(){return [
-  {title:L('터치로 색을 만나세요','Touch to discover colors'),body:L('반투명 원 주변을 세 번 터치해보세요. 색이 달라지고 컬러가 손끝을 따라와요.','Tap around the translucent circle three times. Discover changing colors as the color follows your touch.')},
-  {title:'',body:L('더 다양한 컬러와 감정을 탐색해보세요.','Explore more colors and feelings.')},
-  {title:L('원하는 방식으로 더 탐색해요','Explore your way'),body:L('다섯 분위기 중 하나를 고르고, 아래 컬러 목록을 좌우로 드래그해보세요. 싱글은 컬러 하나, 멀티는 최대 세 개를 조합해요. 배경과 소리도 여기서 바꿔요.','Choose one of five moods, then drag the color row left or right. Single uses one color; Multi combines up to three. Background and sound are here, too.')},
-  {title:L('마음에 든 순간을 저장하세요','Keep a moment you like'),body:L('아래 세 버튼으로 저장할 수 있어요.','Use these three buttons to save your artwork.'),items:[['quickCapture',L('이미지 캡처 · 지금의 그림 저장','Capture · save the current image')],['quickRecord',L('영상 녹화 · 다시 누르면 녹화 종료','Record · press again to stop')],['quickCopyCode',L('코드 복사 · 움직이는 그림 가져가기','Copy code · keep your moving artwork')]]},
-  {title:L('감정을 다시 정의해보세요','Redefine this feeling'),body:L('감정 단어를 터치해\n이 감정을 다시 정의할 수 있어요.','Tap the feeling word\nto choose how these colors feel to you.')}
-];}
+function appTourCopy(){return {
+ touch:{body:L('터치해 색을 바꿔보세요.','Tap to change the colors.')},
+ shake:{body:L('휴대폰을 가볍게 흔들어 새로운 컬러를 만나보세요.','Gently shake your phone to discover new colors.')},
+ practice:{body:L('두 번 더 터치하거나 흔들어보세요.','Try two more taps or shakes.')},
+ menu:{body:L('더 다양한 컬러와 감정을 탐색해보세요.','Explore more colors and feelings.')},
+ category:{body:L('주요 감정을 선택하세요.','Choose a main mood.')},
+ slider:{body:L('여기에서 더 고를 수 있어요.\n컬러 목록을 좌우로 밀어보세요.','Find more colors here.\nSlide the row left or right.')},
+ mode:{body:L('여러 개의 컬러를 동시에 고를 수도 있어요.','You can also choose several colors at once.')},
+ mix:{body:''},
+ save:{body:L('마음에 와닿는 컬러를 찾으셨나요? 이미지나 동영상으로 저장해요. 코드 복사도 가능해요.','Found a color that speaks to you? Save an image or video. You can copy its code, too.'),items:[['quickCapture',L('이미지 저장','Save image')],['quickRecord',L('동영상 녹화','Record video')],['quickCopyCode',L('코드 복사','Copy code')]]},
+ idle:{body:''},
+ rename:{body:L('이 컬러를 설명하는 감정을 바꿔볼까요?','Shall we try another feeling for this color?')},
+ done:{body:''}
+};}
 function appTourPlacement(rect,width,height,W,H){
-  const pad=14,left=Math.max(pad,Math.min(W-width-pad,(rect.left+rect.right-width)/2));
-  const below=rect.bottom+14,above=rect.top-height-14;
-  const top=below+height<=H-pad?below:above>=pad?above:Math.max(pad,H-height-100);
-  return {left,top:Math.min(Math.max(pad,top),Math.max(pad,H-height-pad))};
+ const pad=14,left=Math.max(pad,Math.min(W-width-pad,(rect.left+rect.right-width)/2)),below=rect.bottom+14,above=rect.top-height-14;
+ const top=below+height<=H-pad?below:above>=pad?above:Math.max(pad,H-height-100);
+ return{left,top:Math.min(Math.max(pad,top),Math.max(pad,H-height-pad))};
 }
 function appTourTarget(){
-  const rectOf=e=>e?.getBoundingClientRect(),p=rectOf(pc),rects=[];
-  if(appTour.step===0){const x=appTour.phase==='shake'?innerWidth/2:Math.max(40,Math.min(innerWidth-40,p.left+p.width*.72)),y=appTour.phase==='shake'?Math.max(130,innerHeight*.19):Math.max(100,Math.min(innerHeight*.43,p.top+p.height*.27));return {left:x-28,right:x+28,top:y-28,bottom:y+28};}
-  if(appTour.step===4){for(const b of $('orbFeelingTargets').querySelectorAll('button')){const r=rectOf(b);if(r.width&&r.height&&r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight)rects.push(r);}if(!rects.length)return {left:p.left+p.width*.1,right:p.right-p.width*.1,top:p.top+p.height*.43,bottom:p.top+p.height*.57};}
-  else if(appTour.step===3)rects.push(...['quickCapture','quickRecord','quickCopyCode'].map(id=>rectOf($(id))));
-  else if(appTour.step===1)rects.push(rectOf($('menuToggle')));
-  else rects.push(rectOf($('labColorHeader')),rectOf($('reviewedCatalogStrip')));
-  const valid=rects.filter(r=>r&&r.width&&r.height);if(!valid.length)return {left:20,right:innerWidth-20,top:innerHeight*.35,bottom:innerHeight*.55};
-  return {left:Math.min(...valid.map(r=>r.left)),right:Math.max(...valid.map(r=>r.right)),top:Math.min(...valid.map(r=>r.top)),bottom:Math.max(...valid.map(r=>r.bottom))};
+ const stage=tourStage(),p=pc.getBoundingClientRect(),rects=[];
+ if(['touch','practice'].includes(stage)){
+  const positions=[[.72,.26],[.27,.63],[.73,.70]],count=stage==='touch'?appTour.flow.touches:appTour.flow.practice,point=positions[count%positions.length];
+  const x=Math.max(42,Math.min(innerWidth-42,p.left+p.width*point[0])),y=Math.max(120,Math.min(innerHeight-150,p.top+p.height*point[1]));return{left:x-28,right:x+28,top:y-28,bottom:y+28};
+ }
+ if(stage==='rename'){for(const b of $('orbFeelingTargets').querySelectorAll('button')){const r=b.getBoundingClientRect();if(r.width&&r.height&&r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight){rects.push(r);break;}}}
+ else for(const id of stage==='menu'?['menuToggle']:stage==='category'?['colorBtn']:stage==='slider'?['reviewedCatalogStrip']:stage==='mode'?['modeSwitch']:stage==='save'?['quickCapture','quickRecord','quickCopyCode']:[])rects.push($(id)?.getBoundingClientRect());
+ const valid=rects.filter(r=>r&&r.width&&r.height);if(!valid.length)return{left:p.left+p.width*.1,right:p.right-p.width*.1,top:p.top+p.height*.43,bottom:p.top+p.height*.57};
+ return{left:Math.min(...valid.map(r=>r.left)),right:Math.max(...valid.map(r=>r.right)),top:Math.min(...valid.map(r=>r.top)),bottom:Math.max(...valid.map(r=>r.bottom))};
 }
+function syncAppTourStage(previous){
+ const stage=tourStage();appTour.step=AdaptiveGuide.stages.indexOf(stage);appTour.phase=stage;
+ if(stage==='done'){endAppTour(true);return;}
+ if(previous!==stage){
+  if(stage==='idle'){try{localStorage.setItem(APP_TOUR_KEY,'done');}catch(error){}}
+  if(['save','rename'].includes(stage))setMenuOpen(false);
+  if(stage==='slider'&&typeof startCatalogPeek==='function')startCatalogPeek(true);
+ }
+ renderAppTour();
+}
+function noteAppTourAction(type){
+ if(!appTour?.active)return;
+ if(['touch','shake'].includes(type)&&($('appTour').hidden&& !['mix','idle'].includes(tourStage())||isAppWelcomeOpen()||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate)))return;
+ const previous=tourStage();AdaptiveGuide.event(appTour.flow,type,performance.now());syncAppTourStage(previous);
+}
+function noteAppTourTouch(){noteAppTourAction('touch');}
 function renderAppTour(){
-  if(!appTour.active)return;const copy=appTourCopy()[appTour.step];
-  if(isShakeTourOpen())document.documentElement.classList.add('tour-shake-active');else document.documentElement.classList.remove('tour-shake-active');
-  $('tourCard').hidden=appTour.step===0||appTour.step===4;$('appTour').setAttribute('data-step',String(appTour.step));$('tourMinimalClose').hidden=appTour.step!==0&&appTour.step!==4;$('tourWordInstruction').textContent=copy.body;
-  const motion=typeof mobileMotionAvailable==='function'&&mobileMotionAvailable(),shaking=appTour.step===0&&appTour.phase==='shake';$('tourTouchInstruction').hidden=appTour.step!==0;$('tourTouchInstruction').textContent=shaking?L('휴대폰을 가볍게 흔들어 새로운 컬러를 만나보세요.','Gently shake your phone to discover new colors.'):L('터치해 색을 바꿔보세요.','Tap to change the colors.');$('tourShakeCue').hidden=!shaking;$('tourShakeNext').hidden=!shaking||(motion&&!shake.denied);$('tourShakeNext').textContent=L('다음','Next');$('tourShakeEnable').hidden=!!(!shaking||!motion||shake.enabled||shake.denied);$('tourShakeEnable').textContent=L(shake.busy?'연결 중…':'흔들기 켜기',shake.busy?'Connecting…':'Enable shake');$('tourShakeEnable').disabled=!!shake.busy;
-
-  $('tourTouchCount').hidden=true;$('tourTouchCount').textContent=appTour.touchCount+L(' / 3 터치',' / 3 touches');
-  $('tourProgress').textContent=(appTour.step+1)+' / 5';$('tourTitle').textContent=copy.title;$('tourBody').textContent=copy.body;
-  const items=$('tourItems');items.replaceChildren();for(const [id,text] of copy.items||[]){const row=document.createElement('li'),icon=$(id).querySelector('svg')?.cloneNode(true),label=document.createElement('span');if(icon){icon.setAttribute('aria-hidden','true');row.append(icon);}label.textContent=text;row.append(label);items.append(row);}items.hidden=!copy.items;
-  $('tourPrevious').textContent=L('이전','Back');$('tourPrevious').disabled=appTour.step===0;$('tourSkip').textContent=L('건너뛰기','Skip');$('tourNext').textContent=appTour.step===4?L('시작하기','Start creating'):appTour.step===1?L('메뉴 보기','Show menu'):L('다음','Next');$('tourClose').setAttribute('aria-label',L('사용 안내 닫기','Close guide'));
-  renderOrbFeelingTargets();appTour.nextAt=0;updateAppTour(performance.now(),true);
-  if(appTour.step===2&&typeof startCatalogPeek==='function')startCatalogPeek(true);
+ if(!appTour?.active)return;const stage=tourStage(),copy=appTourCopy()[stage],minimal=['touch','shake','practice','rename'].includes(stage);
+ document.documentElement.classList.toggle('tour-shake-active',isShakeTourOpen());
+ $('appTour').setAttribute('data-stage',stage);$('appTour').setAttribute('data-step',String(appTour.step));
+ $('tourCard').hidden=minimal||['mix','idle','done'].includes(stage);$('tourMinimalClose').hidden=!minimal;
+ $('tourTouchInstruction').hidden=!['touch','shake','practice'].includes(stage);$('tourTouchInstruction').textContent=copy.body;
+ $('tourShakeCue').hidden=!isShakeTourOpen();const motion=typeof mobileMotionAvailable==='function'&&mobileMotionAvailable();
+ $('tourShakeEnable').hidden=!!(stage!=='shake'||!motion||shake.enabled||shake.denied);$('tourShakeEnable').disabled=!!shake.busy;$('tourShakeEnable').textContent=L(shake.busy?'연결 중…':'흔들기 켜기',shake.busy?'Connecting…':'Enable shake');
+ $('tourShakeNext').hidden=stage!=='shake'||motion&&!shake.denied;$('tourShakeNext').textContent=L('터치로 탐색하기','Explore by touch');
+ $('tourProgress').hidden=true;$('tourTitle').hidden=true;$('tourBody').textContent=copy.body;$('tourTouchCount').hidden=true;$('tourPrevious').hidden=true;$('tourSkip').hidden=true;
+ $('tourNext').hidden=!['mode','save'].includes(stage);$('tourNext').textContent=stage==='mode'?L('지금은 하나로 탐색할게요','Keep exploring one color'):L('계속 탐색하기','Keep exploring');
+ const items=$('tourItems');items.replaceChildren();for(const [id,text]of copy.items||[]){const row=document.createElement('li'),icon=$(id).querySelector('svg')?.cloneNode(true),label=document.createElement('span');if(icon){icon.setAttribute('aria-hidden','true');row.append(icon);}label.textContent=text;row.append(label);items.append(row);}items.hidden=!copy.items;
+ $('tourWordInstruction').textContent=copy.body;renderOrbFeelingTargets();appTour.nextAt=0;updateAppTour(performance.now(),true);
 }
 function startAppTour(){
-  if(isAppWelcomeOpen())return false;
-  if(S.study||S.studyLoading||S.catalogLoading||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return false;
-  if(appTour.active)return true;appTour.active=true;appTour.step=0;appTour.phase='touch';appTour.touchCount=0;appTour.wordOpened=false;appTour.originalMenuOpen=menuOpen;appTour.focus=document.activeElement?.closest?.('#aboutDialog')?$('aboutOpen'):document.activeElement;
-  hideGuide();dismissMenuGuide();clearTimeout(shake.offerTimer);$('shakeCoach').hidden=true;
-  setMenuOpen(false);$('appTour').hidden=false;renderAppTour();$('tourTouchCue').focus({preventScroll:true});return true;
+ if(isAppWelcomeOpen()||S.study||S.studyLoading||S.catalogLoading||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return false;
+ if(appTour.active)return true;Object.assign(appTour,{active:true,dismissed:false,flow:AdaptiveGuide.create(performance.now()),step:0,phase:'touch',originalMenuOpen:menuOpen,focus:document.activeElement?.closest?.('#aboutDialog')?$('aboutOpen'):document.activeElement});
+ hideGuide();dismissMenuGuide();clearTimeout(shake.offerTimer);$('shakeCoach').hidden=true;setMenuOpen(false);$('appTour').hidden=false;renderAppTour();$('tourTouchCue').focus({preventScroll:true});return true;
 }
 function endAppTour(completed=false){
-  if(!appTour.active)return;appTour.active=false;appTour.dismissed=true;$('appTour').hidden=true;document.documentElement.classList.remove('tour-shake-active');renderOrbFeelingTargets();menuTipShown=true;
-  try{localStorage.setItem(APP_TOUR_KEY,completed?'done':'skipped');}catch(error){}
-  setMenuOpen(appTour.originalMenuOpen);appTour.focus?.focus?.({preventScroll:true});
-}
-function advanceAppTour(delta){
-  if(!appTour.active)return;if(appTour.step+delta>4){endAppTour(true);return;}
-  appTour.step=Math.max(0,appTour.step+delta);if(appTour.step===0){appTour.touchCount=0;appTour.phase='touch';}appTour.wordOpened=false;setMenuOpen(appTour.step===2);renderAppTour();$(appTour.step===0?'tourTouchCue':appTour.step===4?'tourWordTarget':'tourNext').focus({preventScroll:true});
-}
-function noteAppTourTouch(){
-  if(!appTour.active||appTour.step!==0||appTour.phase!=='touch'||$('appTour').hidden)return;
-  appTour.touchCount=Math.min(3,appTour.touchCount+1);renderAppTour();
+ if(!appTour?.active)return;appTour.active=false;appTour.dismissed=true;$('appTour').hidden=true;document.documentElement.classList.remove('tour-shake-active');renderOrbFeelingTargets();menuTipShown=true;
+ try{localStorage.setItem(APP_TOUR_KEY,completed?'done':'skipped');}catch(error){}
+ setMenuOpen(appTour.originalMenuOpen);appTour.focus?.focus?.({preventScroll:true});
 }
 function updateAppTour(now,force=false){
-  if(!appTour.active||!force&&now<appTour.nextAt)return;appTour.nextAt=now+100;
-  if(appTour.step===4&&S.reviewing)appTour.wordOpened=true;
-  if(appTour.step===4&&appTour.wordOpened&&!S.reviewing){endAppTour(true);return;}
-  const suspended=S.reviewing||imageBusy||['prep','rec','making'].includes(vstate)||aboutDialog.open||$('catalogCategoryDialog').open||!sheet.hidden||!imageChoices.hidden;
-  $('appTour').hidden=suspended;if(suspended)return;
-  if(appTour.step===0&&appTour.phase==='touch'&&appTour.touchCount>=3&&(typeof tiles==='undefined'||chosen.every(i=>tiles[i].cur===tiles[i].to))){appTour.phase='shake';if(typeof mobileMotionAvailable==='function'&&mobileMotionAvailable()&&typeof window.DeviceMotionEvent.requestPermission!=='function')connectShake();renderAppTour();$(!$('tourShakeEnable').hidden?'tourShakeEnable':!$('tourShakeNext').hidden?'tourShakeNext':'tourMinimalClose').focus({preventScroll:true});return;}
-  const rect=appTourTarget(),W=innerWidth,H=innerHeight,ring=$('tourHighlight'),card=$('tourCard'),cue=$('tourTouchCue');
-  ring.hidden=appTour.step===0||appTour.step===4;cue.setAttribute('aria-label',L('터치해 색 바꾸기','Tap to change the color')+' ('+appTour.touchCount+'/3)');cue.hidden=appTour.step!==0||appTour.phase!=='touch'||appTour.touchCount>=3;if(appTour.step===0)Object.assign(cue.style,{left:((rect.left+rect.right)/2)+'px',top:((rect.top+rect.bottom)/2)+'px'});
-  if(appTour.step===0){
-    const cx=(rect.left+rect.right)/2,tw=Math.min(290,W-32),text=$('tourTouchInstruction');
-    Object.assign(text.style,{left:Math.max(16,Math.min(W-tw-16,cx-tw/2))+'px'});
-    const textHeight=text.getBoundingClientRect().height,shaking=isShakeTourOpen(),groupTop=(H-(144+textHeight))/2;
-    text.style.top=(shaking?groupTop+84:rect.bottom+22)+'px';
-    const buttonTop=shaking?groupTop+100+textHeight:rect.bottom+30+textHeight;
-    Object.assign($('tourShakeCue').style,{left:cx+'px',top:(groupTop+32)+'px'});
-    Object.assign($('tourShakeEnable').style,{left:cx+'px',top:buttonTop+'px'});
-    Object.assign($('tourShakeNext').style,{left:cx+'px',top:buttonTop+'px'});
-  }
-  const left=Math.max(4,rect.left-7),top=Math.max(4,rect.top-7),right=Math.min(W-4,rect.right+7),bottom=Math.min(H-4,rect.bottom+7);
-  Object.assign(ring.style,{left:left+'px',top:top+'px',width:Math.max(0,right-left)+'px',height:Math.max(0,bottom-top)+'px'});
-  const final=appTour.step===4,blocks=['tourBlockTop','tourBlockBottom','tourBlockLeft','tourBlockRight'];for(const id of blocks)$(id).hidden=!final;$('tourWordTarget').hidden=!final;$('tourWordInstruction').hidden=!final;
-  if(final){
-    const boxes=[{left:0,top:0,width:W,height:top},{left:0,top:bottom,width:W,height:H-bottom},{left:0,top,width:left,height:bottom-top},{left:right,top,width:W-right,height:bottom-top}];blocks.forEach((id,i)=>Object.assign($(id).style,Object.fromEntries(Object.entries(boxes[i]).map(([k,v])=>[k,Math.max(0,v)+'px']))));
-    Object.assign($('tourWordTarget').style,{left:left+'px',top:top+'px',width:(right-left)+'px',height:(bottom-top)+'px'});
-    const text=$('tourWordInstruction'),tw=Math.min(320,W-32);Object.assign(text.style,{left:Math.max(16,Math.min(W-tw-16,(left+right-tw)/2))+'px',top:Math.max(100,top-90)+'px'});return;
-  }
-  const b=card.getBoundingClientRect(),pos=appTour.step===0?{left:W>=760?24:(W-b.width)/2,top:Math.max(14,H-b.height-100)}:appTourPlacement({left,top,right,bottom},b.width,b.height,W,H);Object.assign(card.style,{left:pos.left+'px',top:pos.top+'px'});
+ if(!appTour?.active||!force&&now<appTour.nextAt)return;appTour.nextAt=now+100;
+ const previous=tourStage();
+ if(previous==='rename')AdaptiveGuide.event(appTour.flow,S.reviewing?'review-open':'review-close',now);
+ const suspended=S.reviewing||imageBusy||['prep','rec','making'].includes(vstate)||aboutDialog.open||$('catalogCategoryDialog').open||!sheet.hidden||!imageChoices.hidden||document.hidden;
+ if(!suspended){if(chosen.every(i=>tiles[i].cur===tiles[i].to)&&!placements.some(p=>p.touchMove||p.shakeMotion))AdaptiveGuide.event(appTour.flow,'settled',now);AdaptiveGuide.event(appTour.flow,'tick',now);}
+ if(previous!==tourStage()){syncAppTourStage(previous);return;}
+ const stage=tourStage();$('appTour').hidden=!!suspended||['mix','idle'].includes(stage);if($('appTour').hidden)return;
+ const rect=appTourTarget(),W=innerWidth,H=innerHeight,ring=$('tourHighlight'),card=$('tourCard'),cue=$('tourTouchCue');
+ const touching=stage==='touch',practicing=stage==='practice';cue.hidden=!(touching||practicing)||!!appTour.flow.pending;cue.setAttribute('aria-label',L('터치해 색 바꾸기','Tap to change the color'));Object.assign(cue.style,{left:((rect.left+rect.right)/2)+'px',top:((rect.top+rect.bottom)/2)+'px'});
+ ring.hidden=['touch','shake','practice','rename'].includes(stage);
+ if(['touch','shake','practice'].includes(stage)){
+  const tw=Math.min(290,W-32),text=$('tourTouchInstruction'),cx=isShakeTourOpen()?W/2:(rect.left+rect.right)/2;
+  Object.assign(text.style,{left:Math.max(16,Math.min(W-tw-16,cx-tw/2))+'px'});
+  const textHeight=text.getBoundingClientRect().height,groupTop=(H-(144+textHeight))/2;
+  text.style.top=(isShakeTourOpen()?groupTop+84:rect.bottom+22)+'px';
+  Object.assign($('tourShakeCue').style,{left:W/2+'px',top:(groupTop+32)+'px'});
+  for(const id of ['tourShakeEnable','tourShakeNext'])Object.assign($(id).style,{left:W/2+'px',top:(groupTop+100+textHeight)+'px'});
+ }
+ const left=Math.max(4,rect.left-7),top=Math.max(4,rect.top-7),right=Math.min(W-4,rect.right+7),bottom=Math.min(H-4,rect.bottom+7);
+ Object.assign(ring.style,{left:left+'px',top:top+'px',width:Math.max(0,right-left)+'px',height:Math.max(0,bottom-top)+'px'});
+ const final=stage==='rename',blocks=['tourBlockTop','tourBlockBottom','tourBlockLeft','tourBlockRight'];for(const id of blocks)$(id).hidden=!final;$('tourWordTarget').hidden=!final;$('tourWordInstruction').hidden=!final;
+ if(final){
+  const boxes=[{left:0,top:0,width:W,height:top},{left:0,top:bottom,width:W,height:H-bottom},{left:0,top,width:left,height:bottom-top},{left:right,top,width:W-right,height:bottom-top}];blocks.forEach((id,i)=>Object.assign($(id).style,Object.fromEntries(Object.entries(boxes[i]).map(([k,v])=>[k,Math.max(0,v)+'px']))));
+  Object.assign($('tourWordTarget').style,{left:left+'px',top:top+'px',width:(right-left)+'px',height:(bottom-top)+'px'});const tw=Math.min(320,W-32);Object.assign($('tourWordInstruction').style,{left:Math.max(16,Math.min(W-tw-16,(left+right-tw)/2))+'px',top:Math.max(100,top-90)+'px'});return;
+ }
+ const b=card.getBoundingClientRect(),pos=appTourPlacement({left,top,right,bottom},b.width,b.height,W,H);Object.assign(card.style,{left:pos.left+'px',top:pos.top+'px'});
 }
 function offerAppTour(){
-  if(isAppWelcomeOpen()){renderAppWelcome();return;}
-  const param=new URLSearchParams(location.search).get('tour');if(appTour.dismissed||param==='off'||param!=='1'&&appTourSeen()||document.hidden||chosen.length!==1)return;
-  startAppTour();
+ if(isAppWelcomeOpen()){renderAppWelcome();return;}
+ const param=new URLSearchParams(location.search).get('tour');if(appTour.dismissed||param==='off'||param!=='1'&&appTourSeen()||document.hidden||chosen.length!==1)return;startAppTour();
 }
 $('tourTouchCue').addEventListener('pointerdown',e=>{e.preventDefault();touchPoster(e);});
 $('tourTouchCue').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();const r=e.currentTarget.getBoundingClientRect();touchPoster({clientX:r.left+r.width/2,clientY:r.top+r.height/2,isPrimary:true,pointerType:'keyboard',button:0,target:e.currentTarget});}});
-$('tourWordTarget').addEventListener('click',()=>{const buttons=[...$('orbFeelingTargets').querySelectorAll('button')],button=buttons.find(b=>{const r=b.getBoundingClientRect();return r.width&&r.height&&r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight;});if(button)button.click();});
-$('tourShakeNext').addEventListener('click',()=>advanceAppTour(1));$('tourMinimalClose').addEventListener('click',()=>endAppTour());$('tourShakeEnable').addEventListener('click',enableShake);
-addEventListener('keydown',e=>{if(appTour.active&&appTour.step===4&&!$('appTour').hidden&&e.key==='Tab'){e.preventDefault();$(document.activeElement===$('tourWordTarget')?'tourMinimalClose':'tourWordTarget').focus({preventScroll:true});}},true);
-$('tourNext').addEventListener('click',()=>advanceAppTour(1));$('tourPrevious').addEventListener('click',()=>advanceAppTour(-1));$('tourSkip').addEventListener('click',()=>endAppTour());$('tourClose').addEventListener('click',()=>endAppTour());
+$('tourWordTarget').addEventListener('click',()=>{const button=[...$('orbFeelingTargets').querySelectorAll('button')].find(b=>{const r=b.getBoundingClientRect();return r.width&&r.height&&r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight;});if(button)button.click();});
+$('tourShakeNext').addEventListener('click',()=>noteAppTourAction('enable'));$('tourMinimalClose').addEventListener('click',()=>endAppTour());$('tourShakeEnable').addEventListener('click',enableShake);
+$('tourNext').addEventListener('click',()=>{if(tourStage()==='mode')noteAppTourAction('mode');else if(tourStage()==='save'){AdaptiveGuide.event(appTour.flow,'touch',performance.now());appTour.flow.idleTouches=0;syncAppTourStage('save');}});
+$('tourClose').addEventListener('click',()=>endAppTour());$('tourSkip').addEventListener('click',()=>endAppTour());
 $('replayAppTour').addEventListener('click',()=>{aboutDialog.close();openAppWelcome();});
+addEventListener('keydown',e=>{if(appTour.active&&tourStage()==='rename'&&!$('appTour').hidden&&e.key==='Tab'){e.preventDefault();$(document.activeElement===$('tourWordTarget')?'tourMinimalClose':'tourWordTarget').focus({preventScroll:true});}},true);
 addEventListener('keydown',e=>{if(appTour.active&&!$('appTour').hidden&&e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();endAppTour();}},true);
 addEventListener('resize',()=>{if(appTour.active)updateAppTour(performance.now(),true);});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.canvasChoiceReady&&!appTour.active)offerAppTour();});
@@ -2511,3 +2540,4 @@ void usageAnalytics.start();
 </script>
 
 </body></html>
+
