@@ -1961,7 +1961,7 @@ async function enableShake(){
     if(permission==='granted'){connectShake();if(typeof appTour!=='undefined'&&appTour.active&&appTour.step===0)renderAppTour();else showShakeCoach();}
     else{shake.denied=true;updateShakeCoach();}
   }catch(err){shake.denied=true;updateShakeCoach();}
-  finally{shake.busy=false;updateShakeCoach();}
+  finally{shake.busy=false;updateShakeCoach();if(typeof appTour!=='undefined'&&isShakeTourOpen()){renderAppTour();if(shake.denied)$('tourShakeNext').focus({preventScroll:true});}}
 }
 function offerShakeAfterTouch(){
   if(typeof appTour!=='undefined'&&appTour.active)return;
@@ -2363,7 +2363,7 @@ function renderAppTour(){
   if(!appTour.active)return;const copy=appTourCopy()[appTour.step];
   if(isShakeTourOpen())document.documentElement.classList.add('tour-shake-active');else document.documentElement.classList.remove('tour-shake-active');
   $('tourCard').hidden=appTour.step===0||appTour.step===4;$('appTour').setAttribute('data-step',String(appTour.step));$('tourMinimalClose').hidden=appTour.step!==0&&appTour.step!==4;$('tourWordInstruction').textContent=copy.body;
-  const motion=typeof mobileMotionAvailable==='function'&&mobileMotionAvailable(),shaking=appTour.step===0&&appTour.phase==='shake';$('tourTouchInstruction').hidden=appTour.step!==0;$('tourTouchInstruction').textContent=shaking?L('휴대폰을 가볍게 흔들어 새로운 컬러를 만나보세요.','Gently shake your phone to discover new colors.'):L('터치해 색을 바꿔보세요.','Tap to change the colors.');$('tourShakeCue').hidden=!shaking;$('tourShakeNext').hidden=!shaking;$('tourShakeNext').textContent=L('다음','Next');$('tourShakeEnable').hidden=!!(!shaking||!motion||shake.enabled||shake.denied);$('tourShakeEnable').textContent=L(shake.busy?'연결 중…':'흔들기 켜기',shake.busy?'Connecting…':'Enable shake');$('tourShakeEnable').disabled=!!shake.busy;
+  const motion=typeof mobileMotionAvailable==='function'&&mobileMotionAvailable(),shaking=appTour.step===0&&appTour.phase==='shake';$('tourTouchInstruction').hidden=appTour.step!==0;$('tourTouchInstruction').textContent=shaking?L('휴대폰을 가볍게 흔들어 새로운 컬러를 만나보세요.','Gently shake your phone to discover new colors.'):L('터치해 색을 바꿔보세요.','Tap to change the colors.');$('tourShakeCue').hidden=!shaking;$('tourShakeNext').hidden=!shaking||(motion&&!shake.denied);$('tourShakeNext').textContent=L('다음','Next');$('tourShakeEnable').hidden=!!(!shaking||!motion||shake.enabled||shake.denied);$('tourShakeEnable').textContent=L(shake.busy?'연결 중…':'흔들기 켜기',shake.busy?'Connecting…':'Enable shake');$('tourShakeEnable').disabled=!!shake.busy;
 
   $('tourTouchCount').hidden=true;$('tourTouchCount').textContent=appTour.touchCount+L(' / 3 터치',' / 3 touches');
   $('tourProgress').textContent=(appTour.step+1)+' / 5';$('tourTitle').textContent=copy.title;$('tourBody').textContent=copy.body;
@@ -2398,7 +2398,7 @@ function updateAppTour(now,force=false){
   if(appTour.step===4&&appTour.wordOpened&&!S.reviewing){endAppTour(true);return;}
   const suspended=S.reviewing||imageBusy||['prep','rec','making'].includes(vstate)||aboutDialog.open||$('catalogCategoryDialog').open||!sheet.hidden||!imageChoices.hidden;
   $('appTour').hidden=suspended;if(suspended)return;
-  if(appTour.step===0&&appTour.phase==='touch'&&appTour.touchCount>=3&&(typeof tiles==='undefined'||chosen.every(i=>tiles[i].cur===tiles[i].to))){appTour.phase='shake';if(typeof mobileMotionAvailable==='function'&&mobileMotionAvailable()&&typeof window.DeviceMotionEvent.requestPermission!=='function')connectShake();renderAppTour();$('tourShakeNext').focus({preventScroll:true});return;}
+  if(appTour.step===0&&appTour.phase==='touch'&&appTour.touchCount>=3&&(typeof tiles==='undefined'||chosen.every(i=>tiles[i].cur===tiles[i].to))){appTour.phase='shake';if(typeof mobileMotionAvailable==='function'&&mobileMotionAvailable()&&typeof window.DeviceMotionEvent.requestPermission!=='function')connectShake();renderAppTour();$(!$('tourShakeEnable').hidden?'tourShakeEnable':!$('tourShakeNext').hidden?'tourShakeNext':'tourMinimalClose').focus({preventScroll:true});return;}
   const rect=appTourTarget(),W=innerWidth,H=innerHeight,ring=$('tourHighlight'),card=$('tourCard'),cue=$('tourTouchCue');
   ring.hidden=appTour.step===0||appTour.step===4;cue.setAttribute('aria-label',L('터치해 색 바꾸기','Tap to change the color')+' ('+appTour.touchCount+'/3)');cue.hidden=appTour.step!==0||appTour.phase!=='touch'||appTour.touchCount>=3;if(appTour.step===0)Object.assign(cue.style,{left:((rect.left+rect.right)/2)+'px',top:((rect.top+rect.bottom)/2)+'px'});
   if(appTour.step===0){
@@ -2408,8 +2408,8 @@ function updateAppTour(now,force=false){
     text.style.top=(shaking?groupTop+84:rect.bottom+22)+'px';
     const buttonTop=shaking?groupTop+100+textHeight:rect.bottom+30+textHeight;
     Object.assign($('tourShakeCue').style,{left:cx+'px',top:(groupTop+32)+'px'});
-    Object.assign($('tourShakeEnable').style,{left:(cx-60)+'px',top:buttonTop+'px'});
-    Object.assign($('tourShakeNext').style,{left:(cx+($('tourShakeEnable').hidden?0:60))+'px',top:buttonTop+'px'});
+    Object.assign($('tourShakeEnable').style,{left:cx+'px',top:buttonTop+'px'});
+    Object.assign($('tourShakeNext').style,{left:cx+'px',top:buttonTop+'px'});
   }
   const left=Math.max(4,rect.left-7),top=Math.max(4,rect.top-7),right=Math.min(W-4,rect.right+7),bottom=Math.min(H-4,rect.bottom+7);
   Object.assign(ring.style,{left:left+'px',top:top+'px',width:Math.max(0,right-left)+'px',height:Math.max(0,bottom-top)+'px'});
