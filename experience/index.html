@@ -841,7 +841,7 @@ function captionProtectedBands(ctx,W,H){
  let top=Math.max(0,((viewport?.offsetTop||0)-poster.top)*scale)+pad,bottom=Math.min(H,((viewport?.offsetTop||0)+(viewport?.height||innerHeight)-poster.top)*scale)-pad,hasHeader=false;
  const visible=id=>{const el=document.getElementById(id);if(!el||el.hidden)return null;const css=getComputedStyle(el),r=el.getBoundingClientRect();return css.display==='none'||css.visibility==='hidden'||!r.width||!r.height?null:r;};
  for(const id of ['experienceBrand','experienceHeaderActions','langBtn']){const r=visible(id);if(r){hasHeader=true;top=Math.max(top,(r.bottom-poster.top)*scale+pad);}}
- if(!hasHeader||!/^mindful\s*day$/i.test(String(S.title||'').trim()))top=Math.max(top,canonical.top);
+ if(!hasHeader||!document.body.classList.contains('is-story')||!/^mindful\s*day$/i.test(String(S.title||'').trim()))top=Math.max(top,canonical.top);
  for(const id of ['mobilePosterFooter','menuToggle']){const r=visible(id);if(r)bottom=Math.min(bottom,(r.top-poster.top)*scale-pad);}
  const footer=document.querySelector('footer.site');if(footer){const css=getComputedStyle(footer),r=footer.getBoundingClientRect();if(css.display!=='none'&&css.visibility!=='hidden'&&r.width&&r.height)bottom=Math.min(bottom,(r.top-poster.top)*scale-pad);}
  // The wide backdrop paints its date above the fixed bottom controls.
