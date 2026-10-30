@@ -7,7 +7,7 @@ const experienceBase=(location.hostname==='imagetellerworks.github.io'||((locati
 const opening=['fresh','ethereal','romantic','original','bold','dreamy','progressive','magical','sensual','harmonious','high voltage','heavenly','forbidden','unique','cosmic majesty','playful','crisp','ravishing','fiery','serene','otherworldly','kinetic','enraptured','clear'];
 function applyLanguage(){
  document.title=lang==='ko'?'Mindful Day — 색으로 만나는 마음':'Mindful Day — A study in feeling';document.documentElement.lang=lang;document.body.classList.toggle('lang-en',lang==='en');const ko=lang==='ko';
- $('heroEyebrow').textContent=ko?'색으로 만나는 오늘의 마음':'A COLLECTION OF FEELINGS';$('heroTitle').innerHTML=ko?'마음 하나.<br>색 하나.<br><span class="new-view">새로운 시선.</span>':'A feeling.<br>A <em>color.</em><br><span class="new-view">A new view.</span>';
+ $('heroEyebrow').textContent='A COLLECTION OF FEELINGS';$('heroTitle').innerHTML='A feeling.<br>A <em>color.</em><br><span class="new-view">A new view.</span>';
  $('introCopy').innerHTML=ko?'색을 바라보는 또 하나의 방식.<br>우리가 이름 붙인 감정을<br>새로운 차원에서 만나보세요.':'A new perspective on color.<br>Explore the feelings we named,<br>in an entirely new dimension.';
  $('edition').innerHTML=ko?'색과 감정<br>인터랙티브 스터디, 2026':'COLOR × EMOTION<br>AN INTERACTIVE STUDY, 2026';$('collectionCount').textContent=ko?'219가지 색, 저마다의 감정':'219 COLORS, COUNTLESS PERSPECTIVES';$('footerQuote').textContent=ko?'색은 말보다 먼저 마음에 닿습니다.':'COLOR IS A LANGUAGE WITHOUT WORDS.';
  $('experienceLink').firstChild.nodeValue=ko?'체험하기 ':'Experience ';
@@ -37,7 +37,7 @@ function updatePlaying(){
 function pauseForInput(){pausedUntil=performance.now()+6500;lastAuto=performance.now();sequenceElapsed=0;}
 function go(delta){if(rows.length<2)return;target=Math.round(target)+delta;pauseForInput();}
 function choose(index){target=index;pauseForInput();}
-function project(index){const width=stage.clientWidth,cardWidth=innerWidth<=760?(innerHeight<=500&&innerWidth>innerHeight?100:innerHeight<=740?147:177):(innerHeight<=560?Math.min(innerWidth*.17,innerHeight*.24):innerHeight<=740?204:innerWidth>=1600?265:228);return M.geometry(view,index-position,index,position,innerWidth<=760,width,cardWidth);}
+function project(index){const width=stage.clientWidth,cardWidth=innerWidth<=760?177:innerWidth>=1600?265:228;return M.geometry(view,index-position,index,position,innerWidth<=760,width,cardWidth);}
 function makeCard(index){
  const row=rows[M.mod(index,rows.length)],button=document.createElement('button');button.className='art-card';button.type='button';button.setAttribute('aria-label',row.en+' · '+row.ko);button.tabIndex=-1;
  const img=document.createElement('img');img.src=image(row);img.alt='';img.draggable=false;img.width=512;img.height=512;
@@ -86,7 +86,7 @@ stage.addEventListener('pointerdown',e=>{if(e.button!==0||!rows.length)return;pa
 stage.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.hypot(dx,dy)>5&&!drag.moved){drag.moved=true;stage.setPointerCapture(e.pointerId);stage.classList.add('dragging');}if(drag.moved){e.preventDefault();const now=performance.now();drag.velocity=(e.clientX-drag.lastX)/Math.max(8,now-drag.lastTime);drag.lastX=e.clientX;drag.lastTime=now;target=drag.start-dx/(innerWidth<=760?130:175)-(view==='wall'||view==='helix'?dy/180:0);}});
 function stopDrag(e){if(!drag||drag.id!==e.pointerId)return;if(drag.moved){suppressUntil=performance.now()+220;target=Math.round(target-Math.max(-2,Math.min(2,drag.velocity*.55)));if(stage.hasPointerCapture(e.pointerId))stage.releasePointerCapture(e.pointerId);}drag=null;stage.classList.remove('dragging');pauseForInput();}
 stage.addEventListener('pointerup',stopDrag);stage.addEventListener('pointercancel',stopDrag);stage.addEventListener('lostpointercapture',e=>{if(drag?.id===e.pointerId)stopDrag(e);});
-stage.addEventListener('wheel',e=>{e.preventDefault();pauseForInput();target+=(Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY)*.003;},{passive:false});
+stage.addEventListener('wheel',e=>{if(Math.abs(e.deltaX)<=Math.abs(e.deltaY))return;e.preventDefault();pauseForInput();target+=e.deltaX*.003;},{passive:false});
 stage.addEventListener('pointerleave',()=>{if(!drag)target=Math.round(target);});
 document.querySelectorAll('[data-about-choice]').forEach(button=>button.addEventListener('click',()=>{const language=button.dataset.aboutChoice;document.querySelectorAll('[data-about-lang]').forEach(section=>section.hidden=section.dataset.aboutLang!==language);document.querySelectorAll('[data-about-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.aboutChoice===language)));}));
 $('aboutBtn').addEventListener('click',()=>{$('aboutDialog').showModal();});$('closeAbout').addEventListener('click',()=>{$('aboutDialog').close();});$('aboutDialog').addEventListener('click',e=>{if(e.target===$('aboutDialog')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});$('aboutDialog').addEventListener('close',pauseForInput);
