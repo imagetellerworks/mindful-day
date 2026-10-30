@@ -3,17 +3,23 @@ const groups={joy:{ko:'기쁨·생기',label:'Joy & vitality',members:['joy','fr
 const mod=(n,m)=>((n%m)+m)%m;
 function group(category,language='en'){const g=Object.values(groups).find(g=>g.members.includes(category));return g?(language==='ko'?g.ko:g.label):(language==='ko'?'나만의 감정':'Personal feeling');}
 function filterRows(rows,category,query){const q=query.trim().toLocaleLowerCase();return rows.filter(r=>(category==='all'||groups[category]?.members.includes(r.category))&&(!q||(r.en+' '+r.ko).toLocaleLowerCase().includes(q)));}
-const views=['canvas','ribbon','helix','wall'];
+const views=['helix','ribbon','canvas','wall'],viewDuration=5000;
 function sequenceStep(view,elapsed,dt,enabled){
- if(!enabled)return{view,elapsed,changed:false};const total=elapsed+dt,steps=Math.floor(total/10000),next=views[mod(views.indexOf(view)+steps,views.length)];return{view:next,elapsed:total%10000,changed:next!==view};
+ if(!enabled)return{view,elapsed,changed:false};const total=elapsed+dt,steps=Math.floor(total/viewDuration),next=views[mod(views.indexOf(view)+steps,views.length)];return{view:next,elapsed:total%viewDuration,changed:next!==view};
 }
-function experienceUrl(row,view='canvas',base='https://imagetellerworks.github.io/mindful-day/experience/'){const params=new URLSearchParams({from:'atlas',view:views.includes(view)?view:'canvas'});if(row)params.set('word',row.id);return base+'?'+params.toString();}
+function experienceUrl(row,view='helix',base='https://imagetellerworks.github.io/mindful-day/experience/'){const params=new URLSearchParams({from:'atlas',view:views.includes(view)?view:'helix'});if(row)params.set('word',row.id);return base+'?'+params.toString();}
 function dragOffset(view,dx,dy,mobile,stageWidth){
  const horizontal=mobile?140:200;
  if(view==='ribbon')return -(Math.abs(dx)>=Math.abs(dy)?dx:dy)/horizontal;
  if(view==='helix')return Math.abs(dy)>=Math.abs(dx)?-dy/(mobile?60:83):-dx/horizontal;
  if(view==='wall'){const rowHeight=stageWidth/8.65*1.48;return -(Math.abs(dy)>=Math.abs(dx)?dy:dx)/rowHeight*8;}
  return 0;
+}
+function fitScale(view,width,height,mobile){
+ if(!mobile||view==='canvas')return 1;
+ if(view==='ribbon')return Math.min(1.45,(width-32)/177);
+ if(view==='helix')return Math.max(.25,Math.min(1,(width-20)/(265*.66*1.6+177*.8),(height-24)/(6*60+177*1.2)));
+ const pitch=width/8.65;return Math.max(.25,Math.min(1,(height-24)/(8*pitch*1.48+pitch*1.45)));
 }
 function geometry(view,d,index,position,mobile,stageWidth=mobile?390:1000,cardWidth=mobile?177:228){
  const r=mobile?265:455;let x,y,z,rx=0,ry=0,rz=0,scale=1,opacity;
@@ -24,5 +30,5 @@ function geometry(view,d,index,position,mobile,stageWidth=mobile?390:1000,cardWi
  return{x,y,z,rx,ry,rz,scale,opacity};
 }
 function flowDelta(view,dt){const rate={ribbon:.00018,helix:.00018,wall:.0038}[view]||0;return Math.max(0,dt)*rate;}
-const api={groups,mod,group,filterRows,geometry,views,sequenceStep,experienceUrl,dragOffset,flowDelta};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
+const api={groups,mod,group,filterRows,geometry,views,viewDuration,sequenceStep,experienceUrl,dragOffset,fitScale,flowDelta};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
 })(typeof window==='object'?window:this);

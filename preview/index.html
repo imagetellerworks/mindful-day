@@ -373,6 +373,9 @@ body.about-open{overflow:hidden}
 .experience-header-actions{position:fixed;top:30px;right:24px;z-index:30;display:flex;align-items:center;gap:28px;color:var(--mobile-ink,var(--ink))}.experience-header-actions #aboutOpen{display:flex;align-items:center;min-width:0;min-height:34px;margin:0;padding:0;border:0;background:transparent;text-decoration:none;font:500 12px var(--f-body);color:inherit}.experience-header-actions .language-toggle{position:static;min-height:34px;margin:0;padding:4px 0;right:auto}.wide-scene.menu-open .experience-header-actions{right:calc(min(380px,30vw) + 32px)}
 .about-dialog,.dark-ground .about-dialog{width:min(560px,calc(100vw - 32px));max-width:calc(100vw - 32px);height:fit-content;max-height:calc(100svh - 40px);padding:52px 48px;border:1px solid #d3d4ca;border-radius:0;background:#eeece7;color:#292b27;overflow:auto;box-shadow:0 30px 100px #24262022;backdrop-filter:none;-webkit-backdrop-filter:none}.about-dialog[open]{display:block}.about-dialog::backdrop{background:#24262055;backdrop-filter:blur(10px)}.about-dialog .about-header{display:block;padding:0;border:0}.about-dialog .about-header h2{font:500 14px/1.5 Pretendard,Arial,sans-serif;letter-spacing:.015em;margin:0 0 18px}.about-dialog .about-close{position:absolute;top:14px;right:18px;width:auto;height:auto;border:0;border-radius:0;font:200 25px/1 var(--f-body)}.about-dialog .about-scroll{padding:0;overflow:visible;word-break:normal;overflow-wrap:normal}.about-dialog p{margin:12px 0;font:400 12px/1.95 Pretendard,Arial,sans-serif;color:#73766b}.about-dialog .about-language{display:flex;gap:8px;align-items:center;margin:0 0 25px;color:#7c7d75;font:400 10px Pretendard,Arial,sans-serif}.about-dialog .about-language button{border:0;background:none;padding:5px;color:inherit;font:inherit}.about-dialog .about-language button[aria-pressed=true]{color:#292b27;font-weight:700}.about-dialog .about-credit{margin-top:25px;padding-top:22px;border-top:1px solid #d2d2c9;font-size:10px;line-height:1.95}.about-dialog .about-credit a{text-decoration:underline}
 @media(max-width:760px){.experience-header-actions{top:24px;right:16px;gap:24px}.about-dialog{padding:45px 28px}}
+
+.tour-shake-active #autoMoodActions,.tour-shake-active #orbFeelingTargets{visibility:hidden!important;pointer-events:none!important}
+.tour-shake-next{min-width:80px;min-height:44px;padding:8px 18px;border:0;border-radius:22px;background:#24212b;color:#fff;text-decoration:none}.tour-shake-enable{min-height:44px;padding:8px 18px;border:1px solid currentColor;border-radius:22px;text-decoration:none}.tour-shake-next:focus-visible,.tour-shake-enable:focus-visible{outline:none;box-shadow:none}
 </style>
 
 <a class="lab-badge" href="https://imagetellerworks.github.io/mindful-day/" target="_blank" rel="noopener">ORIGINAL COLOR LAB <span>미리보기 · 기존 공개본 ↗</span></a>
@@ -1183,7 +1186,7 @@ function individualFeelingRows(scene){
 function feelingRowY(slot,count){return count===1?.5:(count===2?.455:.4)+slot*.11;}
 function renderOrbFeelingTargets(){
   const box=$('orbFeelingTargets');if(!box)return;
-  const rows=S.orbFeelingRows||[],hidden=(typeof isAppWelcomeOpen==='function'&&isAppWelcomeOpen())||!rows.length||!S.canvasChoiceReady||S.reviewing||S.study||S.studyLoading||S.catalogLoading||menuOpen||imageBusy||['prep','rec','making'].includes(vstate)||chosen.some(i=>tiles[i].cur!==tiles[i].to);
+  const rows=S.orbFeelingRows||[],hidden=(typeof isAppWelcomeOpen==='function'&&isAppWelcomeOpen())||(typeof isShakeTourOpen==='function'&&isShakeTourOpen())||!rows.length||!S.canvasChoiceReady||S.reviewing||S.study||S.studyLoading||S.catalogLoading||menuOpen||imageBusy||['prep','rec','making'].includes(vstate)||chosen.some(i=>tiles[i].cur!==tiles[i].to);
   box.hidden=hidden;const key=JSON.stringify([hidden,lang,rows.map(r=>[r.idx,r.word?.id])]);
   if(box.dataset.key!==key){box.dataset.key=key;box.replaceChildren();if(!hidden){box.setAttribute('aria-label',L('각 컬러의 감정','Each color’s feeling'));rows.forEach((row,slot)=>{const b=document.createElement('button');b.type='button';const name=row.word?row.word.en+(lang==='ko'?' · '+row.word.ko:''):L('이름 고르기','Choose a name');b.setAttribute('aria-label',L('컬러 ','Color ')+(slot+1)+' · '+name+L(' · 단어 바꾸기',' · Change word'));b.title=L('단어를 눌러 감정을 바꿔보세요.','Tap the word to change its feeling.');const text=document.createElement('span');text.textContent=name;b.append(text);b.addEventListener('click',()=>beginOrbMoodReview(row.idx));box.append(b);});}}
   if(hidden)return;
@@ -1199,6 +1202,7 @@ function captionLayoutForRows(ctx,W,H,rows,orbWidth=W){
   layout.forEach((caption,i)=>{const pl=placements[chosen.indexOf(rows[i].idx)];if(pl)pl.captionSide=caption.side;});return layout;
 }
 function drawIndividualFeelings(ctx,W,H,rows,orbWidth=W){
+  if(typeof isShakeTourOpen==='function'&&isShakeTourOpen())return;
   const layout=captionLayoutForRows(ctx,W,H,rows,orbWidth);ctx.save();ctx.globalAlpha=1;ctx.textBaseline='top';ctx.fillStyle=groundColors().ink;
   layout.forEach(caption=>{const x=caption.align==='left'?caption.left:caption.left+caption.width;ctx.textAlign=caption.align;ctx.font=`italic 500 ${caption.fontSize}px "Cormorant Garamond",Georgia,serif`;let y=caption.top;
     caption.enLines.forEach(line=>{ctx.fillText(line,x,y);y+=caption.fontSize*1.06;});y+=caption.koSize*.55;ctx.font=`400 ${caption.koSize}px "Pretendard","Noto Sans KR",sans-serif`;caption.koLines.forEach(line=>{ctx.fillText(line,x,y);y+=caption.koSize*1.25;});
@@ -1273,7 +1277,7 @@ function feelGlyph(ctx,W,H,text,alpha,sc){const display=typeof feel!=='undefined
   ctx.translate(W/2,H/2);ctx.scale(sc,sc);ctx.fillText(display,0,0);
   const ko=lang==='ko'?(typeof feel!=='undefined'&&feel?.text===text?feel.ko||FEEL_KO[text]:FEEL_KO[text]):'';if(ko){const ksz=document.body.classList.contains('wide-scene')?W*.035:W*10.7/Math.max(1,pc.clientWidth||W);ctx.font=`400 ${ksz}px "Pretendard","Noto Sans KR",sans-serif`;ctx.fillText(ko,0,sz*.55+ksz*.9);}
   ctx.restore();}
-function drawFeeling(ctx,W,H){const now=performance.now();
+function drawFeeling(ctx,W,H){if(typeof isShakeTourOpen==='function'&&isShakeTourOpen())return;const now=performance.now();
   const rows=S.reviewing&&feedbackReview?.targetIdx!=null?feedbackReview.selectedWord?feedbackReview.feelings:[]:S.orbFeelingRows||[];
   if(rows.length>1){drawIndividualFeelings(ctx,W,H,rows);return;}
   if(prevFeel){const e=(now-prevFeel.t0)/1000;if(e>.4)prevFeel=null;else feelGlyph(ctx,W,H,prevFeel.text,1-e/.4,1);}
@@ -2330,6 +2334,7 @@ $('appWelcome').addEventListener('cancel',e=>{e.preventDefault();beginFromWelcom
 
 const APP_TOUR_KEY='mindful-day-ui-tour-v1';
 const appTour={active:false,dismissed:false,step:0,phase:'touch',wordOpened:false,originalMenuOpen:false,focus:null,nextAt:0,touchCount:0};
+function isShakeTourOpen(){return appTour.active&&appTour.step===0&&appTour.phase==='shake';}
 function appTourSeen(){try{return !!localStorage.getItem(APP_TOUR_KEY);}catch(error){return false;}}
 function appTourCopy(){return [
   {title:L('터치로 색을 만나세요','Touch to discover colors'),body:L('반투명 원 주변을 세 번 터치해보세요. 색이 달라지고 컬러가 손끝을 따라와요.','Tap around the translucent circle three times. Discover changing colors as the color follows your touch.')},
@@ -2356,6 +2361,7 @@ function appTourTarget(){
 }
 function renderAppTour(){
   if(!appTour.active)return;const copy=appTourCopy()[appTour.step];
+  if(isShakeTourOpen())document.documentElement.classList.add('tour-shake-active');else document.documentElement.classList.remove('tour-shake-active');
   $('tourCard').hidden=appTour.step===0||appTour.step===4;$('appTour').setAttribute('data-step',String(appTour.step));$('tourMinimalClose').hidden=appTour.step!==0&&appTour.step!==4;$('tourWordInstruction').textContent=copy.body;
   const motion=typeof mobileMotionAvailable==='function'&&mobileMotionAvailable(),shaking=appTour.step===0&&appTour.phase==='shake';$('tourTouchInstruction').hidden=appTour.step!==0;$('tourTouchInstruction').textContent=shaking?L('휴대폰을 가볍게 흔들어 새로운 컬러를 만나보세요.','Gently shake your phone to discover new colors.'):L('터치해 색을 바꿔보세요.','Tap to change the colors.');$('tourShakeCue').hidden=!shaking;$('tourShakeNext').hidden=!shaking;$('tourShakeNext').textContent=L('다음','Next');$('tourShakeEnable').hidden=!!(!shaking||!motion||shake.enabled||shake.denied);$('tourShakeEnable').textContent=L(shake.busy?'연결 중…':'흔들기 켜기',shake.busy?'Connecting…':'Enable shake');$('tourShakeEnable').disabled=!!shake.busy;
 
@@ -2363,7 +2369,7 @@ function renderAppTour(){
   $('tourProgress').textContent=(appTour.step+1)+' / 5';$('tourTitle').textContent=copy.title;$('tourBody').textContent=copy.body;
   const items=$('tourItems');items.replaceChildren();for(const [id,text] of copy.items||[]){const row=document.createElement('li'),icon=$(id).querySelector('svg')?.cloneNode(true),label=document.createElement('span');if(icon){icon.setAttribute('aria-hidden','true');row.append(icon);}label.textContent=text;row.append(label);items.append(row);}items.hidden=!copy.items;
   $('tourPrevious').textContent=L('이전','Back');$('tourPrevious').disabled=appTour.step===0;$('tourSkip').textContent=L('건너뛰기','Skip');$('tourNext').textContent=appTour.step===4?L('시작하기','Start creating'):appTour.step===1?L('메뉴 보기','Show menu'):L('다음','Next');$('tourClose').setAttribute('aria-label',L('사용 안내 닫기','Close guide'));
-  appTour.nextAt=0;updateAppTour(performance.now(),true);
+  renderOrbFeelingTargets();appTour.nextAt=0;updateAppTour(performance.now(),true);
   if(appTour.step===2&&typeof startCatalogPeek==='function')startCatalogPeek(true);
 }
 function startAppTour(){
@@ -2374,7 +2380,7 @@ function startAppTour(){
   setMenuOpen(false);$('appTour').hidden=false;renderAppTour();$('tourTouchCue').focus({preventScroll:true});return true;
 }
 function endAppTour(completed=false){
-  if(!appTour.active)return;appTour.active=false;appTour.dismissed=true;$('appTour').hidden=true;menuTipShown=true;
+  if(!appTour.active)return;appTour.active=false;appTour.dismissed=true;$('appTour').hidden=true;document.documentElement.classList.remove('tour-shake-active');renderOrbFeelingTargets();menuTipShown=true;
   try{localStorage.setItem(APP_TOUR_KEY,completed?'done':'skipped');}catch(error){}
   setMenuOpen(appTour.originalMenuOpen);appTour.focus?.focus?.({preventScroll:true});
 }
@@ -2395,7 +2401,16 @@ function updateAppTour(now,force=false){
   if(appTour.step===0&&appTour.phase==='touch'&&appTour.touchCount>=3&&(typeof tiles==='undefined'||chosen.every(i=>tiles[i].cur===tiles[i].to))){appTour.phase='shake';if(typeof mobileMotionAvailable==='function'&&mobileMotionAvailable()&&typeof window.DeviceMotionEvent.requestPermission!=='function')connectShake();renderAppTour();$('tourShakeNext').focus({preventScroll:true});return;}
   const rect=appTourTarget(),W=innerWidth,H=innerHeight,ring=$('tourHighlight'),card=$('tourCard'),cue=$('tourTouchCue');
   ring.hidden=appTour.step===0||appTour.step===4;cue.setAttribute('aria-label',L('터치해 색 바꾸기','Tap to change the color')+' ('+appTour.touchCount+'/3)');cue.hidden=appTour.step!==0||appTour.phase!=='touch'||appTour.touchCount>=3;if(appTour.step===0)Object.assign(cue.style,{left:((rect.left+rect.right)/2)+'px',top:((rect.top+rect.bottom)/2)+'px'});
-  if(appTour.step===0){const cx=(rect.left+rect.right)/2,tw=Math.min(290,W-32),text=$('tourTouchInstruction');Object.assign(text.style,{left:Math.max(16,Math.min(W-tw-16,cx-tw/2))+'px',top:(rect.bottom+22)+'px'});Object.assign($('tourShakeEnable').style,{left:cx+'px',top:(rect.bottom+30+text.getBoundingClientRect().height)+'px'});Object.assign($('tourShakeCue').style,{left:cx+'px',top:((rect.top+rect.bottom)/2)+'px'});Object.assign($('tourShakeNext').style,{left:cx+'px',top:(rect.bottom+40+text.getBoundingClientRect().height+($('tourShakeEnable').hidden?0:38))+'px'});}
+  if(appTour.step===0){
+    const cx=(rect.left+rect.right)/2,tw=Math.min(290,W-32),text=$('tourTouchInstruction');
+    Object.assign(text.style,{left:Math.max(16,Math.min(W-tw-16,cx-tw/2))+'px'});
+    const textHeight=text.getBoundingClientRect().height,shaking=isShakeTourOpen(),groupTop=(H-(144+textHeight))/2;
+    text.style.top=(shaking?groupTop+84:rect.bottom+22)+'px';
+    const buttonTop=shaking?groupTop+100+textHeight:rect.bottom+30+textHeight;
+    Object.assign($('tourShakeCue').style,{left:cx+'px',top:(groupTop+32)+'px'});
+    Object.assign($('tourShakeEnable').style,{left:(cx-60)+'px',top:buttonTop+'px'});
+    Object.assign($('tourShakeNext').style,{left:(cx+($('tourShakeEnable').hidden?0:60))+'px',top:buttonTop+'px'});
+  }
   const left=Math.max(4,rect.left-7),top=Math.max(4,rect.top-7),right=Math.min(W-4,rect.right+7),bottom=Math.min(H-4,rect.bottom+7);
   Object.assign(ring.style,{left:left+'px',top:top+'px',width:Math.max(0,right-left)+'px',height:Math.max(0,bottom-top)+'px'});
   const final=appTour.step===4,blocks=['tourBlockTop','tourBlockBottom','tourBlockLeft','tourBlockRight'];for(const id of blocks)$(id).hidden=!final;$('tourWordTarget').hidden=!final;$('tourWordInstruction').hidden=!final;
@@ -2411,7 +2426,6 @@ function offerAppTour(){
   const param=new URLSearchParams(location.search).get('tour');if(appTour.dismissed||param==='off'||param!=='1'&&appTourSeen()||document.hidden||chosen.length!==1)return;
   startAppTour();
 }
-$('tourTouchCue').addEventListener('animationiteration',()=>{if(!appTour.active||appTour.step!==0||appTour.phase!=='touch'||$('appTour').hidden||document.hidden||appTour.touchCount>=3)return;const r=$('tourTouchCue').getBoundingClientRect();touchPoster({clientX:r.left+r.width/2,clientY:r.top+r.height/2,isPrimary:true,pointerType:'tutorial',button:0,target:$('tourTouchCue'),tutorial:true});});
 $('tourTouchCue').addEventListener('pointerdown',e=>{e.preventDefault();touchPoster(e);});
 $('tourTouchCue').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();const r=e.currentTarget.getBoundingClientRect();touchPoster({clientX:r.left+r.width/2,clientY:r.top+r.height/2,isPrimary:true,pointerType:'keyboard',button:0,target:e.currentTarget});}});
 $('tourWordTarget').addEventListener('click',()=>{const buttons=[...$('orbFeelingTargets').querySelectorAll('button')],button=buttons.find(b=>{const r=b.getBoundingClientRect();return r.width&&r.height&&r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight;});if(button)button.click();});

@@ -50,3 +50,12 @@ body{transition:background-color 1.2s,color 1.2s}.immersive{position:absolute;in
   html:not(.portfolio-embed) main{padding-top:calc(24px + env(safe-area-inset-top,0px))}
   html:not(.portfolio-embed) #heroTitle{margin:0}
 }
+
+/* Give mobile artworks the full central area and show complete card edges. */
+@media(max-width:760px){
+ html:not(.portfolio-embed) main{grid-template-rows:auto auto minmax(96px,1fr) auto auto auto;grid-template-areas:"intro intro" "cta tools" "stage stage" "selection navigation" "controls controls" "note note"}
+ html:not(.portfolio-embed) .collection-tools{justify-self:end;align-self:center}
+ body[data-gallery-view="ribbon"] .stage,body[data-gallery-view="helix"] .stage,body[data-gallery-view="wall"] .stage{overflow:visible;mask-image:none;-webkit-mask-image:none;margin-top:-24px;margin-bottom:-8px}
+}
+
+@media(max-width:760px){html:not(.portfolio-embed) .intro{margin-bottom:4px}}
