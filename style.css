@@ -43,3 +43,10 @@ body{transition:background-color 1.2s,color 1.2s}.immersive{position:absolute;in
 
 /* Keep the desktop CTA immediately after the collection count in every view. */
 @media(min-width:761px){.intro>#experienceLink{position:static;display:flex;width:max-content;max-width:100%;margin:22px 0 0}}
+
+/* Align the mobile project title with the header controls. */
+@media(max-width:760px){
+  #heroEyebrow{display:none}
+  html:not(.portfolio-embed) main{padding-top:calc(24px + env(safe-area-inset-top,0px))}
+  html:not(.portfolio-embed) #heroTitle{margin:0}
+}
