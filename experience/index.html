@@ -119,9 +119,15 @@ input[type=text]{width:100%;min-width:0;font:16px/1.4 var(--f-body);padding:10px
 .sheet-msg{margin:0;font-size:13px;line-height:1.55}
 .sheet-btns{display:flex;flex-wrap:wrap;gap:8px}
 .savebox{position:relative}
-.image-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--white)}
+.image-choices{display:flex;flex-direction:column;gap:12px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--white)}
 .image-choices[hidden]{display:none}
-.image-choices .btn{font-size:13px;padding:10px 6px}
+.image-choices .btn{font-size:13px;padding:12px 6px;min-height:44px}
+.image-choice-header{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px}
+.image-choice-close{display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;background:none;color:inherit;cursor:pointer}
+.image-choice-preview{display:grid;place-items:center;min-height:80px}
+.image-choice-preview canvas{display:block;width:auto;max-width:100%;height:min(46dvh,400px);object-fit:contain;border-radius:6px}
+.image-choice-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.image-choice-hint{margin:0;font-size:12px;line-height:1.5;text-align:center;opacity:.72}
 
 /* 더 꾸미기 */
 .more{border:1px solid var(--line);border-radius:14px;background:var(--card);min-width:0}
@@ -464,8 +470,10 @@ body.about-open{overflow:hidden}
         <button type="button" class="btn" id="copyCode">코드 복사</button>
       </div>
       <div class="image-choices" id="imageChoices" role="group" aria-label="이미지 저장 방식" hidden>
-        <button type="button" class="btn" id="savePosterImg">포스터로 저장</button>
-        <button type="button" class="btn" id="saveBackgroundImg">배경만 저장</button>
+        <div class="image-choice-header"><span>미리보기</span><button type="button" class="image-choice-close" id="closeImagePreview" aria-label="닫기"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m3 3 10 10M13 3 3 13" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button></div>
+        <div class="image-choice-preview"><canvas id="imageExportPreview" width="1080" height="1920" role="img" aria-label="저장할 포스터"></canvas></div>
+        <div class="image-choice-actions"><button type="button" class="btn" id="savePosterImg">포스터로 저장</button><button type="button" class="btn" id="saveBackgroundImg">이미지로 저장</button></div>
+        <p class="image-choice-hint">포스터는 글자와 함께, 이미지는 컬러만 저장해요.</p>
       </div>
       <p class="status" id="status" role="status"></p>
       <div class="sheet" id="sheet" hidden>
@@ -599,7 +607,8 @@ const UI_EN={
   "코드 복사": "Copy code",
   "이미지 저장 방식": "Image export style",
   "포스터로 저장": "Save poster",
-  "배경만 저장": "Save background",
+  "미리보기": "Preview",
+  "포스터는 글자와 함께, 이미지는 컬러만 저장해요.": "Posters include text. Images save only the colors.",
   "영상 저장 진행 상태": "Video export progress",
   "준비": "Preparing",
   "녹화 중": "Recording",
@@ -653,6 +662,7 @@ const UI_EN={
   "저장 창이 이미 떠 있어요. 잠시 후 다시 눌러 주세요.": "A save dialog is already open. Please try again shortly.",
   "저장하지 못했어요. 다시 눌러 주세요.": "Could not save. Please try again.",
   "저장할 포스터": "Poster to save",
+  "저장할 이미지": "Image to save",
   "이미지를 길게 눌러 ‘사진 앱에 저장’을 고르세요. 컴퓨터에서는 오른쪽 클릭 후 ‘이미지를 다른 이름으로 저장’을 고르세요.": "Touch and hold the image, then choose “Save to Photos”. On a computer, right-click and choose “Save image as”.",
   "아래 버튼을 누른 뒤 저장할 앱을 선택하세요. 기기에 따라 저장 메뉴가 다를 수 있어요.": "Tap the button below and choose an app to save to. Options vary by device.",
   "사진 앱이나 선택한 앱에서 저장 결과를 확인해 주세요.": "Find your saved file in Photos or the app you selected.",
@@ -1550,8 +1560,8 @@ const IMG_W=1080, IMG_H=1920, VID_W=720, VID_H=1280, VID_MAX=30;
 const imgBtn=$('saveImg'), vidBtn=$('saveVid'), vidLabel=$('vidLabel'), statusEl=$('status');
 const imageChoices=$('imageChoices'),imageChoiceBtns=[$('savePosterImg'),$('saveBackgroundImg')],exportLayer=$('exportLayer');
 function syncExportLayer(){exportLayer.classList.toggle('has-popup',!imageChoices.hidden||!sheet.hidden);$('quickCapture').setAttribute('aria-expanded',String(!imageChoices.hidden));}
-let imageBusy=false;
-function closeImageChoices(){imageChoices.hidden=true;imgBtn.setAttribute('aria-expanded','false');syncExportLayer();}
+let imageBusy=false,imagePreview=null,imagePreviewRequest=0;
+function closeImageChoices(){imagePreviewRequest++;imagePreview=null;imageChoices.hidden=true;imgBtn.setAttribute('aria-expanded','false');syncExportLayer();}
 function syncQuickExports(){
   const capture=$('quickCapture'),video=$('quickRecord');if(!capture||!video)return;
   capture.disabled=imgBtn.disabled;video.disabled=vidBtn.disabled;
@@ -1593,7 +1603,7 @@ function closeSheet(){sheet.hidden=true;sheetPrev.innerHTML='';sheetFile=null;st
 function openSheet(blob,filename,kind,mode){
   closeSheet();sheetFile={blob,filename,kind};
   if(kind==='image'||mode==='link'){
-    const fr=new FileReader();fr.onload=()=>{const img=new Image();img.src=fr.result;img.alt=tr('저장할 포스터');sheetPrev.appendChild(img);};fr.readAsDataURL(blob);
+    const fr=new FileReader();fr.onload=()=>{const img=new Image();img.src=fr.result;img.alt=tr('저장할 이미지');sheetPrev.appendChild(img);};fr.readAsDataURL(blob);
   }else{sheetURL=URL.createObjectURL(blob);const v=document.createElement('video');v.src=sheetURL;v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.controls=true;sheetPrev.appendChild(v);}
   if(mode==='link'){shShare.hidden=true;
     sheetMsg.textContent=tr('이미지를 길게 눌러 ‘사진 앱에 저장’을 고르세요. 컴퓨터에서는 오른쪽 클릭 후 ‘이미지를 다른 이름으로 저장’을 고르세요.');}
@@ -1614,20 +1624,30 @@ async function deliver(blob,filename,kind){
   download(blob,filename);say(`${label} 저장했어요.`);}
 
 // 왼쪽은 글자 포함 포스터, 오른쪽은 빛망울과 배경만. 화면/녹화와 별도 캔버스로 PNG 생성.
-function toggleImageChoices(){
-  if(imgBtn.disabled)return;closeSheet();const open=imageChoices.hidden;
-  imageChoices.hidden=!open;imgBtn.setAttribute('aria-expanded',String(open));syncExportLayer();
-  if(open)$('savePosterImg').focus({preventScroll:true});
+async function toggleImageChoices(){
+  if(imgBtn.disabled)return;
+  if(!imageChoices.hidden){closeImageChoices();return;}
+  closeSheet();const request=++imagePreviewRequest;
+  imageBusy=true;vidBtn.disabled=true;syncImageButtons();
+  try{
+    await warmFonts();if(request!==imagePreviewRequest)return;
+    const poster=$('imageExportPreview'),background=document.createElement('canvas');
+    for(const canvas of [poster,background]){canvas.width=IMG_W;canvas.height=IMG_H;renderPoster(canvas.getContext('2d'),IMG_W,IMG_H,canvas===poster);}
+    imagePreview={poster,background};imageChoices.hidden=false;
+    imgBtn.setAttribute('aria-expanded','true');syncExportLayer();
+  }catch(err){closeImageChoices();say('이미지를 만들지 못했어요. 다시 눌러 주세요.');}
+  finally{imageBusy=false;setV(vstate);}
+  if(!imageChoices.hidden)$('savePosterImg').focus({preventScroll:true});
 }
-function quickCaptureImage(){if(S.canvasMode==='mixing'||chosen.length>1)toggleImageChoices();else return saveImage(false);}
+function quickCaptureImage(){return toggleImageChoices();}
 imgBtn.addEventListener('click',toggleImageChoices);
 async function saveImage(backgroundOnly=false){
-  if(imageBusy||imgBtn.disabled)return;noteAppTourAction('export');imageBusy=true;vidBtn.disabled=true;syncImageButtons();
+  if(imageBusy||imgBtn.disabled)return;const preview=imagePreview;noteAppTourAction('export');imageBusy=true;vidBtn.disabled=true;syncImageButtons();
   imgBtn.textContent=tr('이미지 만드는 중…');closeImageChoices();closeSheet();say('');
   try{
     if(!backgroundOnly)await warmFonts();
-    const canvas=document.createElement('canvas');canvas.width=IMG_W;canvas.height=IMG_H;
-    renderPoster(canvas.getContext('2d'),IMG_W,IMG_H,!backgroundOnly);
+    let canvas=preview&&preview[backgroundOnly?'background':'poster'];
+    if(!canvas){canvas=document.createElement('canvas');canvas.width=IMG_W;canvas.height=IMG_H;renderPoster(canvas.getContext('2d'),IMG_W,IMG_H,!backgroundOnly);}
     const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
     if(blob){usageAnalytics.track('image_created',{format:backgroundOnly?'background':'poster'});await deliver(blob,`mindfulday-${backgroundOnly?'background':'poster'}-${stamp()}.png`,'image');}
     else say('이미지를 만들지 못했어요. 다시 눌러 주세요.');
@@ -1635,6 +1655,7 @@ async function saveImage(backgroundOnly=false){
   finally{imageBusy=false;imgBtn.textContent=tr('이미지로 저장');setV(vstate);}
 }
 $('quickCapture').addEventListener('click',quickCaptureImage);
+$('closeImagePreview').addEventListener('click',closeImageChoices);
 $('savePosterImg').addEventListener('click',()=>saveImage(false));
 $('saveBackgroundImg').addEventListener('click',()=>saveImage(true));
 document.addEventListener('pointerdown',e=>{if(!imageChoices.hidden&&!e.target?.closest?.('#imageChoices,#saveImg,#quickCapture'))closeImageChoices();});
@@ -2573,5 +2594,6 @@ void usageAnalytics.start();
 </script>
 
 </body></html>
+
 
 
