@@ -59,3 +59,6 @@ body{transition:background-color 1.2s,color 1.2s}.immersive{position:absolute;in
 }
 
 @media(max-width:760px){html:not(.portfolio-embed) .intro{margin-bottom:4px}}
+
+/* Paint whole Ribbon cards in explicit layers, preventing intersecting 3D planes. */
+body[data-gallery-view="ribbon"] .space{transform-style:flat;perspective:inherit}

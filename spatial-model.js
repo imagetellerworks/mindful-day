@@ -29,6 +29,24 @@ function geometry(view,d,index,position,mobile,stageWidth=mobile?390:1000,cardWi
  else{const columns=8,pitch=stageWidth/8.65;x=(mod(index,columns)-(columns-1)/2)*pitch;y=(Math.floor(index/columns)-position/columns)*pitch*1.48;z=-35;ry=-4;rx=7;rz=-4;scale=pitch*.88/cardWidth;opacity=1;}
  return{x,y,z,rx,ry,rz,scale,opacity};
 }
+
+const ribbonHold=1400,ribbonDuration=760;
+const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+function ribbonPosition(from,to,elapsed){return from+(to-from)*smooth((elapsed/ribbonDuration-.38)/.62);}
+function ribbonPose(index,from,to,elapsed,mobile,stageWidth,cardWidth){
+ const p=Math.max(0,Math.min(1,elapsed/ribbonDuration)),position=ribbonPosition(from,to,elapsed),pose=geometry('ribbon',index-position,index,position,mobile,stageWidth,cardWidth);
+ pose.layer=1000-Math.round(Math.abs(index-position)*20);
+ if(index===from)pose.layer=p<.34?3000:1000;
+ if(index===to){
+  const start=geometry('ribbon',to-from,to,from,mobile,stageWidth,cardWidth),end=geometry('ribbon',0,to,to,mobile,stageWidth,cardWidth),side=Math.sign(to-from)||1;
+  const clear={...start,x:side*(cardWidth*1.5+24),y:-32,ry:-side*36,scale:1,opacity:1};
+  const a=p<.3?start:p<.38?clear:{...clear,z:0},b=p<.3?clear:p<.38?{...clear,z:0}:end,t=p<.3?smooth(p/.3):p<.38?smooth((p-.3)/.08):smooth((p-.38)/.62);
+  for(const key of Object.keys(start))pose[key]=a[key]+(b[key]-a[key])*t;
+  // Promotion happens only while the card is outside the old focal card.
+  pose.layer=p<.34?900:3100;
+ }
+ return pose;
+}
 function flowDelta(view,dt){const rate={ribbon:.00018,helix:.00018,wall:.0038}[view]||0;return Math.max(0,dt)*rate;}
-const api={groups,mod,group,filterRows,geometry,views,viewDuration,sequenceStep,experienceUrl,dragOffset,fitScale,flowDelta};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
+const api={groups,mod,group,filterRows,geometry,views,viewDuration,sequenceStep,experienceUrl,dragOffset,fitScale,ribbonHold,ribbonDuration,ribbonPosition,ribbonPose,flowDelta};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
 })(typeof window==='object'?window:this);
