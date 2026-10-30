@@ -23,5 +23,6 @@ function geometry(view,d,index,position,mobile,stageWidth=mobile?390:1000,cardWi
  else{const columns=8,pitch=stageWidth/8.65;x=(mod(index,columns)-(columns-1)/2)*pitch;y=(Math.floor(index/columns)-position/columns)*pitch*1.48;z=-35;ry=-4;rx=7;rz=-4;scale=pitch*.88/cardWidth;opacity=1;}
  return{x,y,z,rx,ry,rz,scale,opacity};
 }
-const api={groups,mod,group,filterRows,geometry,views,sequenceStep,experienceUrl,dragOffset};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
+function flowDelta(view,dt){const rate={ribbon:.00018,helix:.00018,wall:.0038}[view]||0;return Math.max(0,dt)*rate;}
+const api={groups,mod,group,filterRows,geometry,views,sequenceStep,experienceUrl,dragOffset,flowDelta};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
 })(typeof window==='object'?window:this);
