@@ -354,7 +354,7 @@ body.about-open{overflow:hidden}
 .poster-slot{position:relative}.orb-feeling-targets{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden}.orb-feeling-targets button{position:absolute;left:5%;width:90%;height:10%;transform:translateY(-50%);border:0;background:transparent;color:transparent;padding:0;cursor:pointer;pointer-events:auto}.orb-feeling-targets button:focus-visible{outline:1px solid var(--mobile-ink,#24212b);outline-offset:4px;border-radius:8px}.orb-feeling-targets button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 
 
-.tiles.has-reviewed-catalog{display:block!important}.reviewed-catalog-strip{display:flex;gap:8px;width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x;cursor:grab;padding:3px 1px 5px;scroll-snap-type:x proximity}.reviewed-catalog-strip::-webkit-scrollbar{display:none}.reviewed-catalog-strip.is-dragging{cursor:grabbing;scroll-snap-type:none}.reviewed-catalog-strip .catalog-orb{flex:0 0 56px;width:56px;height:56px;aspect-ratio:1;scroll-snap-align:start;user-select:none;-webkit-user-select:none}.reviewed-catalog-strip .catalog-orb canvas{pointer-events:none}.category-chevron{width:12px;height:12px;flex:none}.category-dialog{position:fixed;z-index:70;box-sizing:border-box;width:196px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow:auto;margin:0;border:1px solid rgba(30,28,40,.14);border-radius:13px;padding:6px;background:rgba(242,242,244,.94);color:#24212b;box-shadow:0 8px 28px rgba(20,18,28,.13);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}.category-options{display:flex;flex-direction:column;gap:2px}.category-options button{position:relative;display:block;width:100%;min-height:40px;padding:10px 30px 10px 12px;border:0;border-radius:8px;background:transparent;color:inherit;text-align:left;font:400 12px/1.4 var(--f-body);cursor:pointer}.category-options button:hover,.category-options button:focus-visible{background:rgba(36,33,43,.07);outline:none}.category-options button[aria-selected="true"]{background:rgba(36,33,43,.09);font-weight:500}.category-options button[aria-selected="true"]::after{content:'';position:absolute;right:14px;top:14px;width:5px;height:9px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg)}
+.tiles.has-reviewed-catalog{display:block!important}.reviewed-catalog-strip{display:flex;gap:8px;width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x;cursor:grab;padding:3px 1px 5px;scroll-snap-type:x proximity}.reviewed-catalog-strip::-webkit-scrollbar{display:none}.reviewed-catalog-strip.is-peeking{scroll-snap-type:none}.catalog-drag-hint{position:fixed;z-index:45;pointer-events:none;transform:translateX(-50%);padding:3px 10px;border-radius:12px;background:rgba(246,246,247,.70);color:#24212b;font:400 11px/18px var(--f-body);white-space:nowrap}.catalog-drag-hint[hidden]{display:none}.reviewed-catalog-strip.is-dragging{cursor:grabbing;scroll-snap-type:none}.reviewed-catalog-strip .catalog-orb{flex:0 0 56px;width:56px;height:56px;aspect-ratio:1;scroll-snap-align:start;user-select:none;-webkit-user-select:none}.reviewed-catalog-strip .catalog-orb canvas{pointer-events:none}.category-chevron{width:12px;height:12px;flex:none}.category-dialog{position:fixed;z-index:70;box-sizing:border-box;width:196px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow:auto;margin:0;border:1px solid rgba(30,28,40,.14);border-radius:13px;padding:6px;background:rgba(242,242,244,.94);color:#24212b;box-shadow:0 8px 28px rgba(20,18,28,.13);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}.category-options{display:flex;flex-direction:column;gap:2px}.category-options button{position:relative;display:block;width:100%;min-height:40px;padding:10px 30px 10px 12px;border:0;border-radius:8px;background:transparent;color:inherit;text-align:left;font:400 12px/1.4 var(--f-body);cursor:pointer}.category-options button:hover,.category-options button:focus-visible{background:rgba(36,33,43,.07);outline:none}.category-options button[aria-selected="true"]{background:rgba(36,33,43,.09);font-weight:500}.category-options button[aria-selected="true"]::after{content:'';position:absolute;right:14px;top:14px;width:5px;height:9px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg)}
 
 #slSize .ctl:not(:first-child){display:none}.mixing-mode #slSize .ctl{display:flex}
 </style>
@@ -374,8 +374,8 @@ body.about-open{overflow:hidden}
 <main class="app">
   <section class="story" id="story" aria-label="포스터 만들기">
     <div class="story-stage" id="storyStage">
-      <div class="poster-slot" id="posterSlot"><div class="orb-feeling-targets" id="orbFeelingTargets" role="group" aria-label="각 오브의 감정" hidden></div></div>
-      <div class="guide" id="guide"><p><span class="guide-copy-ko">빛망울 하나에서<br>오늘의 감정과 닮은<br>표현을 찾아보세요.</span><span class="guide-copy-en" lang="en">One orb, many colors.<br>Find a feeling in the light.</span><small><span class="guide-copy-ko">터치하면 새로운 배색과 표현을 만나요.</span><span class="guide-copy-en">Touch to discover a new palette and expression.</span></small></p></div>
+      <div class="poster-slot" id="posterSlot"><div class="orb-feeling-targets" id="orbFeelingTargets" role="group" aria-label="각 컬러의 감정" hidden></div></div>
+      <div class="guide" id="guide"><p><span class="guide-copy-ko">컬러 하나에서<br>오늘의 감정과 닮은<br>표현을 찾아보세요.</span><span class="guide-copy-en" lang="en">One color, many feelings.<br>Find a feeling in the light.</span><small><span class="guide-copy-ko">터치하면 새로운 배색과 표현을 만나요.</span><span class="guide-copy-en">Touch to discover a new palette and expression.</span></small></p></div>
       <p class="toast" id="toast" aria-live="polite"></p><output class="lab-feeling-status" id="feelingStatus" aria-live="polite"></output>
       <div class="auto-mood-actions" id="autoMoodActions" hidden><button type="button" id="changeMood">감정 바꾸기</button></div>
       <aside class="new-palette-invite" id="newPaletteInvite" hidden><p><strong id="newPaletteTitle">처음 피어난 색이에요.</strong><span id="newPaletteQuestion">이 색에 당신만의 감정 이름을 붙여주세요.</span></p><div class="invite-actions"><button type="button" id="nameNewPalette">감정 붙이기</button><button type="button" id="dismissNewPalette">계속 만들기</button></div></aside>
@@ -413,7 +413,7 @@ body.about-open{overflow:hidden}
   <section class="preview" aria-label="포스터 미리보기">
     <canvas id="poster" role="img" aria-label="포스터 미리보기"></canvas>
     <aside class="shake-coach" id="shakeCoach" hidden aria-live="polite"><p><strong id="shakeLead">휴대폰을 가볍게 흔들어보세요.</strong><span id="shakeSub">새로운 무드를 만나보세요.</span></p><button type="button" class="btn sm" id="shakeEnable">흔들기 켜기</button><button type="button" class="shake-close" id="shakeClose" aria-label="흔들기 안내 닫기">×</button></aside>
-    <p class="preview-hint">터치한 곳으로 빛망울이 이동하며 새로운 감정 표현이 나타나요.</p>
+    <p class="preview-hint">터치한 곳으로 컬러가 이동하며 새로운 감정 표현이 나타나요.</p>
   </section>
 
   <div class="editor">
@@ -421,15 +421,15 @@ body.about-open{overflow:hidden}
     <section class="step" aria-labelledby="s2">
       <h2 class="step-h" id="s2"><span class="step-no">1</span>색과 분위기를 바꿔보세요</h2>
       <div class="field">
-        <div class="lbl"><span id="tileLbl">빛망울</span><span class="count" id="count" aria-live="polite">하나만 선택</span></div>
-        <div class="tiles" id="tiles" role="radiogroup" aria-label="빛망울 하나 선택"><div class="reviewed-catalog-strip" id="reviewedCatalogStrip" hidden></div></div>
+        <div class="lbl"><span id="tileLbl">컬러</span><span class="count" id="count" aria-live="polite">하나만 선택</span></div>
+        <div class="tiles" id="tiles" role="radiogroup" aria-label="컬러 하나 선택"><div class="reviewed-catalog-strip" id="reviewedCatalogStrip" hidden></div></div>
       </div>
       <div class="field" id="fCombo">
         <div class="lbl"><span id="comboLbl">색 조합</span><span class="moodname" id="moodName"></span></div>
         <div class="colorrow"><div class="palstrip" id="palStrip" aria-hidden="true"></div><button type="button" class="btn sm" id="colorCycle">색 바꾸기</button></div>
       </div>
       <div class="field" id="fPreset"><span class="lbl" id="presetLbl">움직임</span><div class="presets" id="presets" role="group" aria-labelledby="presetLbl"></div></div>
-      <div class="field" id="fSound"><span class="lbl">소리</span><div class="colorrow"><button type="button" class="btn sm" id="soundBtnD" aria-pressed="false">소리 켜기</button><span class="hint">빛망울의 색·자리·크기로 만든 앰비언트예요. 첫 클릭부터 울려요</span></div></div>
+      <div class="field" id="fSound"><span class="lbl">소리</span><div class="colorrow"><button type="button" class="btn sm" id="soundBtnD" aria-pressed="false">소리 켜기</button><span class="hint">컬러의 색·자리·크기로 만든 앰비언트예요. 첫 클릭부터 울려요</span></div></div>
     </section>
 
     <section class="step" aria-labelledby="s3">
@@ -457,7 +457,7 @@ body.about-open{overflow:hidden}
       <summary>더 꾸미기 <span class="sum-hint">배경 · 크기 · 색 · 소리 · 움직임 세부 조정</span><span class="chev" aria-hidden="true"></span></summary>
       <div class="more-body" tabindex="0" role="region" aria-label="커스터마이즈 설정">
         <div class="group"><h3 id="bgLbl">배경</h3><div class="chipwrap" id="ground" role="group" aria-labelledby="bgLbl"></div></div>
-        <div class="group"><h3>빛망울 크기</h3><div class="sliders" id="slSize"></div></div>
+        <div class="group"><h3>컬러 크기</h3><div class="sliders" id="slSize"></div></div>
         <div class="group"><h3>색 다듬기</h3><div class="sliders" id="slColor"></div></div>
         <div class="group"><h3>모양</h3><div class="sliders" id="slForm"></div></div>
         <div class="group"><h3>소리</h3><div class="sliders" id="slSound"></div></div>
@@ -477,6 +477,7 @@ body.about-open{overflow:hidden}
   <button type="button" class="quick-export" id="quickCopyCode" aria-label="코드 복사" title="코드 복사"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </div></footer>
 
+<div id="catalogDragHint" class="catalog-drag-hint" hidden></div>
 <dialog class="category-dialog" id="catalogCategoryDialog" aria-label="감정 고르기" aria-modal="false"><div class="category-options" id="catalogCategoryOptions" role="listbox" aria-label="감정 고르기"></div></dialog>
 
 <dialog class="about-dialog" id="aboutDialog" aria-labelledby="aboutTitle">
@@ -533,11 +534,11 @@ function readLanguagePreference(){
 }
 const UI_EN={
   "빠른 저장": "Quick save",
-  "멀티 배색 200세트 살펴보기": "Explore 200 multi-orb sets",
+  "멀티 배색 200세트 살펴보기": "Explore 200 color combinations",
   "후보색이 바뀌는 간격": "Candidate color interval",
   "하나만 선택": "Choose one",
   "만들기 모드": "Creation mode",
-  "오브 하나로 감정을 찾아보세요.": "Find a feeling in one orb.",
+  "컬러 하나로 감정을 찾아보세요.": "Find a feeling in one color.",
   "이 배색의 무드 고르기": "Choose a mood for these colors",
   "배색의 무드 선택": "Choose the palette mood",
   "선택할 배색 스냅샷": "Palette snapshot to label",
@@ -545,11 +546,11 @@ const UI_EN={
   "고른 단어와 배색은 이 기기에 저장되어 다음 제안에 참고됩니다.": "Your choice and palette stay on this device to inform future suggestions.",
   "다시 색 만들기": "Keep creating",
   "선택 기록 내보내기": "Export my choices",
-  "빛망울 하나 선택": "Choose one orb",
-  "빛망울 하나에서 감정을 찾아보세요.": "Find a feeling in one orb.",
+  "컬러 하나 선택": "Choose one color",
+  "컬러 하나에서 감정을 찾아보세요.": "Find a feeling in one color.",
   "터치하면 원래 방식으로 색이 새로 피어나요.": "Touch to let a new palette unfold.",
   "실험판 · 배포본 ↗": "Experiment · live site ↗",
-  "빛망울 크기": "Orb size",
+  "컬러 크기": "Color size",
 
   "화면을 터치해 오늘의 감정과 가장 닮은 표현을 찾아보세요.": "Tap the screen to find a word that feels like you today.",
   "‘색 바꾸기’를 누르면 색 조합과 분위기가 달라져요.": "Tap “Colors” to explore different palettes and moods.",
@@ -566,12 +567,12 @@ const UI_EN={
   "움직임": "Motion",
   "소리": "Sound",
   "포스터 미리보기": "Poster preview",
-  "터치한 곳으로 빛망울이 이동하며 새로운 감정 표현이 나타나요.": "Tap anywhere to move the nearest orb and discover a new feeling.",
+  "터치한 곳으로 컬러가 이동하며 새로운 감정 표현이 나타나요.": "Tap anywhere to move the nearest color and discover a new feeling.",
   "포스터로 돌아가기": "Back to poster",
   "색과 분위기를 바꿔보세요": "Explore colors and moods",
-  "빛망울": "Orbs",
+  "컬러": "Colors",
   "색 조합": "Color palette",
-  "빛망울의 색·자리·크기로 만든 앰비언트예요. 첫 클릭부터 울려요": "Ambient sound shaped by each orb’s color, position and size. Tap to begin.",
+  "컬러의 색·자리·크기로 만든 앰비언트예요. 첫 클릭부터 울려요": "Ambient sound shaped by each color’s color, position and size. Tap to begin.",
   "포스터 저장하기": "Save your poster",
   "이미지로 저장": "Save image",
   "영상으로 저장": "Save video",
@@ -590,15 +591,15 @@ const UI_EN={
   "초기 설정값으로 돌아왔어요.": "Restored the default settings.",
   "배경 · 크기 · 색 · 소리 · 움직임 세부 조정": "Background, size, color, sound and motion",
   "배경": "Background",
-  "빛망울 크기": "Orb size",
+  "컬러 크기": "Color size",
   "색 다듬기": "Fine-tune colors",
   "모양": "Shape",
   "움직임 세부": "Motion details",
   "움직임 멈추기": "Pause motion",
   "움직임 다시 켜기": "Resume motion",
   "자리 다시 배치": "Rearrange",
-  "고른 빛망울 새로 뽑기": "Regenerate selected orbs",
-  "모든 빛망울 새로 뽑기": "Regenerate all orbs",
+  "고른 컬러 새로 뽑기": "Regenerate selected colors",
+  "모든 컬러 새로 뽑기": "Regenerate all colors",
   "선명한 색": "Vivid colors",
   "아주 깊은 색": "Deep colors",
   "차분한 색": "Calm colors",
@@ -610,9 +611,9 @@ const UI_EN={
   "활기차게": "Lively",
   "오프화이트": "Off-white",
   "어두운 밤": "Dark night",
-  "빛망울 크기": "First orb",
-  "두 번째 빛망울": "Second orb",
-  "세 번째 빛망울": "Third orb",
+  "첫 번째 컬러": "First color",
+  "두 번째 컬러": "Second color",
+  "세 번째 컬러": "Third color",
   "색상 회전": "Hue rotation",
   "채도": "Saturation",
   "밝기": "Lightness",
@@ -623,7 +624,7 @@ const UI_EN={
   "공간감": "Reverb",
   "떠다니는 폭": "Drift range",
   "떠다니는 속도": "Drift speed",
-  "빛망울이 바뀌는 간격": "Time between changes",
+  "컬러가 바뀌는 간격": "Time between changes",
   "바뀌는 데 걸리는 시간": "Transition duration",
   "소리 켜기": "Sound on",
   "소리 끄기": "Sound off",
@@ -674,7 +675,7 @@ const UI_EN={
   "흔들기 권한이 꺼져 있어요.": "Motion access is off.",
   "‘색 바꾸기’로 새로운 무드를 만나보세요.": "Tap “Colors” to discover a new mood.",
   "연결 중…": "Connecting…",
-  "빛망울 하나를 골라 주세요": "Choose one orb",
+  "컬러 하나를 골라 주세요": "Choose one color",
   "커스터마이즈 닫기": "Close Customize",
   "커스터마이즈 설정": "Customize settings",
   "메뉴 열기": "Open menu",
@@ -708,7 +709,7 @@ function setLanguage(next,persist=true){
   document.querySelectorAll('#langBtn [data-lang]').forEach(el=>el.classList.toggle('active',el.dataset.lang===lang));
   document.getElementById('langBtn').setAttribute('aria-label',lang==='en'?'Switch to Korean':'Switch to English');
   document.getElementById('langBtn').setAttribute('title',lang==='en'?'Switch to Korean':'영어로 전환');
-  tiles.forEach((t,i)=>t.el.setAttribute('aria-label',L(`빛망울 ${i+1}`,`Orb ${i+1}`)));
+  tiles.forEach((t,i)=>t.el.setAttribute('aria-label',L(`컬러 ${i+1}`,`Color ${i+1}`)));
   document.querySelectorAll('.slider-name').forEach(el=>{el.textContent=tr(el.dataset.label);});
   Object.keys(FMT).forEach(syncSlider);updateColorUI();renderPresets();renderGround();refreshTiles();soundUI();
   imgBtn.textContent=tr(imageBusy?'이미지 만드는 중…':'이미지로 저장');setV(vstate);updateFormats();
@@ -847,7 +848,7 @@ try{if(typeof ReviewedPaletteMatcher!=='undefined'&&ReviewedPaletteMatcher.creat
 let chosen=[0], warnT=0,feedbackReview=null,feedbackStore=null,reviewedChoiceStore=null,feedbackStoreError='';
 const CHECK='<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 for(let i=0;i<N;i++){
-  const el=document.createElement('button');el.type='button';el.className='tile';el.setAttribute('role','radio');el.setAttribute('aria-label',L(`빛망울 ${i+1}`,`Orb ${i+1}`));
+  const el=document.createElement('button');el.type='button';el.className='tile';el.setAttribute('role','radio');el.setAttribute('aria-label',L(`컬러 ${i+1}`,`Color ${i+1}`));
   el.innerHTML=`<canvas></canvas><span class="check">${CHECK}</span>`;tilesBox.appendChild(el);
   const cb={...TILE_COMBOS[i]}, reviewed=reviewedExploration?.next({avoid:tiles.filter(t=>t.reviewed).map(t=>reviewedExploration.identity(t.reviewed))})|| (typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher.mappings[i%ReviewedPaletteMatcher.mappings.length]:null), p=reviewed?reviewedOrbPalette(reviewed):gen(cb), t={reviewed,el,cv:el.querySelector('canvas'),combo:cb,from:p,to:p,cur:p,t0:0,dirty:true};t.ctx=t.cv.getContext('2d');if(reviewed)t.el.style.background=reviewed.scene.background;tiles.push(t);
   el.addEventListener('click',()=>toggle(i));
@@ -887,7 +888,7 @@ function renderReviewedCatalog(){
   if(!reviewedExploration)return;const strip=$('reviewedCatalogStrip');if(!strip)return;
   tilesBox.classList.add('has-reviewed-catalog');tiles.forEach(t=>t.el.hidden=true);strip.hidden=false;if(!menuOpen)return;
   const rows=catalogRowsForCategory(),key=JSON.stringify([ReviewedPaletteMatcher.generation,S.catalogCategory,lang,S.canvasMode]),selected=new Set(chosen.map(i=>tiles[i].reviewed?.wordKey));
-  if(strip.dataset.key!==key){const oldCategory=strip.dataset.category;strip.dataset.key=key;strip.dataset.category=S.catalogCategory||'all';strip.replaceChildren();rows.forEach(row=>{const b=document.createElement('button');b.type='button';b.className='tile catalog-orb';b.dataset.wordKey=row.wordKey;b.style.background=row.scene.background;b.setAttribute('role',S.canvasMode==='mixing'?'checkbox':'radio');b.setAttribute('aria-label',row.word.en+(lang==='ko'?' · '+row.word.ko:''));b.title=row.word.en+' · '+row.word.ko;const canvas=document.createElement('canvas');canvas.setAttribute('aria-hidden','true');b.append(canvas);const check=document.createElement('span');check.className='check';check.innerHTML=CHECK;b.append(check);drawCatalogPreview(canvas,row);b.addEventListener('click',()=>selectReviewedCatalogWord(row.wordKey));b.addEventListener('keydown',e=>{if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;e.preventDefault();const list=Array.from(strip.children),at=list.indexOf(b),next=list[(at+(e.key==='ArrowRight'?1:-1)+list.length)%list.length];next.focus();});strip.append(b);});if(oldCategory!==strip.dataset.category)strip.scrollLeft=0;}
+  if(strip.dataset.key!==key){if(typeof stopCatalogPeek==='function')stopCatalogPeek();const oldCategory=strip.dataset.category;strip.dataset.key=key;strip.dataset.category=S.catalogCategory||'all';strip.replaceChildren();rows.forEach(row=>{const b=document.createElement('button');b.type='button';b.className='tile catalog-orb';b.dataset.wordKey=row.wordKey;b.style.background=row.scene.background;b.setAttribute('role',S.canvasMode==='mixing'?'checkbox':'radio');b.setAttribute('aria-label',row.word.en+(lang==='ko'?' · '+row.word.ko:''));b.title=row.word.en+' · '+row.word.ko;const canvas=document.createElement('canvas');canvas.setAttribute('aria-hidden','true');b.append(canvas);const check=document.createElement('span');check.className='check';check.innerHTML=CHECK;b.append(check);drawCatalogPreview(canvas,row);b.addEventListener('click',()=>selectReviewedCatalogWord(row.wordKey));b.addEventListener('keydown',e=>{if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;e.preventDefault();const list=Array.from(strip.children),at=list.indexOf(b),next=list[(at+(e.key==='ArrowRight'?1:-1)+list.length)%list.length];next.focus();});strip.append(b);});if(oldCategory!==strip.dataset.category)strip.scrollLeft=0;}
   Array.from(strip.children).forEach(button=>{button.setAttribute('aria-checked',String(selected.has(button.dataset.wordKey)));});
 }
 function selectReviewedCatalogWord(key){
@@ -912,22 +913,50 @@ function positionCatalogDropdown(){
   Object.assign(dialog.style,{left:left+'px',top:top+'px'});
 }
 function openCatalogCategories(){
+  if(typeof stopCatalogPeek==='function')stopCatalogPeek();
   if(!reviewedExploration){cycleColors();return;}
   const dialog=$('catalogCategoryDialog'),box=$('catalogCategoryOptions');if(dialog.open){closeCatalogCategories(true);return;}
   const label=L('감정 고르기','Choose a feeling');dialog.setAttribute('aria-label',label);box.setAttribute('aria-label',label);box.replaceChildren();const current=catalogCategoryFor(S.catalogCategory);
   catalogCategoryList().forEach(category=>{const b=document.createElement('button');b.type='button';b.setAttribute('role','option');b.setAttribute('aria-selected',String(category.id===current?.id));b.textContent=L(category.ko,category.en);b.disabled=!category.count;b.addEventListener('click',()=>chooseCatalogCategory(category.id));box.append(b);});
   $('colorBtn').setAttribute('aria-expanded','true');dialog.show();positionCatalogDropdown();const active=Array.from(box.children).find(b=>b.getAttribute('aria-selected')==='true')||box.children[0];active?.focus({preventScroll:true});
 }
+// A short real scroll demonstrates the row without selecting or generating colors.
+const catalogPeek={active:false,shown:false,startAt:0,scroll:0,distance:0};
+function catalogPeekProgress(ms){
+  const ease=t=>t*t*(3-2*t);
+  if(ms<=0)return 0;if(ms<900)return ease(ms/900);if(ms<1200)return 1;if(ms<2200)return 1-ease((ms-1200)/1000);return 0;
+}
+function stopCatalogPeek(){
+  catalogPeek.active=false;$('reviewedCatalogStrip')?.classList.remove('is-peeking');$('catalogDragHint').hidden=true;
+}
+function startCatalogPeek(force=false){
+  if(catalogPeek.active&&!force||catalogPeek.shown&&!force||!menuOpen)return;
+  const strip=$('reviewedCatalogStrip');if(!strip||strip.hidden||strip.scrollWidth<=strip.clientWidth+2)return;
+  stopCatalogPeek();catalogPeek.shown=true;const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Object.assign(catalogPeek,{active:true,startAt:performance.now()+350,scroll:strip.scrollLeft,distance:reduced?0:Math.min(128,strip.scrollWidth-strip.clientWidth-strip.scrollLeft)});
+  if(!reduced&&catalogPeek.distance<16)catalogPeek.distance=-Math.min(128,strip.scrollLeft);
+  strip.classList.add('is-peeking');updateCatalogPeek(performance.now());
+}
+function updateCatalogPeek(now){
+  if(!catalogPeek.active)return;
+  if(!menuOpen||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate)||$('catalogCategoryDialog').open||aboutDialog.open||!sheet.hidden||!imageChoices.hidden){stopCatalogPeek();return;}
+  const strip=$('reviewedCatalogStrip'),hint=$('catalogDragHint'),ms=now-catalogPeek.startAt;
+  if(ms>=3800){strip.scrollLeft=catalogPeek.scroll;stopCatalogPeek();return;}
+  strip.scrollLeft=catalogPeek.scroll+catalogPeek.distance*catalogPeekProgress(ms);
+  hint.textContent=L('좌우로 드래그해보세요','Drag left or right');hint.hidden=typeof appTour!=='undefined'&&appTour.active;
+  const r=strip.getBoundingClientRect();Object.assign(hint.style,{left:(r.left+r.width/2)+'px',top:Math.max(8,r.top-27)+'px'});
+}
 function setupCatalogDrag(){
   const strip=$('reviewedCatalogStrip');if(!strip||strip.dataset.dragReady)return;strip.dataset.dragReady='true';let drag=null,suppressUntil=0;
-  strip.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;drag={id:e.pointerId,x:e.clientX,scroll:strip.scrollLeft,moved:false};});
+  strip.addEventListener('pointerdown',e=>{if(typeof stopCatalogPeek==='function')stopCatalogPeek();if(e.pointerType!=='mouse'||e.button!==0)return;drag={id:e.pointerId,x:e.clientX,scroll:strip.scrollLeft,moved:false};});
   strip.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;const delta=e.clientX-drag.x;if(Math.abs(delta)>5&&!drag.moved){drag.moved=true;strip.setPointerCapture(e.pointerId);strip.classList.add('is-dragging');}if(drag.moved){e.preventDefault();strip.scrollLeft=drag.scroll-delta;}});
   const stop=e=>{if(!drag||drag.id!==e.pointerId)return;if(drag.moved){suppressUntil=performance.now()+180;if(strip.hasPointerCapture(e.pointerId))strip.releasePointerCapture(e.pointerId);}drag=null;strip.classList.remove('is-dragging');};
+  strip.addEventListener('wheel',()=>{if(typeof stopCatalogPeek==='function')stopCatalogPeek();},{passive:true});strip.addEventListener('keydown',()=>{if(typeof stopCatalogPeek==='function')stopCatalogPeek();});
   strip.addEventListener('pointerup',stop);strip.addEventListener('pointercancel',stop);strip.addEventListener('click',e=>{if(performance.now()<suppressUntil){e.preventDefault();e.stopPropagation();}},true);
 }
 function refreshTiles(){
   const mixing=S.canvasMode==='mixing';tilesBox.setAttribute('role',mixing?'group':'radiogroup');
-  tilesBox.setAttribute('aria-label',mixing?L('빛망울 최대 세 개 선택','Choose up to three orbs'):L('빛망울 하나 선택','Choose one orb'));
+  tilesBox.setAttribute('aria-label',mixing?L('컬러 최대 세 개 선택','Choose up to three colors'):L('컬러 하나 선택','Choose one color'));
   tiles.forEach((t,j)=>{const on=chosen.includes(j);t.el.setAttribute('role',mixing?'checkbox':'radio');t.el.setAttribute('aria-checked',String(on));t.el.tabIndex=mixing||on?0:-1;});
   countEl.textContent=mixing?L(`${chosen.length}/3개 선택`,`${chosen.length}/3 selected`):L('하나만 선택','Choose one');
   if(typeof updateModeUI==='function')updateModeUI();
@@ -1117,7 +1146,7 @@ function syncFeelingStatus(){
   const status=document.getElementById('feelingStatus');if(!status)return;
   const text=feel?L(feel.ko,feel.en):S.reviewing?L('두 단어 중 어울리는 표현을 골라 주세요.','Choose the word that fits these colors.'):S.autoFeelingResult&&!S.autoFeelingResult.status.matched?L('새로운 배색을 발견했어요.','A new composition is unfolding.'):L('색이 스며드는 중…','Colors are unfolding…');
   if(status.textContent!==text)status.textContent=text;
-  document.getElementById('poster').setAttribute('aria-label',(S.canvasMode==='mixing'?'Mixing · ':L('빛망울 하나 · ','One orb · '))+text);
+  document.getElementById('poster').setAttribute('aria-label',(S.canvasMode==='mixing'?'Mixing · ':L('컬러 하나 · ','One color · '))+text);
 }
 function matchSceneFeeling(){
   const scene=captureColorScene(false),bindings=typeof ReviewedPaletteMatcher!=='undefined'?chosen.map(i=>reviewedBinding(tiles[i])):[],key=JSON.stringify({bindings,referenceGeneration:typeof ReviewedPaletteMatcher!=='undefined'?ReviewedPaletteMatcher.generation:0,mode:scene.mode,background:scene.background,transform:scene.transform,orbs:scene.orbs.map(orb=>({...orb,position:{x:Math.round(orb.position.x*100)/100,y:Math.round(orb.position.y*100)/100},scale:Math.round(orb.scale*100)/100}))});
@@ -1136,7 +1165,7 @@ function renderOrbFeelingTargets(){
   const box=$('orbFeelingTargets');if(!box)return;
   const rows=S.orbFeelingRows||[],hidden=(typeof isAppWelcomeOpen==='function'&&isAppWelcomeOpen())||!rows.length||!S.canvasChoiceReady||S.reviewing||S.study||S.studyLoading||S.catalogLoading||menuOpen||imageBusy||['prep','rec','making'].includes(vstate)||chosen.some(i=>tiles[i].cur!==tiles[i].to);
   box.hidden=hidden;const key=JSON.stringify([hidden,lang,rows.map(r=>[r.idx,r.word?.id])]);
-  if(box.dataset.key!==key){box.dataset.key=key;box.replaceChildren();if(!hidden){box.setAttribute('aria-label',L('각 오브의 감정','Each orb’s feeling'));rows.forEach((row,slot)=>{const b=document.createElement('button');b.type='button';const name=row.word?row.word.en+(lang==='ko'?' · '+row.word.ko:''):L('이름 고르기','Choose a name');b.setAttribute('aria-label',L('오브 ','Orb ')+(slot+1)+' · '+name+L(' · 단어 바꾸기',' · Change word'));b.title=L('단어를 눌러 감정을 바꿔보세요.','Tap the word to change its feeling.');const text=document.createElement('span');text.textContent=name;b.append(text);b.addEventListener('click',()=>beginOrbMoodReview(row.idx));box.append(b);});}}
+  if(box.dataset.key!==key){box.dataset.key=key;box.replaceChildren();if(!hidden){box.setAttribute('aria-label',L('각 컬러의 감정','Each color’s feeling'));rows.forEach((row,slot)=>{const b=document.createElement('button');b.type='button';const name=row.word?row.word.en+(lang==='ko'?' · '+row.word.ko:''):L('이름 고르기','Choose a name');b.setAttribute('aria-label',L('컬러 ','Color ')+(slot+1)+' · '+name+L(' · 단어 바꾸기',' · Change word'));b.title=L('단어를 눌러 감정을 바꿔보세요.','Tap the word to change its feeling.');const text=document.createElement('span');text.textContent=name;b.append(text);b.addEventListener('click',()=>beginOrbMoodReview(row.idx));box.append(b);});}}
   if(hidden)return;
   if(rows.length===1){const bounds=pc.getBoundingClientRect(),word=rows[0].word||{},hit=layoutSingleFeelingTarget({en:word.en||'',ko:lang==='ko'?word.ko||'':''},px,bounds.width,bounds.height,document.body.classList.contains('wide-scene'));Object.assign(box.children[0].style,{left:hit.left+'px',top:hit.top+'px',width:hit.width+'px',height:hit.height+'px',transform:'none'});return;}
   const bounds=pc.getBoundingClientRect(),width=bounds.width,height=bounds.height,orbWidth=document.body.classList.contains('wide-scene')?Math.min(width,height*9/16):width,layout=captionLayoutForRows(px,width,height,rows,orbWidth);
@@ -1197,7 +1226,7 @@ function updateRenderedFeeling(now){
   if(now-feelingCheckAt<120)return;feelingCheckAt=now;
   tiles.forEach((t,i)=>{
     const result=matchOrb(i),palette=typeof paletteDescription==='function'?paletteDescription(i):null,label=result?.source==='reviewed-palette'&&result.word!=='mixed'?L(result.ko,result.en):palette?L(palette.descriptor.ko,palette.descriptor.en):result&&result.word!=='mixed'?L(result.ko,result.en):result?L('색을 살펴보세요','Explore these colors'):L('색이 변하는 중','Changing colors');
-    const aria=L(`빛망울 ${i+1}: ${label}`,`Orb ${i+1}: ${label}`);
+    const aria=L(`컬러 ${i+1}: ${label}`,`Color ${i+1}: ${label}`);
     if(t.el.getAttribute('aria-label')!==aria)t.el.setAttribute('aria-label',aria);
   });showFeeling(chosen[0]);maybeStartCanvasChoice();
 }
@@ -1253,7 +1282,7 @@ function drawPosterText(ctx,W,H,G,screen=false){
   const fz=W*.026;ctx.font=fontStr(S.fs,'s',fz);ctx.globalAlpha=.8;ctx.textBaseline='alphabetic';
   if(!screen)footer(ctx,W,H,pad,fz,id=>fontStr(S.fs,'s',id),stampText(),colorNames());
   if(!chosen.length){ctx.textBaseline='middle';ctx.textAlign='center';ctx.font=fontStr('pretendard','s',W*.036);
-    ctx.fillText(tr('빛망울 하나를 골라 주세요'),W/2,H*.6);ctx.textAlign='left';}
+    ctx.fillText(tr('컬러 하나를 골라 주세요'),W/2,H*.6);ctx.textAlign='left';}
 }
 // 저장/녹화는 항상 원래 9:16 포스터 캔버스를 사용. 모바일 배경과 메뉴는 포함하지 않음.
 function renderPoster(ctx,W,H,withText=true){const G=groundColors();
@@ -1335,6 +1364,7 @@ function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;
   if(S.sound)updateAudio();
   if(typeof renderOrbFeelingTargets==='function')renderOrbFeelingTargets();
   if(typeof updateAppTour==='function')updateAppTour(now);
+  if(typeof updateCatalogPeek==='function')updateCatalogPeek(now);
   requestAnimationFrame(frame);}
 // ================= 기본 화면 UI =================
 const $=id=>document.getElementById(id);
@@ -1396,7 +1426,7 @@ function renderGround(){document.body.classList.toggle('dark-ground',groundColor
 $('ground').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;setGround(b.dataset.v);});
 const f2=v=>v.toFixed(2), sg=v=>(v>=0?'+':'')+v;
 const SLIDERS={
-  slSize:[['szL','첫 번째 빛망울',.3,2.8,.02,f2],['szM','두 번째 빛망울',.08,1.6,.01,f2],['szS','세 번째 빛망울',.04,1,.01,f2]],
+  slSize:[['szL','첫 번째 컬러',.3,2.8,.02,f2],['szM','두 번째 컬러',.08,1.6,.01,f2],['szS','세 번째 컬러',.04,1,.01,f2]],
   slColor:[['hue','색상 회전',-180,180,1,v=>sg(v)+'°'],['sat','채도',0,1.6,.02,f2],['light','밝기',-.35,.35,.01,v=>sg(v.toFixed(2))],['contrast','대비',.3,1.8,.02,f2]],
   slForm:[['soft','번짐',.3,1.6,.05,f2]],
   slSound:[['vol','소리 크기',0,1,.02,v=>Math.round(v*100)+'%'],['density','음의 밀도',0,1,.05,v=>Math.round(v*100)+'%'],['space','공간감',0,1,.05,v=>Math.round(v*100)+'%']],
@@ -1853,6 +1883,7 @@ function setMenuOpen(open){if(!open&&$('catalogCategoryDialog').open)closeCatalo
   updateMenuToggle();if(menuOpen)renderReviewedCatalog();
   if(!menuOpen){if($('more').open&&!wideScene.matches){$('more').open=false;syncCustomizePanel();}closeMSheet();closeImageChoices();closeSheet();}
   resize();drawPoster();drawMobileBackdrop();
+  if(typeof startCatalogPeek==='function'){if(menuOpen)startCatalogPeek();else stopCatalogPeek();}
 }
 $('menuToggle').addEventListener('click',()=>{if(customPanelOpen){$('more').open=false;syncCustomizePanel();}else setMenuOpen(!menuOpen);});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen&&!customPanelOpen){e.preventDefault();setMenuOpen(false);$('menuToggle').focus({preventScroll:true});}});
@@ -2030,7 +2061,7 @@ function renderPaletteReadout(){
   $('paletteReadoutTitle').textContent=L('배색 구성','Palette composition');box.replaceChildren();
   const note=document.createElement('p');note.textContent=L('핵과 주변의 네 겹, 바탕색을 함께 살펴봐요.','Read the core, its four layers, and the ground together.');box.append(note);
   descriptions.filter(Boolean).forEach((palette,index)=>{
-    const group=document.createElement('div'),title=document.createElement('h4');title.textContent=(descriptions.length>1?L('오브 ','Orb ')+(index+1)+' · ':'')+palette.descriptor.en;group.append(title);
+    const group=document.createElement('div'),title=document.createElement('h4');title.textContent=(descriptions.length>1?L('컬러 ','Color ')+(index+1)+' · ':'')+palette.descriptor.en;group.append(title);
     if(typeof ReviewedPaletteMatcher!=='undefined'){const interpretation=scene?ReviewedPaletteMatcher.matchOrb({layers:scene.orbs[index].layers,background:scene.background}):matchOrb(chosen[index]);if(interpretation&&interpretation.word!=='mixed'){const meaning=document.createElement('p');meaning.textContent=interpretation.en+(lang==='ko'?' · '+interpretation.ko:'');group.append(meaning);}}
     if(palette.poeticName){const alias=document.createElement('p');alias.className='palette-poetic';alias.textContent=L('자동 생성 별칭: ','Generated alias: ')+palette.poeticName;group.append(alias);}
     [...palette.components,palette.background].forEach(color=>{const row=document.createElement('div');row.className='palette-role';const swatch=document.createElement('i');swatch.style.backgroundColor=color.hex;swatch.setAttribute('aria-hidden','true');const text=document.createElement('span');text.textContent=(lang==='ko'?color.roleKo:color.roleEn)+' · '+color.en;const detail=document.createElement('small');detail.textContent=(lang==='ko'?color.ko+' · ':'')+color.hex;text.append(detail);row.append(swatch,text);group.append(row);});box.append(group);
@@ -2224,7 +2255,7 @@ async function refreshReviewedReferences(){
 }
 function loadReviewedPaletteSet(){
   const params=new URLSearchParams(location.search),key=params.get('word');if(!key||params.has('study')||typeof ReviewedPaletteMatcher==='undefined')return false;
-  const row=ReviewedPaletteMatcher.mappings.find(r=>r.wordKey===key);if(!row){showToast(L('저장된 오브를 찾지 못했어요.','Could not find this saved orb.'));return false;}
+  const row=ReviewedPaletteMatcher.mappings.find(r=>r.wordKey===key);if(!row){showToast(L('저장된 컬러를 찾지 못했어요.','Could not find this saved color.'));return false;}
   applyCatalogScene({id:'reviewed:'+key,scene:row.scene,reviewedWord:ReviewedPaletteMatcher.word(key)});return true;
 }
 addEventListener('focus',()=>{void refreshReviewedReferences();});
@@ -2277,11 +2308,11 @@ const APP_TOUR_KEY='mindful-day-ui-tour-v1';
 const appTour={active:false,dismissed:false,step:0,wordOpened:false,originalMenuOpen:false,focus:null,nextAt:0,touchCount:0};
 function appTourSeen(){try{return !!localStorage.getItem(APP_TOUR_KEY);}catch(error){return false;}}
 function appTourCopy(){return [
-  {title:L('터치로 색을 만나세요','Touch to discover colors'),body:L('반투명 원 주변을 세 번 터치해보세요. 색이 달라지고 오브가 손끝을 따라와요.','Tap around the translucent circle three times. Discover changing colors as the orb follows your touch.')},
-  {title:L('감정 단어도 버튼이에요','The feeling is a button, too'),body:L(chosen.length>1?'오브 옆의 영어·한글 단어를 누르면 색은 그대로 두고 그 오브의 감정 표현만 다시 고를 수 있어요.':'가운데 영어·한글 단어를 누르면 색은 그대로 두고 감정 표현만 다시 고를 수 있어요.',chosen.length>1?'Click the English or Korean word beside an orb to choose another feeling for it, keeping its colors.':'Click the English or Korean word in the center to choose another feeling, keeping your colors.')},
+  {title:L('터치로 색을 만나세요','Touch to discover colors'),body:L('반투명 원 주변을 세 번 터치해보세요. 색이 달라지고 컬러가 손끝을 따라와요.','Tap around the translucent circle three times. Discover changing colors as the color follows your touch.')},
+  {title:L('감정 단어도 버튼이에요','The feeling is a button, too'),body:L(chosen.length>1?'컬러 옆의 영어·한글 단어를 누르면 색은 그대로 두고 그 컬러의 감정 표현만 다시 고를 수 있어요.':'가운데 영어·한글 단어를 누르면 색은 그대로 두고 감정 표현만 다시 고를 수 있어요.',chosen.length>1?'Click the English or Korean word beside a color to choose another feeling for it, keeping its colors.':'Click the English or Korean word in the center to choose another feeling, keeping your colors.')},
   {title:L('마음에 든 순간을 저장하세요','Keep a moment you like'),body:L('아래 세 버튼으로 저장할 수 있어요.','Use these three buttons to save your artwork.'),items:[['quickCapture',L('이미지 캡처 · 지금의 그림 저장','Capture · save the current image')],['quickRecord',L('영상 녹화 · 다시 누르면 녹화 종료','Record · press again to stop')],['quickCopyCode',L('코드 복사 · 움직이는 그림 가져가기','Copy code · keep your moving artwork')]]},
   {title:L('오른쪽 아래 메뉴를 열어보세요','Explore the menu at the bottom right'),body:L('더 다양한 컬러와 감정을 탐색해보세요.','Explore more colors and feelings.')},
-  {title:L('원하는 방식으로 더 탐색해요','Explore your way'),body:L('다섯 분위기 중 하나를 고르고, 색 목록은 좌우로 넘겨보세요. 싱글은 오브 하나, 멀티는 최대 세 개를 조합해요. 배경과 소리도 여기서 바꿔요.','Choose one of five moods and swipe through its colors. Single uses one orb; Multi combines up to three. Background and sound are here, too.')}
+  {title:L('원하는 방식으로 더 탐색해요','Explore your way'),body:L('다섯 분위기 중 하나를 고르고, 아래 컬러 목록을 좌우로 드래그해보세요. 싱글은 컬러 하나, 멀티는 최대 세 개를 조합해요. 배경과 소리도 여기서 바꿔요.','Choose one of five moods, then drag the color row left or right. Single uses one color; Multi combines up to three. Background and sound are here, too.')}
 ];}
 function appTourPlacement(rect,width,height,W,H){
   const pad=14,left=Math.max(pad,Math.min(W-width-pad,(rect.left+rect.right-width)/2));
@@ -2306,6 +2337,7 @@ function renderAppTour(){
   const items=$('tourItems');items.replaceChildren();for(const [id,text] of copy.items||[]){const row=document.createElement('li'),icon=$(id).querySelector('svg')?.cloneNode(true),label=document.createElement('span');if(icon){icon.setAttribute('aria-hidden','true');row.append(icon);}label.textContent=text;row.append(label);items.append(row);}items.hidden=!copy.items;
   $('tourPrevious').textContent=L('이전','Back');$('tourPrevious').disabled=appTour.step===0;$('tourSkip').textContent=L('건너뛰기','Skip');$('tourNext').textContent=appTour.step===4?L('시작하기','Start creating'):appTour.step===3?L('메뉴 보기','Show menu'):L('다음','Next');$('tourClose').setAttribute('aria-label',L('사용 안내 닫기','Close guide'));
   appTour.nextAt=0;updateAppTour(performance.now(),true);
+  if(appTour.step===4&&typeof startCatalogPeek==='function')startCatalogPeek(true);
 }
 function startAppTour(){
   if(isAppWelcomeOpen())return false;
