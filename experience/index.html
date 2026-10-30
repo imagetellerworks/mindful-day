@@ -2452,7 +2452,7 @@ function isShakeTourOpen(){return !!appTour?.active&&['shake','practice'].includ
 function appTourSeen(){try{return !!localStorage.getItem(APP_TOUR_KEY);}catch(error){return false;}}
 function appTourCopy(){return {
  touch:{body:L('터치해 색을 바꿔보세요.','Tap to change the colors.')},
- shake:{body:L('휴대폰을 가볍게 흔들어 새로운 컬러를 만나보세요.','Gently shake your phone to discover new colors.')},
+ shake:{body:typeof mobileMotionAvailable==='function'&&!mobileMotionAvailable()?L('화면을 두 번 더 터치해 새로운 컬러를 만나보세요.','Tap the canvas twice more to discover new colors.'):L('휴대폰을 가볍게 흔들어 새로운 컬러를 만나보세요.','Gently shake your phone to discover new colors.')},
  practice:{body:L('두 번 더 터치하거나 흔들어보세요.','Try two more taps or shakes.')},
  mood:{body:L('아래 무드 버튼에서 주요 감정을 골라보세요.','Choose a main mood with the Mood button below.')},
  category:{body:L('주요 감정을 선택하세요.','Choose a main mood.')},
@@ -2508,9 +2508,9 @@ function renderAppTour(){
  $('appTour').setAttribute('data-stage',stage);$('appTour').setAttribute('data-step',String(appTour.step));
  $('tourCard').hidden=minimal||['mix','idle','done'].includes(stage);$('tourMinimalClose').hidden=!minimal;
  $('tourTouchInstruction').hidden=!['touch','shake','practice'].includes(stage);$('tourTouchInstruction').textContent=copy.body;
- $('tourShakeCue').hidden=!isShakeTourOpen();const motion=typeof mobileMotionAvailable==='function'&&mobileMotionAvailable();
+ const motion=typeof mobileMotionAvailable==='function'&&mobileMotionAvailable();$('tourShakeCue').hidden=!isShakeTourOpen()||!motion;
  $('tourShakeEnable').hidden=!!(stage!=='shake'||!motion||shake.enabled||shake.denied);$('tourShakeEnable').disabled=!!shake.busy;$('tourShakeEnable').textContent=L(shake.busy?'연결 중…':'흔들기 켜기',shake.busy?'Connecting…':'Enable shake');
- $('tourShakeNext').hidden=stage!=='shake'||motion&&!shake.denied;$('tourShakeNext').textContent=L('터치로 탐색하기','Explore by touch');
+ $('tourShakeNext').hidden=true;$('tourShakeNext').textContent=L('터치로 탐색하기','Explore by touch');
  $('tourProgress').hidden=true;$('tourTitle').hidden=true;$('tourBody').textContent=copy.body;$('tourTouchCount').hidden=true;$('tourPrevious').hidden=true;$('tourSkip').hidden=true;
  $('tourNext').hidden=true;$('tourNext').textContent=stage==='mode'?L('지금은 하나로 탐색할게요','Keep exploring one color'):stage==='background'?L('저장 살펴보기','Explore saving'):L('계속 탐색하기','Keep exploring');
  const items=$('tourItems');items.replaceChildren();for(const [id,text]of copy.items||[]){const row=document.createElement('li'),icon=$(id).querySelector('svg')?.cloneNode(true),label=document.createElement('span');if(icon){icon.setAttribute('aria-hidden','true');row.append(icon);}label.textContent=text;row.append(label);items.append(row);}items.hidden=!copy.items;
