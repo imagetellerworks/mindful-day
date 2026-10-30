@@ -24,7 +24,7 @@ function fitScale(view,width,height,mobile){
 function geometry(view,d,index,position,mobile,stageWidth=mobile?390:1000,cardWidth=mobile?177:228){
  const r=mobile?265:455;let x,y,z,rx=0,ry=0,rz=0,scale=1,opacity;
  if(view==='canvas'){x=0;y=0;z=-150;scale=.8;opacity=0;}
- else if(view==='ribbon'){x=d*(mobile?140:200);y=Math.abs(d)*12;z=-Math.abs(d)*(mobile?120:155);ry=-Math.max(-1,Math.min(1,d))*48;opacity=Math.min(1,Math.max(0,(5-Math.abs(d))/1.5));}
+ else if(view==='ribbon'){scale=1+.4*Math.exp(-2*d*d);x=d*(mobile?140:200);y=Math.abs(d)*12;z=-Math.abs(d)*(mobile?120:155);ry=-Math.max(-1,Math.min(1,d))*48;opacity=Math.min(1,Math.max(0,(5-Math.abs(d))/1.5));}
  else if(view==='helix'){x=Math.sin(d*.78)*r*.66;y=d*(mobile?60:83);z=(Math.cos(d*.78)-1)*r*.75;ry=-Math.sin(d*.45)*30;rx=-9;rz=d*4;scale=.85;opacity=Math.min(1,Math.max(0,(5-Math.abs(d))/1.5));}
  else{const columns=8,pitch=stageWidth/8.65;x=(mod(index,columns)-(columns-1)/2)*pitch;y=(Math.floor(index/columns)-position/columns)*pitch*1.48;z=-35;ry=-4;rx=7;rz=-4;scale=pitch*.88/cardWidth;opacity=1;}
  return{x,y,z,rx,ry,rz,scale,opacity};
