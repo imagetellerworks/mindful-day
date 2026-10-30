@@ -16,8 +16,8 @@ function dragOffset(view,dx,dy,mobile,stageWidth){
  return 0;
 }
 function fitScale(view,width,height,mobile){
+ if(view==='ribbon')return .85*fitScale('helix',width,height,mobile);
  if(!mobile||view==='canvas')return 1;
- if(view==='ribbon')return Math.min(1.45,(width-32)/177);
  if(view==='helix')return Math.max(.25,Math.min(1,(width-20)/(265*.66*1.6+177*.8),(height-24)/(6*60+177*1.2)));
  const pitch=width/8.65;return Math.max(.25,Math.min(1,(height-24)/(8*pitch*1.48+pitch*1.45)));
 }
