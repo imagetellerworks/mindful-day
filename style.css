@@ -33,3 +33,10 @@ body{transition:background-color 1.2s,color 1.2s}.immersive{position:absolute;in
   html:not(.portfolio-embed) .is-immersive .collection-tools{display:flex;visibility:hidden;pointer-events:none}
   html:not(.portfolio-embed) dialog{max-height:calc(var(--visible-height,100svh) - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
 }
+
+/* One project title opens the page; the mobile gallery gains the spare header space. */
+.edition{margin-left:0}.intro{top:130px}
+@media(max-width:760px){
+  html:not(.portfolio-embed) main{padding-top:calc(52px + env(safe-area-inset-top,0px))}
+  .project-title-break{display:none}#heroTitle{white-space:nowrap;max-width:none;font-size:clamp(36px,10.5vw,45px)}
+}
