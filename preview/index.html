@@ -6,7 +6,7 @@ if(p.get('tour')!=='off'&&!p.has('study')&&!p.has('set')&&(p.get('tour')==='1'||
 .app-tour{position:fixed;inset:0;z-index:90;pointer-events:none}.app-tour[hidden]{display:none}.tour-highlight{position:fixed;box-sizing:border-box;border:1px solid rgba(255,255,255,.95);border-radius:16px;box-shadow:0 0 0 9999px rgba(15,15,24,.24);pointer-events:none}.tour-card{position:fixed;box-sizing:border-box;width:min(340px,calc(100vw - 28px));max-height:calc(100dvh - 28px);overflow:auto;padding:20px;border:1px solid rgba(35,32,45,.12);border-radius:18px;background:rgba(246,246,247,.70);color:#24212b;box-shadow:0 10px 40px rgba(20,18,28,.14);pointer-events:auto;font:400 13px/1.65 var(--f-body);text-align:left;text-shadow:none;-webkit-text-stroke:0}.tour-card header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px}.tour-progress{font-size:11px;opacity:.6}.tour-close{display:grid;place-items:center;width:44px;height:44px;border:0;background:none;color:inherit;cursor:pointer}.tour-card h2{margin:0 0 8px;font:500 17px/1.45 var(--f-body);word-break:keep-all}.tour-card p{margin:0;word-break:keep-all}.tour-card ul{list-style:none;padding:0;margin:14px 0 0}.tour-card li{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:12px}.tour-card li svg{width:22px;height:22px;flex:none}.tour-card .stop-icon{display:none}.tour-card nav{display:flex;align-items:center;gap:10px;margin-top:18px}.tour-card nav button{min-height:44px;padding:8px 10px;border:0;border-radius:22px;font:400 12px/1.4 var(--f-body);cursor:pointer;color:inherit;background:transparent}.tour-card nav button:disabled{opacity:.3;cursor:default}.tour-card nav #tourNext{margin-left:auto;background:#24212b;color:#fff;padding-inline:18px}.tour-card nav #tourSkip{font-size:11px;opacity:.7}.tour-card button:focus-visible{outline:2px solid #655c93;outline-offset:3px}.about-tour{margin:18px 0}.about-tour button{border:0;background:none;padding:6px 0;color:inherit;text-decoration:underline;text-underline-offset:4px;font:400 12px/1.5 var(--f-body);cursor:pointer}
 
 .welcome-pending .lab-badge,.welcome-pending .brand,.welcome-pending #langBtn,.welcome-pending #appHome,.welcome-pending footer.site,.welcome-pending #menuToggle,.welcome-pending #mobilePosterFooter,.welcome-pending #orbFeelingTargets,.welcome-pending #canvasMoodChoice,.welcome-pending #newPaletteInvite,.welcome-pending #autoMoodActions,.welcome-pending #guide,.welcome-pending #menuGuide,.welcome-pending #shakeCoach{visibility:hidden!important;pointer-events:none!important}
-.app-welcome{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;border:0;padding:0;background:transparent;color:var(--welcome-ink,#24212b);text-align:center;overflow:auto}.app-welcome[open]{display:grid;place-items:center}.app-welcome::backdrop{background:var(--welcome-wash,rgba(230,230,230,.18));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}.welcome-copy{box-sizing:border-box;width:min(560px,100%);padding:40px 28px;display:flex;flex-direction:column;align-items:center}.welcome-copy h1{margin:0 0 32px;font:500 clamp(40px,8vw,68px)/1.15 Futura,"Futura PT",Jost,sans-serif;letter-spacing:-.025em;animation:welcome-reveal .65s ease both}.welcome-lines{animation:welcome-reveal .65s .2s ease both}.welcome-lines p{margin:0;word-break:keep-all;text-wrap:balance;font:400 15px/1.8 var(--f-body)}.welcome-lines #welcomeDescription{margin-top:6px;font-size:13px;opacity:.78}.welcome-copy button{margin-top:34px;min-height:48px;border:1px solid var(--welcome-ink,#24212b);border-radius:28px;padding:12px 32px;background:var(--welcome-ink,#24212b);color:var(--welcome-bg,#e6e6e6);font:400 13px/1.5 var(--f-body);cursor:pointer;animation:welcome-reveal .65s .4s ease both}.welcome-copy button:disabled{opacity:.45;cursor:wait}.welcome-copy button:focus-visible{outline:2px solid currentColor;outline-offset:5px}@keyframes welcome-reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){.welcome-copy h1,.welcome-lines,.welcome-copy button{animation:none}}
+.app-welcome{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;border:0;padding:0;background:transparent;color:var(--welcome-ink,#24212b);text-align:center;overflow:auto}.app-welcome[open]{display:grid;place-items:center}.app-welcome::backdrop{background:var(--welcome-wash,rgba(230,230,230,.18));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}.welcome-copy{box-sizing:border-box;width:min(560px,100%);padding:40px 28px;display:flex;flex-direction:column;align-items:center}.welcome-copy h1{margin:0 0 32px;font:600 clamp(40px,8vw,68px)/1.15 Pretendard,Arial,sans-serif;letter-spacing:-.025em;animation:welcome-reveal .65s ease both}.welcome-lines{animation:welcome-reveal .65s .2s ease both}.welcome-lines p{margin:0;word-break:keep-all;text-wrap:balance;font:400 15px/1.8 var(--f-body)}.welcome-lines #welcomeDescription{margin-top:6px;font-size:13px;opacity:.78}.welcome-copy button{margin-top:34px;min-height:48px;border:1px solid var(--welcome-ink,#24212b);border-radius:28px;padding:12px 32px;background:var(--welcome-ink,#24212b);color:var(--welcome-bg,#e6e6e6);font:400 13px/1.5 var(--f-body);cursor:pointer;animation:welcome-reveal .65s .4s ease both}.welcome-copy button:disabled{opacity:.45;cursor:wait}.welcome-copy button:focus-visible{outline:2px solid currentColor;outline-offset:5px}@keyframes welcome-reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){.welcome-copy h1,.welcome-lines,.welcome-copy button{animation:none}}
 .tour-touch-cue{position:fixed;width:56px;height:56px;box-sizing:border-box;border-radius:50%;border:1px solid rgba(255,255,255,.75);background:rgba(82,78,100,.28);box-shadow:inset 0 0 0 1px rgba(30,28,40,.12),0 0 22px rgba(255,255,255,.18);pointer-events:none;animation:tour-touch-breathe 1.6s ease-in-out infinite}.tour-touch-cue::after{content:'';position:absolute;inset:18px;border-radius:50%;background:rgba(255,255,255,.4)}.tour-touch-count{margin-top:8px!important;font-size:11px!important;opacity:.7}@keyframes tour-touch-breathe{0%,100%{transform:translate(-50%,-50%) scale(.72);opacity:.6}50%{transform:translate(-50%,-50%) scale(1.12);opacity:1}}@media(prefers-reduced-motion:reduce){.tour-touch-cue{animation:none;transform:translate(-50%,-50%);opacity:.7}}
 </style></head><body>
 <title>Mindful Day · Original Color Lab</title>
@@ -134,7 +134,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 footer.site{max-width:1040px;margin:28px auto 0;border-top:1px solid var(--line);padding-block:16px 8px;display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
 footer.site a{color:var(--ink);text-underline-offset:3px}
 footer.site{flex-direction:row;align-items:center;gap:10px}
-.footer-exports{display:flex;align-items:center;gap:6px}footer.site a.home-export{color:#fff;text-decoration:none}
+.footer-exports{display:flex;align-items:center;gap:6px}footer.site a.home-export,.is-story footer.site a.home-export{color:#fff;text-decoration:none}
 .quick-export{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:44px;min-height:44px;padding:0 12px;border:0;border-radius:12px;background:rgba(28,26,34,.6);color:#fff;cursor:pointer;font:500 11px/1 var(--f-body);-webkit-tap-highlight-color:transparent}
 .quick-export svg{display:block;width:19px;height:19px;flex:none}.quick-export:disabled{cursor:wait;color:rgba(255,255,255,.45)}
 .quick-export:focus-visible{outline:2px solid currentColor;outline-offset:3px}.quick-export.recording{background:rgba(174,31,50,.6)}
@@ -526,12 +526,9 @@ body.about-open{overflow:hidden}
 <script>
 // ================= 언어 =================
 let lang="ko",languagePreference=null;
-function deviceLanguage(){
-  const preferred=(navigator.languages||[]).find(value=>typeof value==='string'&&value.trim())||navigator.language||'en';
-  return /^ko(?:[-_]|$)/i.test(preferred)?'ko':'en';
-}
+function deviceLanguage(){return 'ko';}
 function readLanguagePreference(){
-  try{const value=localStorage.getItem('mindful-day-original-lab-language');return value==='ko'||value==='en'?value:null;}catch(err){return null;}
+  try{const value=localStorage.getItem('mindful-day-language-v2');return value==='ko'||value==='en'?value:null;}catch(err){return null;}
 }
 const UI_EN={
   "빠른 저장": "Quick save",
@@ -716,7 +713,7 @@ function setLanguage(next,persist=true){
   imgBtn.textContent=tr(imageBusy?'이미지 만드는 중…':'이미지로 저장');setV(vstate);updateFormats();
   statusEl.textContent=tr(statusEl.textContent);sheetMsg.textContent=tr(sheetMsg.textContent);document.getElementById('toast').textContent=tr(document.getElementById('toast').textContent);
   document.querySelectorAll('.sheet-prev [aria-label],.sheet-prev img').forEach(el=>{if(el.hasAttribute('aria-label'))el.setAttribute('aria-label',tr(el.getAttribute('aria-label')));if(el.alt)el.alt=tr(el.alt);});
-  if(persist){languagePreference=lang;try{localStorage.setItem('mindful-day-original-lab-language',lang);}catch(err){}}
+  if(persist){languagePreference=lang;try{localStorage.setItem('mindful-day-language-v2',lang);}catch(err){}}
   if(typeof appTour!=='undefined'){ $('replayAppTour').textContent=L('사용 방법 다시 보기','Show me how to use it');if(appTour.active)renderAppTour();}
   if(typeof appWelcome!=='undefined'&&appWelcome.active)renderAppWelcome();
   updateShakeCoach();updateMenuToggle();updateAboutLanguage();updateModeUI();renderMoodChoices();showFeeling(chosen[0]);fit=null;resize();drawPoster();drawMobileBackdrop();
@@ -1073,7 +1070,7 @@ const FONTS=[
   {id:'archivo',label:'Archivo',fam:'Archivo Black',tw:400,sw:400}];
 const BASIC_FONTS=[['pretendard','깔끔한 고딕'],['notoserif','단정한 명조'],['blackhan','굵은 제목체'],['gowun','부드러운 바탕']];
 const fontOf=id=>FONTS.find(f=>f.id===id)||FONTS[0];
-function fontStr(id,role,size){const f=fontOf(id);return `${role==='t'?f.tw:f.sw} ${size}px "${f.fam}","Pretendard","Noto Sans KR",sans-serif`;}
+function fontStr(id,role,size){const f=role==='t'&&/^mindful\s*day$/i.test(String(S.title||'').trim())?{fam:'Pretendard',tw:600,sw:400}:fontOf(id);return `${role==='t'?f.tw:f.sw} ${size}px "${f.fam}","Pretendard","Noto Sans KR",sans-serif`;}
 let fit=null;
 function warmFonts(){fit=null;if(!document.fonts)return Promise.resolve();
   return Promise.all([document.fonts.load(fontStr(S.ft,'t',40),S.title||'A'),document.fonts.load(fontStr(S.fs,'s',40),S.sub||'A')]).catch(()=>{});}
@@ -1802,7 +1799,7 @@ size();requestAnimationFrame(draw);
 `;
 function buildCode(){
   const r3=v=>+(+v).toFixed(4), G=groundColors(), bg=G.bg;
-  const ft=fontOf(S.ft), fs=fontOf(S.fs),captureT=reduce?0:clock*S.speed;
+  const ft=/^mindful\s*day$/i.test(String(S.title||'').trim())?{id:'pretendard',fam:'Pretendard',tw:600,sw:400}:fontOf(S.ft), fs=fontOf(S.fs),captureT=reduce?0:clock*S.speed;
   const D={title:S.title||'',sub:S.sub||'',feel:feel?[feel.en||feel.text,lang==='ko'?(feel.ko||FEEL_KO[feel.text]||''):'']:null,foot:[stampText(),colorNames()],bg,ink:G.ink,feelInk:feelingInk(),drift:r3(S.drift),speed:r3(S.speed),clock:r3(clock),paused:!!(S.paused||S.reviewing),reduced:reduce,
     ft:{fam:ft.fam,w:ft.tw},fs:{fam:fs.fam,w:fs.sw},
     orbs:chosen.map((idx,i)=>{const o=tiles[idx].cur,pl=placements[i];return{trail:r3(o.trail),ta:r3(o.trailAng),
@@ -2384,11 +2381,12 @@ addEventListener('keydown',e=>{if(appTour.active&&!$('appTour').hidden&&e.key===
 addEventListener('resize',()=>{if(appTour.active)updateAppTour(performance.now(),true);});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.canvasChoiceReady&&!appTour.active)offerAppTour();});
 
-function atlasHomeTarget(view,hostname){
+function atlasHomeTarget(view,hostname,origin='',pathname=''){
  const selected=['ribbon','helix','wall','canvas'].includes(view)?view:'ribbon';
- const base=hostname==='127.0.0.1'||hostname==='localhost'?'http://127.0.0.1:8792/':'https://chromatic-atlas-imageteller.jiin-imageteller.chatgpt.site/';return base+'#'+selected;
+ if((hostname==='127.0.0.1'||hostname==='localhost')&&origin&&pathname.includes('/experience/'))return new URL('../',origin+pathname).href+'#'+selected;
+ const base=hostname==='127.0.0.1'||hostname==='localhost'?'http://127.0.0.1:8792/':'https://imagetellerworks.github.io/mindful-day/';return base+'#'+selected;
 }
-function setupAtlasHome(){const params=new URLSearchParams(location.search),home=$('appHome');home.hidden=params.has('study');home.href=atlasHomeTarget(params.get('view'),location.hostname);}
+function setupAtlasHome(){const params=new URLSearchParams(location.search),home=$('appHome');home.hidden=params.has('study');home.href=atlasHomeTarget(params.get('view'),location.hostname,location.origin,location.pathname);}
 // ================= 시작 =================
 setupAtlasHome();
 exportLayer.append(imageChoices,sheet,statusEl);setupCatalogDrag();

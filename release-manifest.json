@@ -1,42 +1,94 @@
 {
-  "sourceCommit": "8a2ee46ed48f269fbb48f425095e70294faaad25",
-  "preservedRemoteCommit": "94c9846edb2674983b3e1550161dd1a2e42d42a4",
+  "schemaVersion": "mindful-day-home-and-experience/v1",
+  "previousExperienceCommit": "608e03a1ab7d71d1330967e1880afb89933afb93",
+  "home": "./",
+  "experience": "experience/",
+  "koreanFirst": true,
+  "preservedShowroom": true,
   "files": [
     {
-      "path": "index.html",
-      "sha256": "af2b5d07aff4ea3024252f0713213e4e68184c78116bf96485527ecdd8c99c7d"
+      "path": "app.js",
+      "sha256": "8d3b20dd8085b4ae651e6b087cd1236e2a7dbb6b5d744a0b2385039bb9c3844d"
     },
     {
-      "path": "single-orb-model.js",
-      "sha256": "8a1b1e00f52b4d3f3d0705470488ed58ac0e6c30497b53b89ca7d754689d240f"
+      "path": "assets/Pretendard-Regular.woff2",
+      "sha256": "fad853f7f47c6c8b103171e7193fa095708cdcd70850a71d93aa5379e8a61d63"
     },
     {
-      "path": "palette-guide-data.js",
-      "sha256": "4e88c11c2f17c2dd75116fc12cf852c4c244211651d6fe147405522b64f2a102"
+      "path": "assets/favicon.svg",
+      "sha256": "a2add10d84cf5dfd02dda72d5d350e566b47eb292c146079158efb91dc59561f"
     },
     {
-      "path": "semantic-mixing-model.js",
-      "sha256": "218e73a6f5d5bccf58eb5ff36cadf5c4c676240afe82405e3d6f9a49b07978bc"
-    },
-    {
-      "path": "color-name-context.js",
-      "sha256": "832ef39a2ad027210f04244de0c5acb5226618f9be03ac3e9d7c47e1575d4c2c"
+      "path": "assets/palettes.json",
+      "sha256": "14ff282e55017037f4b2fa01aebf171b2f7957e3f723a8b012db72eb5f975b51"
     },
     {
       "path": "color-feedback-model.js",
       "sha256": "ac8728990a697ef90a62a84d1df2e6a4a3ec3e007cfc6905a31e00656c401f74"
     },
     {
-      "path": "feedback-store.js",
+      "path": "color-name-context.js",
+      "sha256": "832ef39a2ad027210f04244de0c5acb5226618f9be03ac3e9d7c47e1575d4c2c"
+    },
+    {
+      "path": "docs/HOME-EXPERIENCE.md",
+      "sha256": "461ae25d30a3ae6fe7918453637c156e971a5ace0d8a983eace651e28f62fb8e"
+    },
+    {
+      "path": "experience/color-feedback-model.js",
+      "sha256": "ac8728990a697ef90a62a84d1df2e6a4a3ec3e007cfc6905a31e00656c401f74"
+    },
+    {
+      "path": "experience/color-name-context.js",
+      "sha256": "832ef39a2ad027210f04244de0c5acb5226618f9be03ac3e9d7c47e1575d4c2c"
+    },
+    {
+      "path": "experience/feedback-store.js",
       "sha256": "9a3ed8242f1f867af4eacb7399ae91b41384a910b5942a5dd913534984bfcc22"
     },
     {
-      "path": "reviewed-palettes.js",
+      "path": "experience/fonts/Pretendard-Black.woff2",
+      "sha256": "c5fd0c3568fc1368a3edc0d0fbb36df029935954276e3573451b3bae09e27296"
+    },
+    {
+      "path": "experience/fonts/Pretendard-Bold.woff2",
+      "sha256": "4609c3356e536fafe38f4add0daeceb3d8595d3057bce13c428c33ddbd43d362"
+    },
+    {
+      "path": "experience/fonts/Pretendard-Medium.woff2",
+      "sha256": "d03481330eeba0659ab5b87f25ceb504a35de377dd90a0d0aba2982eb2d05e2c"
+    },
+    {
+      "path": "experience/fonts/Pretendard-Regular.woff2",
+      "sha256": "fad853f7f47c6c8b103171e7193fa095708cdcd70850a71d93aa5379e8a61d63"
+    },
+    {
+      "path": "experience/index.html",
+      "sha256": "6f2114ed0f7f1d8ca65f11c541f4b6b073745e9544e4e275f0a2b02bb71d2ea5"
+    },
+    {
+      "path": "experience/palette-guide-data.js",
+      "sha256": "4e88c11c2f17c2dd75116fc12cf852c4c244211651d6fe147405522b64f2a102"
+    },
+    {
+      "path": "experience/reviewed-palette-matcher.js",
+      "sha256": "6ecbf0a4db45552c8a357959a6b6c7f8bfd21e9bbb81e51b5188c5225d00e3e9"
+    },
+    {
+      "path": "experience/reviewed-palettes.js",
       "sha256": "c65eb4b1f10c1c7bb1091935dd9b9cccbd664bed3834ff5d9c824a7b12e7c1c4"
     },
     {
-      "path": "reviewed-palette-matcher.js",
-      "sha256": "6ecbf0a4db45552c8a357959a6b6c7f8bfd21e9bbb81e51b5188c5225d00e3e9"
+      "path": "experience/semantic-mixing-model.js",
+      "sha256": "218e73a6f5d5bccf58eb5ff36cadf5c4c676240afe82405e3d6f9a49b07978bc"
+    },
+    {
+      "path": "experience/single-orb-model.js",
+      "sha256": "8a1b1e00f52b4d3f3d0705470488ed58ac0e6c30497b53b89ca7d754689d240f"
+    },
+    {
+      "path": "feedback-store.js",
+      "sha256": "9a3ed8242f1f867af4eacb7399ae91b41384a910b5942a5dd913534984bfcc22"
     },
     {
       "path": "fonts/Pretendard-Black.woff2",
@@ -53,6 +105,48 @@
     {
       "path": "fonts/Pretendard-Regular.woff2",
       "sha256": "fad853f7f47c6c8b103171e7193fa095708cdcd70850a71d93aa5379e8a61d63"
+    },
+    {
+      "path": "index.html",
+      "sha256": "80c3502d1577c5b638c1afbe3d324ce2779ae89100ce598049bccd073c5df120"
+    },
+    {
+      "path": "landing-route.js",
+      "sha256": "69f13bbd5e1d0317607d8678d5dd899f051e0a3cbc3590c134bc02baa5921b91"
+    },
+    {
+      "path": "palette-guide-data.js",
+      "sha256": "4e88c11c2f17c2dd75116fc12cf852c4c244211651d6fe147405522b64f2a102"
+    },
+    {
+      "path": "reviewed-palette-matcher.js",
+      "sha256": "6ecbf0a4db45552c8a357959a6b6c7f8bfd21e9bbb81e51b5188c5225d00e3e9"
+    },
+    {
+      "path": "reviewed-palettes.js",
+      "sha256": "c65eb4b1f10c1c7bb1091935dd9b9cccbd664bed3834ff5d9c824a7b12e7c1c4"
+    },
+    {
+      "path": "semantic-mixing-model.js",
+      "sha256": "218e73a6f5d5bccf58eb5ff36cadf5c4c676240afe82405e3d6f9a49b07978bc"
+    },
+    {
+      "path": "single-orb-model.js",
+      "sha256": "8a1b1e00f52b4d3f3d0705470488ed58ac0e6c30497b53b89ca7d754689d240f"
+    },
+    {
+      "path": "spatial-model.js",
+      "sha256": "9ce0660e6f64bdd7f63643e08618e70be3b4ddbd405a45e50fcef97197d0a95a"
+    },
+    {
+      "path": "style.css",
+      "sha256": "9659a42b9e30b1eeeca4c0b10130d2ae86fa90873580337315302d2168185079"
+    },
+    {
+      "path": "tests/home-experience.test.cjs",
+      "sha256": "a3dd16ea4c6c9b6311c1864808ed4719139223506485c524df397b0ee8b139fc"
     }
-  ]
+  ],
+  "homeSourceCommit": "9d7182d55d697be0b71b5efcd83f1570296a4b59",
+  "experienceSourceCommit": "a9e4ab8"
 }
