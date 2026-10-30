@@ -1,0 +1,11 @@
+(()=>{'use strict';if(new URLSearchParams(location.search).get('portfolio')!=='1')return;document.documentElement.classList.add('portfolio-embed');const style=document.createElement('style');style.textContent=`
+html.portfolio-embed,html.portfolio-embed body{width:100%;height:100%;overflow:hidden!important}
+.portfolio-embed main{height:100dvh!important;min-height:0!important}
+.portfolio-embed .masthead,.portfolio-embed .intro,.portfolio-embed .experience-link,.portfolio-embed .collection-tools,.portfolio-embed .selection,.portfolio-embed .navigation,.portfolio-embed .bottom-controls,.portfolio-embed .interaction-note,.portfolio-embed footer,.portfolio-embed .stage-coordinate{display:none!important}
+.portfolio-embed .stage{inset:0!important;mask-image:none!important;-webkit-mask-image:none!important}
+.portfolio-embed .immersive-art{left:58%!important;top:50%!important;width:min(1200px,120vw)!important}
+@media(max-width:760px){.portfolio-embed .immersive-art{left:50%!important;width:150vw!important}.portfolio-embed .art-card{width:177px}}
+`;document.head.append(style);
+const views=['ribbon','helix','wall','canvas'];let origin='';try{origin=new URL(document.referrer).origin}catch{}function send(){if(parent===window)return;const active=document.querySelector('[data-view][aria-pressed="true"]');if(active)parent.postMessage({type:'mindful-view-changed',view:active.dataset.view},origin||'*')}
+addEventListener('message',event=>{if(event.source!==parent||!origin||event.origin!==origin)return;const data=event.data;if(data?.type==='mindful-select-view'&&views.includes(data.view))document.querySelector('[data-view="'+data.view+'"]')?.click();if(data?.type==='mindful-language'&&['ko','en'].includes(data.language)){const active=document.querySelector('#languageBtn [data-language].active');if(active&&active.dataset.language!==data.language)document.getElementById('languageBtn')?.click()}});
+addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('[data-view]').forEach(button=>new MutationObserver(send).observe(button,{attributes:true,attributeFilter:['aria-pressed']}));send()});addEventListener('load',send)})();
