@@ -24,7 +24,11 @@ function fitScale(view,width,height,mobile){
 function geometry(view,d,index,position,mobile,stageWidth=mobile?390:1000,cardWidth=mobile?177:228){
  const r=mobile?265:455;let x,y,z,rx=0,ry=0,rz=0,scale=1,opacity;
  if(view==='canvas'){x=0;y=0;z=-150;scale=.8;opacity=0;}
- else if(view==='ribbon'){scale=1+.4*Math.exp(-2*d*d);x=d*(mobile?140:200);y=Math.abs(d)*12;z=-Math.abs(d)*(mobile?120:155);ry=-Math.max(-1,Math.min(1,d))*48;opacity=Math.min(1,Math.max(0,(5-Math.abs(d))/1.5));}
+ else if(view==='ribbon'){
+  const step=34*Math.PI/180,angle=d*step,gap=mobile?18:24,radius=(cardWidth*1.4+gap)/(2*Math.tan(step/2));
+  x=Math.sin(angle)*radius;y=0;z=(Math.cos(angle)-1)*radius;ry=d*34;scale=1.4;
+  opacity=Math.max(0,Math.min(1,(2-Math.abs(d))/.35));
+ }
  else if(view==='helix'){x=Math.sin(d*.78)*r*.66;y=d*(mobile?60:83);z=(Math.cos(d*.78)-1)*r*.75;ry=-Math.sin(d*.45)*30;rx=-9;rz=d*4;scale=.85;opacity=Math.min(1,Math.max(0,(5-Math.abs(d))/1.5));}
  else{const columns=8,pitch=stageWidth/8.65;x=(mod(index,columns)-(columns-1)/2)*pitch;y=(Math.floor(index/columns)-position/columns)*pitch*1.48;z=-35;ry=-4;rx=7;rz=-4;scale=pitch*.88/cardWidth;opacity=1;}
  return{x,y,z,rx,ry,rz,scale,opacity};
@@ -32,18 +36,11 @@ function geometry(view,d,index,position,mobile,stageWidth=mobile?390:1000,cardWi
 
 const ribbonHold=1400,ribbonDuration=760;
 const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
-function ribbonPosition(from,to,elapsed){return from+(to-from)*smooth((elapsed/ribbonDuration-.42)/.58);}
+function ribbonPosition(from,to,elapsed){return from+(to-from)*smooth(elapsed/ribbonDuration);}
 function ribbonPose(index,from,to,elapsed,mobile,stageWidth,cardWidth){
- const p=Math.max(0,Math.min(1,elapsed/ribbonDuration)),position=ribbonPosition(from,to,elapsed),pose=geometry('ribbon',index-position,index,position,mobile,stageWidth,cardWidth);
- pose.layer=1000-Math.round(Math.abs(index-position)*20);
- if(index===from||index===to){
-  const outgoing=index===from,start=geometry('ribbon',index-from,index,from,mobile,stageWidth,cardWidth),end=geometry('ribbon',index-to,index,to,mobile,stageWidth,cardWidth);
-  // First shrink and retire the old focus; only then bring the next card forward.
-  const t=outgoing?smooth(p/.42):smooth((p-.42)/.58);
-  for(const key of Object.keys(start))pose[key]=start[key]+(end[key]-start[key])*t;
-  pose.layer=outgoing?(p<.42?3000:1000):(p<.42?900:3100);
- }
- return pose;
+ const position=ribbonPosition(from,to,elapsed);
+ // Every card shares one rotation; spacing comes from the same cylindrical surface.
+ return geometry('ribbon',index-position,index,position,mobile,stageWidth,cardWidth);
 }
 function flowDelta(view,dt){const rate={ribbon:.00018,helix:.00018,wall:.0038}[view]||0;return Math.max(0,dt)*rate;}
 const api={groups,mod,group,filterRows,geometry,views,viewDuration,sequenceStep,experienceUrl,dragOffset,fitScale,ribbonHold,ribbonDuration,ribbonPosition,ribbonPose,flowDelta};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
