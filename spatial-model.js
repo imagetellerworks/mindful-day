@@ -32,18 +32,16 @@ function geometry(view,d,index,position,mobile,stageWidth=mobile?390:1000,cardWi
 
 const ribbonHold=1400,ribbonDuration=760;
 const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
-function ribbonPosition(from,to,elapsed){return from+(to-from)*smooth((elapsed/ribbonDuration-.38)/.62);}
+function ribbonPosition(from,to,elapsed){return from+(to-from)*smooth((elapsed/ribbonDuration-.42)/.58);}
 function ribbonPose(index,from,to,elapsed,mobile,stageWidth,cardWidth){
  const p=Math.max(0,Math.min(1,elapsed/ribbonDuration)),position=ribbonPosition(from,to,elapsed),pose=geometry('ribbon',index-position,index,position,mobile,stageWidth,cardWidth);
  pose.layer=1000-Math.round(Math.abs(index-position)*20);
- if(index===from)pose.layer=p<.34?3000:1000;
- if(index===to){
-  const start=geometry('ribbon',to-from,to,from,mobile,stageWidth,cardWidth),end=geometry('ribbon',0,to,to,mobile,stageWidth,cardWidth),side=Math.sign(to-from)||1;
-  const clear={...start,x:side*(cardWidth*1.5+24),y:-32,ry:-side*36,scale:1,opacity:1};
-  const a=p<.3?start:p<.38?clear:{...clear,z:0},b=p<.3?clear:p<.38?{...clear,z:0}:end,t=p<.3?smooth(p/.3):p<.38?smooth((p-.3)/.08):smooth((p-.38)/.62);
-  for(const key of Object.keys(start))pose[key]=a[key]+(b[key]-a[key])*t;
-  // Promotion happens only while the card is outside the old focal card.
-  pose.layer=p<.34?900:3100;
+ if(index===from||index===to){
+  const outgoing=index===from,start=geometry('ribbon',index-from,index,from,mobile,stageWidth,cardWidth),end=geometry('ribbon',index-to,index,to,mobile,stageWidth,cardWidth);
+  // First shrink and retire the old focus; only then bring the next card forward.
+  const t=outgoing?smooth(p/.42):smooth((p-.42)/.58);
+  for(const key of Object.keys(start))pose[key]=start[key]+(end[key]-start[key])*t;
+  pose.layer=outgoing?(p<.42?3000:1000):(p<.42?900:3100);
  }
  return pose;
 }
