@@ -53,6 +53,12 @@ function ribbonPose(index,from,to,elapsed,mobile,stageWidth,cardWidth,vertical=f
  return geometry('ribbon',index-position,index,position,mobile,stageWidth,cardWidth,vertical);
 }
 function flowDelta(view,dt){const rate={ribbon:.00018,helix:.00018,wall:.0038}[view]||0;return Math.max(0,dt)*rate;}
-function portraitRibbonAnchor(textRight,iconCenter,stageLeft,stageWidth){return(textRight+iconCenter)/2-stageLeft-stageWidth/2;}
-const api={groups,mod,group,filterRows,geometry,views,viewDuration,sequenceStep,experienceUrl,dragOffset,fitScale,ribbonWindowSpan,ribbonHold,ribbonDuration,ribbonPosition,ribbonPose,flowDelta,portraitRibbonAnchor};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
+function portraitRibbonHalfWidth(cardWidth,perspective,fit){
+ let half=0;
+ for(let i=0;i<=100;i++){const d=2.5*i/100,g=geometry('ribbon',d,d,0,true,390,cardWidth,true),near=g.z+247*g.scale/2*Math.abs(Math.sin(g.rx*Math.PI/180));half=Math.max(half,cardWidth*g.scale/2*perspective/(perspective-near)*fit);}
+ // Reserve a few extra CSS pixels for Safari perspective and subpixel rounding.
+ return half+4;
+}
+function portraitRibbonAnchor(textRight,iconCenter,stageLeft,stageWidth,halfCard=0,iconLeft=iconCenter,gap=0){const middle=(textRight+iconCenter)/2,center=Math.min(middle,iconLeft-gap-halfCard);return center-stageLeft-stageWidth/2;}
+const api={groups,mod,group,filterRows,geometry,views,viewDuration,sequenceStep,experienceUrl,dragOffset,fitScale,ribbonWindowSpan,ribbonHold,ribbonDuration,ribbonPosition,ribbonPose,flowDelta,portraitRibbonAnchor,portraitRibbonHalfWidth};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
 })(typeof window==='object'?window:this);
