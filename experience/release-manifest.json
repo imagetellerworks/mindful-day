@@ -1,9 +1,9 @@
 {
-  "sourceCommit": "24f65104d7929a0695c7717c129e0aa45b329d44",
+  "sourceCommit": "48b86d85791b176f191e4ef1dfe229764faabb32",
   "files": [
     {
       "path": "index.html",
-      "sha256": "0b6dcf712bee797dc9e84fad4f2643ba7acb10cfd16668a6e7d4e2e48f3a1cd4"
+      "sha256": "826656965ac4f3e59fc8590d408c462131fb7e7b6c0f4a9d8998ae82cceb6ef1"
     },
     {
       "path": "single-orb-model.js",
