@@ -16,16 +16,17 @@ function dragOffset(view,dx,dy,mobile,stageWidth){
  return 0;
 }
 const ribbonSpans=new Map();
-function ribbonSpan(mobile,cardWidth,perspective,edge=2.5,vertical=false){
- const key=[mobile,cardWidth,perspective,edge,vertical].join(':');if(ribbonSpans.has(key))return ribbonSpans.get(key);
+function ribbonSpan(mobile,cardWidth,perspective,edge=2.5,vertical=false,reference=false){
+ const key=[mobile,cardWidth,perspective,edge,vertical,reference].join(':');if(ribbonSpans.has(key))return ribbonSpans.get(key);
  let extent=0;
  for(let i=0;i<=40;i++){const d=edge*i/40,g=geometry('ribbon',d,d,0,mobile,390,cardWidth,vertical),a=(vertical?g.rx:g.ry)*Math.PI/180;
-  for(const sign of [-1,1]){const local=sign*cardWidth*(vertical?1.6:1)*g.scale/2;extent=Math.max(extent,Math.abs(((vertical?g.y:g.x)+local*Math.cos(a))*perspective/(perspective-g.z+(vertical?-1:1)*local*Math.sin(a))));}}
+  for(const sign of [-1,1]){const extentSize=vertical?(reference?cardWidth*1.6:247):cardWidth,local=sign*extentSize*g.scale/(reference&&vertical?1.1:1)/2;extent=Math.max(extent,Math.abs(((vertical?g.y:g.x)+local*Math.cos(a))*perspective/(perspective-g.z+(vertical?-1:1)*local*Math.sin(a))));}}
  const span=extent*2;ribbonSpans.set(key,span);return span;
 }
 function ribbonWindowSpan(mobile,cardWidth,perspective,vertical=false){return ribbonSpan(mobile,cardWidth,perspective,2,vertical);}
 function fitScale(view,width,height,mobile,cardWidth=mobile?177:228,perspective=mobile?950:1300,vertical=false){
- if(view==='ribbon')return Math.min(.85*fitScale('helix',width,height,mobile),((vertical?height:width)-(mobile?24:32))/ribbonSpan(mobile,cardWidth,perspective,2.5,vertical));
+ // Fit the same path as before; the larger portrait cards use the spare gaps.
+ if(view==='ribbon')return Math.min(.85*fitScale('helix',width,height,mobile),((vertical?height:width)-(mobile?24:32))/ribbonSpan(mobile,cardWidth,perspective,2.5,vertical,true));
  if(!mobile||view==='canvas')return 1;
  if(view==='helix')return Math.max(.25,Math.min(1,(width-20)/(265*.66*1.6+177*.8),(height-24)/(6*60+177*1.2)));
  const pitch=width/8.65;return Math.max(.25,Math.min(1,(height-24)/(8*pitch*1.48+pitch*1.45)));
@@ -35,7 +36,7 @@ function geometry(view,d,index,position,mobile,stageWidth=mobile?390:1000,cardWi
  if(view==='canvas'){x=0;y=0;z=-150;scale=.8;opacity=0;}
  else if(view==='ribbon'){
   const degrees=24,step=degrees*Math.PI/180,angle=d*step,gap=vertical?16:24,radius=(cardWidth*(vertical?1.6:1)*1.4+gap)/(2*Math.tan(step/2));
-  x=vertical?0:Math.sin(angle)*radius;y=vertical?-Math.sin(angle)*radius:0;z=(Math.cos(angle)-1)*radius;rx=vertical?d*degrees:0;ry=vertical?0:d*degrees;scale=1.4;
+  x=vertical?0:Math.sin(angle)*radius;y=vertical?-Math.sin(angle)*radius:0;z=(Math.cos(angle)-1)*radius;rx=vertical?d*degrees:0;ry=vertical?0:d*degrees;scale=vertical?1.54:1.4;
   opacity=Math.max(0,Math.min(1,(3.5-Math.abs(d))/.35));
  }
  else if(view==='helix'){x=Math.sin(d*.78)*r*.66;y=d*(mobile?60:83);z=(Math.cos(d*.78)-1)*r*.75;ry=-Math.sin(d*.45)*30;rx=-9;rz=d*4;scale=.85;opacity=Math.min(1,Math.max(0,(5-Math.abs(d))/1.5));}
@@ -52,5 +53,6 @@ function ribbonPose(index,from,to,elapsed,mobile,stageWidth,cardWidth,vertical=f
  return geometry('ribbon',index-position,index,position,mobile,stageWidth,cardWidth,vertical);
 }
 function flowDelta(view,dt){const rate={ribbon:.00018,helix:.00018,wall:.0038}[view]||0;return Math.max(0,dt)*rate;}
-const api={groups,mod,group,filterRows,geometry,views,viewDuration,sequenceStep,experienceUrl,dragOffset,fitScale,ribbonWindowSpan,ribbonHold,ribbonDuration,ribbonPosition,ribbonPose,flowDelta};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
+function portraitRibbonAnchor(textRight,iconCenter,stageLeft,stageWidth){return(textRight+iconCenter)/2-stageLeft-stageWidth/2;}
+const api={groups,mod,group,filterRows,geometry,views,viewDuration,sequenceStep,experienceUrl,dragOffset,fitScale,ribbonWindowSpan,ribbonHold,ribbonDuration,ribbonPosition,ribbonPose,flowDelta,portraitRibbonAnchor};if(typeof module==='object'&&module.exports)module.exports=api;else root.AtlasModel=api;
 })(typeof window==='object'?window:this);

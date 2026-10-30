@@ -117,5 +117,10 @@ body[data-gallery-view="ribbon"] .art-card.is-buffer{pointer-events:none}
 body[data-gallery-view="ribbon"][data-ribbon-axis="vertical"] .stage{perspective:1800px;clip-path:inset(calc((100% - var(--ribbon-window,100%))/2) 0)}
 @media(max-width:760px) and (orientation:portrait){
  /* The fitted arc grows 15% together with its window, preserving all five cards. */
- html:not(.portfolio-embed) body[data-gallery-view="ribbon"] .stage{left:calc(18% - 20vw);right:calc(-40% + 20vw);top:calc(6.3% + 1.8px);bottom:calc(6.3% + 1.8px)}
+ html:not(.portfolio-embed) body[data-gallery-view="ribbon"] .stage{left:0;right:0;top:calc(6.3% + 1.8px);bottom:calc(6.3% + 1.8px)}
+ html:not(.portfolio-embed) body[data-gallery-view="ribbon"] .space{left:var(--ribbon-anchor-offset,0px);right:calc(0px - var(--ribbon-anchor-offset,0px))}
+ /* One line keeps card planes evenly spaced, including long feeling names. */
+ body[data-gallery-view="ribbon"] .art-card .word{font-size:var(--ribbon-word-size,22px);height:24px;line-height:24px;white-space:nowrap;overflow-wrap:normal}
+ body[data-gallery-view="ribbon"] .art-card .ko{height:11px;line-height:11px;white-space:nowrap}
+ body[data-gallery-view="ribbon"] .art-card .number{height:8px;line-height:8px;white-space:nowrap}
 }

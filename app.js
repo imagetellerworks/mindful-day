@@ -14,6 +14,25 @@ syncVisibleViewport();addEventListener('resize',queueVisibleViewport);addEventLi
 const $=id=>document.getElementById(id),M=AtlasModel,stage=$('stage'),space=$('space'),reduced=matchMedia('(prefers-reduced-motion: reduce)'),cache=new Map(),inkCache=new Map(),cards=new Map();
 let all=[],rows=[],position=0,target=0,view=M.views.includes(location.hash.slice(1))?location.hash.slice(1):'helix',playing=!reduced.matches,drag=null,suppressUntil=0,last=0,lastAuto=0,pausedUntil=0,focusedId='',announcementTimer=0,sequenceElapsed=0,lastFit=-1;
 let ribbonMotion=null,ribbonHoldMs=0,ribbonRequest=null;
+let ribbonAnchorAt=0,ribbonWordsDirty=true,lastRibbonAnchor=null;
+function fitPortraitWord(button){
+ if(innerWidth>760||innerHeight<innerWidth)return;
+ const word=button.querySelector('.word');if(!word)return;
+ word.style.setProperty('--ribbon-word-size','22px');
+ const available=word.clientWidth,needed=word.scrollWidth;
+ if(available&&needed>available)word.style.setProperty('--ribbon-word-size',(22*available/needed)+'px');
+}
+function syncPortraitRibbon(now,vertical){
+ if(!vertical)return;
+ if(ribbonWordsDirty){cards.forEach(card=>fitPortraitWord(card.button));ribbonWordsDirty=false;}
+ if(now<ribbonAnchorAt)return;ribbonAnchorAt=now+100;
+ const intro=document.querySelector('.intro'),icons=document.querySelector('.view-switch');if(!intro||!icons)return;
+ const text=intro.getBoundingClientRect(),icon=icons.getBoundingClientRect(),bounds=stage.getBoundingClientRect();
+ const offset=M.portraitRibbonAnchor(text.right,icon.left+icon.width/2,bounds.left,bounds.width);
+ if(lastRibbonAnchor===null||Math.abs(offset-lastRibbonAnchor)>.1){space.style.setProperty('--ribbon-anchor-offset',offset+'px');lastRibbonAnchor=offset;}
+}
+addEventListener('resize',()=>{ribbonAnchorAt=0;ribbonWordsDirty=true;});
+document.fonts?.addEventListener?.('loadingdone',()=>{ribbonAnchorAt=0;ribbonWordsDirty=true;});
 const panByView=Object.fromEntries(M.views.map(name=>[name,{x:0,y:0}]));
 const LANGUAGE_KEY='mindful-day-language-v2';let lang='ko';try{const saved=localStorage.getItem(LANGUAGE_KEY);if(saved==='en'||saved==='ko')lang=saved;}catch{}
 const experienceBase=(location.hostname==='imagetellerworks.github.io'||((location.hostname==='127.0.0.1'||location.hostname==='localhost')&&location.pathname.startsWith('/mindful-day/')))?new URL('experience/',location.href).href:'https://imagetellerworks.github.io/mindful-day/experience/';
@@ -63,7 +82,7 @@ function makeCard(index){
  if(view==='ribbon'&&typeof img.decode==='function')img.decode().catch(()=>{});
  const word=document.createElement('span');word.className='word';word.textContent=row.en;word.lang='en';const ko=document.createElement('span');ko.className='ko';ko.textContent=row.ko;
  const number=document.createElement('span');number.className='number';number.textContent=String(all.indexOf(row)+1).padStart(3,'0')+' / '+M.group(row.category,lang).toUpperCase();button.append(img,word,ko,number);
- button.addEventListener('click',()=>{if(performance.now()<suppressUntil)return;choose(index);});space.append(button);
+ button.addEventListener('click',()=>{if(performance.now()<suppressUntil)return;choose(index);});space.append(button);if(view==='ribbon')fitPortraitWord(button);
  const initial=project(index);return{button,index,row,state:{...initial,opacity:0}};
 }
 function ensureCards(){
@@ -79,10 +98,11 @@ function filter(resetTimer=true){
  if(resetTimer!==false)pauseForInput();rows=M.filterRows(all,$('filter').value,'');cards.forEach(card=>card.button.remove());cards.clear();position=target=0;ribbonMotion=null;ribbonRequest=null;ribbonHoldMs=0;focusedId='';$('empty').hidden=!!rows.length;$('total').textContent=String(rows.length).padStart(3,'0');$('prev').disabled=$('next').disabled=rows.length<2;selection();
 }
 function setView(next,automatic=false){
+ if(next==='ribbon'){ribbonWordsDirty=true;ribbonAnchorAt=0;}
  view=next;ribbonMotion=null;ribbonRequest=null;ribbonHoldMs=0;if(view==='ribbon')position=target=Math.round(position);document.body.setAttribute('data-gallery-view',view);const pan=panByView[view];space.style.transform=`translate3d(${pan.x}px,${pan.y}px,0) scale(var(--gallery-fit,1))`;const row=rows.length?rows[M.mod(Math.round(position),rows.length)]:null;$('experienceLink').href=M.experienceUrl(row,view,experienceBase);history.replaceState(null,'','#'+view);document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));const n=M.views.indexOf(view)+1;const mobileCurrent=$('mobileViewCurrent');if(mobileCurrent)mobileCurrent.textContent=String(n).padStart(2,'0');$('viewCoordinate').textContent='0'+n+' / '+view.toUpperCase();updateImmersive();lastAuto=performance.now();if(!automatic)sequenceElapsed=0;
 }
 function frame(now){
- const dt=Math.min(40,now-(last||now));last=now;const mobile=innerWidth<=760,vertical=view==='ribbon'&&mobile&&innerHeight>=innerWidth,cardWidth=mobile?177:innerWidth>=1600?265:228,perspective=vertical?1800:mobile?950:innerWidth>=1600?1600:1300;const fit=M.fitScale(view,stage.clientWidth,stage.clientHeight,mobile,cardWidth,perspective,vertical);document.body.setAttribute('data-ribbon-axis',vertical?'vertical':'horizontal');if(view==='ribbon')document.documentElement.style.setProperty('--ribbon-window',(M.ribbonWindowSpan(mobile,cardWidth,perspective,vertical)*fit+1)+'px');if(Math.abs(fit-lastFit)>.001){space.style.setProperty('--gallery-fit',String(fit));lastFit=fit;}
+ const dt=Math.min(40,now-(last||now));last=now;const mobile=innerWidth<=760,vertical=view==='ribbon'&&mobile&&innerHeight>=innerWidth,cardWidth=mobile?177:innerWidth>=1600?265:228,perspective=vertical?1800:mobile?950:innerWidth>=1600?1600:1300;const fit=M.fitScale(view,stage.clientWidth,stage.clientHeight,mobile,cardWidth,perspective,vertical);document.body.setAttribute('data-ribbon-axis',vertical?'vertical':'horizontal');syncPortraitRibbon(now,vertical);if(view==='ribbon')document.documentElement.style.setProperty('--ribbon-window',(M.ribbonWindowSpan(mobile,cardWidth,perspective,vertical)*fit+1)+'px');if(Math.abs(fit-lastFit)>.001){space.style.setProperty('--gallery-fit',String(fit));lastFit=fit;}
  if(!document.hidden&&!$('aboutDialog').open){
  const canRun=playing&&!drag&&now>pausedUntil&&!document.activeElement?.matches('input')&&!reduced.matches;
  const sequence=M.sequenceStep(view,sequenceElapsed,dt,canRun&&rows.length>0);sequenceElapsed=sequence.elapsed;if(sequence.changed)setView(sequence.view,true);document.documentElement.style.setProperty('--sequence-progress',String(sequenceElapsed/M.viewDuration));
