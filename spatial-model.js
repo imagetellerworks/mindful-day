@@ -34,7 +34,7 @@ function geometry(view,d,index,position,mobile,stageWidth=mobile?390:1000,cardWi
  const r=mobile?265:455;let x,y,z,rx=0,ry=0,rz=0,scale=1,opacity;
  if(view==='canvas'){x=0;y=0;z=-150;scale=.8;opacity=0;}
  else if(view==='ribbon'){
-  const degrees=24,step=degrees*Math.PI/180,angle=d*step,gap=24,radius=(cardWidth*(vertical?1.6:1)*1.4+gap)/(2*Math.tan(step/2));
+  const degrees=24,step=degrees*Math.PI/180,angle=d*step,gap=vertical?16:24,radius=(cardWidth*(vertical?1.6:1)*1.4+gap)/(2*Math.tan(step/2));
   x=vertical?0:Math.sin(angle)*radius;y=vertical?-Math.sin(angle)*radius:0;z=(Math.cos(angle)-1)*radius;rx=vertical?d*degrees:0;ry=vertical?0:d*degrees;scale=1.4;
   opacity=Math.max(0,Math.min(1,(3.5-Math.abs(d))/.35));
  }

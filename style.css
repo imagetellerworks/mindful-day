@@ -115,3 +115,7 @@ body[data-gallery-view="ribbon"] .art-card.is-buffer{pointer-events:none}
 
 /* A portrait phone turns the same five-card arc from top to bottom. */
 body[data-gallery-view="ribbon"][data-ribbon-axis="vertical"] .stage{perspective:1800px;clip-path:inset(calc((100% - var(--ribbon-window,100%))/2) 0)}
+@media(max-width:760px) and (orientation:portrait){
+ /* The fitted arc grows 15% together with its window, preserving all five cards. */
+ html:not(.portfolio-embed) body[data-gallery-view="ribbon"] .stage{left:calc(18% - 20vw);right:calc(-40% + 20vw);top:calc(6.3% + 1.8px);bottom:calc(6.3% + 1.8px)}
+}
