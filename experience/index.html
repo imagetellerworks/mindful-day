@@ -6,7 +6,7 @@ if(p.get('tour')!=='off'&&!p.has('study')&&!p.has('set')&&(p.get('tour')==='1'||
 .app-tour{position:fixed;inset:0;z-index:90;pointer-events:none}.app-tour[hidden]{display:none}.tour-highlight{position:fixed;box-sizing:border-box;border:1px solid rgba(255,255,255,.95);border-radius:16px;box-shadow:0 0 0 9999px rgba(15,15,24,.24);pointer-events:none}.tour-card{position:fixed;box-sizing:border-box;width:min(340px,calc(100vw - 28px));max-height:calc(100dvh - 28px);overflow:auto;padding:20px;border:1px solid rgba(35,32,45,.12);border-radius:18px;background:rgba(246,246,247,.70);color:#24212b;box-shadow:0 10px 40px rgba(20,18,28,.14);pointer-events:auto;font:400 13px/1.65 var(--f-body);text-align:left;text-shadow:none;-webkit-text-stroke:0}.tour-card header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px}.tour-progress{font-size:11px;opacity:.6}.tour-close{display:grid;place-items:center;width:44px;height:44px;border:0;background:none;color:inherit;cursor:pointer}.tour-card h2{margin:0 0 8px;font:500 17px/1.45 var(--f-body);word-break:keep-all}.tour-card p{margin:0;word-break:keep-all}.tour-card ul{list-style:none;padding:0;margin:14px 0 0}.tour-card li{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:12px}.tour-card li svg{width:22px;height:22px;flex:none}.tour-card .stop-icon{display:none}.tour-card nav{display:flex;align-items:center;gap:10px;margin-top:18px}.tour-card nav button{min-height:44px;padding:8px 10px;border:0;border-radius:22px;font:400 12px/1.4 var(--f-body);cursor:pointer;color:inherit;background:transparent}.tour-card nav button:disabled{opacity:.3;cursor:default}.tour-card nav #tourNext{margin-left:auto;background:#24212b;color:#fff;padding-inline:18px}.tour-card nav #tourSkip{font-size:11px;opacity:.7}.tour-card button:focus-visible{outline:2px solid #655c93;outline-offset:3px}.about-tour{margin:18px 0}.about-tour button{border:0;background:none;padding:6px 0;color:inherit;text-decoration:underline;text-underline-offset:4px;font:400 12px/1.5 var(--f-body);cursor:pointer}
 
 .welcome-pending .lab-badge,.welcome-pending .brand,.welcome-pending #experienceBrand,.welcome-pending #langBtn,.welcome-pending #appHome,.welcome-pending footer.site,.welcome-pending #menuToggle,.welcome-pending #mobilePosterFooter,.welcome-pending #orbFeelingTargets,.welcome-pending #canvasMoodChoice,.welcome-pending #newPaletteInvite,.welcome-pending #autoMoodActions,.welcome-pending #guide,.welcome-pending #menuGuide,.welcome-pending #shakeCoach{visibility:hidden!important;pointer-events:none!important}
-.app-welcome{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;border:0;padding:0;background:transparent;color:var(--welcome-ink,#24212b);text-align:center;overflow:auto}.app-welcome[open]{display:grid;place-items:center}.app-welcome::backdrop{background:var(--welcome-wash,rgba(230,230,230,.18));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}.welcome-copy{box-sizing:border-box;width:min(560px,100%);padding:40px 28px;display:flex;flex-direction:column;align-items:center}.welcome-copy h1{margin:0 0 32px;font:600 clamp(40px,8vw,68px)/1.15 Pretendard,Arial,sans-serif;letter-spacing:-.025em;animation:welcome-reveal .65s ease both}.welcome-lines{animation:welcome-reveal .65s .2s ease both}.welcome-lines p{margin:0;word-break:keep-all;text-wrap:balance;font:400 15px/1.8 var(--f-body)}.welcome-lines #welcomeDescription{margin-top:6px;font-size:13px;opacity:.78}.welcome-copy button{margin-top:34px;min-height:48px;border:1px solid var(--welcome-ink,#24212b);border-radius:28px;padding:12px 32px;background:var(--welcome-ink,#24212b);color:var(--welcome-bg,#e6e6e6);font:400 13px/1.5 var(--f-body);cursor:pointer;animation:welcome-reveal .65s .4s ease both}.welcome-copy button:disabled{opacity:.45;cursor:wait}.welcome-copy button:focus-visible{outline:2px solid currentColor;outline-offset:5px}@keyframes welcome-reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){.welcome-copy h1,.welcome-lines,.welcome-copy button{animation:none}}
+.app-welcome{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;border:0;padding:0;background:transparent;color:var(--welcome-ink,#24212b);text-align:center;overflow:auto}.app-welcome[open]{display:grid;place-items:center}.app-welcome::backdrop{background:var(--welcome-wash,rgba(230,230,230,.18));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}.welcome-copy{box-sizing:border-box;width:min(560px,100%);padding:40px 28px;display:flex;flex-direction:column;align-items:center}.welcome-copy h1{margin:0 0 32px;font:400 clamp(12px,2.4vw,20.4px)/.99 Georgia,"Times New Roman",serif;letter-spacing:-.055em;animation:welcome-reveal .65s ease both}.welcome-copy h1 em{font-weight:400}.welcome-lines{animation:welcome-reveal .65s .2s ease both}.welcome-lines p{margin:0;word-break:keep-all;text-wrap:balance;font:400 15px/1.8 var(--f-body)}.welcome-lines #welcomeDescription{margin-top:6px;font-size:13px;opacity:.78}.welcome-copy button{margin-top:34px;min-height:48px;border:1px solid var(--welcome-ink,#24212b);border-radius:28px;padding:12px 32px;background:var(--welcome-ink,#24212b);color:var(--welcome-bg,#e6e6e6);font:400 13px/1.5 var(--f-body);cursor:pointer;animation:welcome-reveal .65s .4s ease both}.welcome-copy button:disabled{opacity:.45;cursor:wait}.welcome-copy button:focus-visible{outline:2px solid currentColor;outline-offset:5px}@keyframes welcome-reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){.welcome-copy h1,.welcome-lines,.welcome-copy button{animation:none}}
 .tour-touch-cue{position:fixed;width:56px;height:56px;box-sizing:border-box;border-radius:50%;border:1px solid rgba(255,255,255,.75);background:rgba(82,78,100,.28);box-shadow:inset 0 0 0 1px rgba(30,28,40,.12),0 0 22px rgba(255,255,255,.18);pointer-events:none;animation:tour-touch-breathe 1.6s ease-in-out infinite}.tour-touch-cue::after{content:'';position:absolute;inset:18px;border-radius:50%;background:rgba(255,255,255,.4)}.tour-touch-count{margin-top:8px!important;font-size:11px!important;opacity:.7}@keyframes tour-touch-breathe{0%,100%{transform:translate(-50%,-50%) scale(.72);opacity:.6}50%{transform:translate(-50%,-50%) scale(1.12);opacity:1}}@media(prefers-reduced-motion:reduce){.tour-touch-cue{animation:none;transform:translate(-50%,-50%);opacity:.7}}
 
 @font-face{font-family:MindfulBrand;src:url('fonts/Pretendard-Regular.woff2') format('woff2');font-weight:100 900;font-display:swap}
@@ -15,6 +15,10 @@ if(p.get('tour')!=='off'&&!p.has('study')&&!p.has('set')&&(p.get('tour')==='1'||
 @media(max-width:760px){.experience-brand{left:24px;top:24px}.experience-wordmark{font-size:15px}.experience-tagline{font-size:11px;margin-top:8px}}
 
 .tour-touch-cue{pointer-events:auto;cursor:pointer;padding:0;z-index:2}.tour-touch-cue:focus-visible{outline:2px solid #fff;outline-offset:6px}.tour-word-target:focus-visible{outline:none;border-color:#fff}.tour-blocker{position:fixed;background:transparent;pointer-events:auto}.tour-word-target{position:fixed;pointer-events:auto;border:1px solid rgba(255,255,255,.85);border-radius:14px;background:transparent;box-shadow:0 0 0 9999px rgba(15,15,24,.66);cursor:pointer;animation:tour-word-breathe 1.6s ease-in-out infinite}.tour-word-instruction{position:fixed;margin:0;width:min(320px,calc(100vw - 32px));color:#fff;font:400 15px/1.65 var(--f-body);text-align:center;white-space:pre-line;pointer-events:none}.tour-minimal-close{position:fixed;top:90px;right:16px;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--mobile-ink,var(--ink));font:300 28px var(--f-body);pointer-events:auto;cursor:pointer}#appTour[data-step="4"] .tour-minimal-close{color:#fff}@keyframes tour-word-breathe{0%,100%{border-color:rgba(255,255,255,.3)}50%{border-color:#fff}}@media(prefers-reduced-motion:reduce){.tour-word-target{animation:none;border-color:#fff}}
+
+#appTour[data-step="1"] .tour-card{width:max-content;max-width:min(310px,calc(100vw - 28px));padding:14px 16px}#appTour[data-step="1"] #tourTitle{display:none}#appTour[data-step="1"] .tour-card header{margin-bottom:6px}#appTour[data-step="1"] .tour-close{width:32px;height:32px}#appTour[data-step="1"] .tour-card nav{margin-top:10px}.tour-touch-instruction{position:fixed;width:min(290px,calc(100vw - 32px));margin:0;color:var(--mobile-ink,var(--ink));font:400 12px/1.55 var(--f-body);text-align:center;pointer-events:none}.tour-shake-enable{position:fixed;transform:translateX(-50%);padding:6px 12px;border:0;border-bottom:1px solid currentColor;background:transparent;color:var(--mobile-ink,var(--ink));font:400 12px/1.5 var(--f-body);pointer-events:auto;cursor:pointer}
+
+.tour-shake-cue{position:fixed;width:40px;height:64px;transform:translate(-50%,-50%);color:var(--mobile-ink,var(--ink));animation:tour-shake-demo 1.2s ease-in-out infinite}.tour-shake-cue svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.2}.tour-shake-next{position:fixed;transform:translateX(-50%);min-height:44px;padding:8px 14px;border:0;background:transparent;color:var(--mobile-ink,var(--ink));font:400 12px var(--f-body);text-decoration:underline;text-underline-offset:4px;pointer-events:auto;cursor:pointer}@keyframes tour-shake-demo{0%,100%{transform:translate(-50%,-50%) rotate(0)}25%{transform:translate(calc(-50% - 7px),-50%) rotate(-12deg)}75%{transform:translate(calc(-50% + 7px),-50%) rotate(12deg)}}@media(prefers-reduced-motion:reduce){.tour-shake-cue{animation:none}}
 </style><script>if(new URLSearchParams(location.search).get('showroom')==='1'){const s=document.createElement('style');s.textContent="html,body{margin:0!important;overflow:hidden!important;background:#f3f0f3!important}body *{visibility:hidden!important}#poster{visibility:visible!important;position:fixed!important;inset:0!important;display:block!important;width:100vw!important;height:100dvh!important;max-width:none!important;aspect-ratio:auto!important;opacity:1!important;border:0!important;border-radius:0!important;box-shadow:none!important;z-index:99999!important}";document.head.append(s)}</script></head><body>
 <title>Mindful Day</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -511,10 +515,11 @@ body.about-open{overflow:hidden}
 
 
 <dialog class="app-welcome" id="appWelcome" aria-labelledby="welcomeTitle" aria-describedby="welcomeQuestion welcomeDescription">
-  <div class="welcome-copy"><h1 id="welcomeTitle">MINDFUL DAY</h1><div class="welcome-lines"><p id="welcomeQuestion">당신의 오늘 하루는 어떤 색인가요?</p><p id="welcomeDescription">오늘의 감정과 닮은 컬러를 찾아보세요.</p></div><button type="button" id="welcomeStart">시작하기</button></div>
+  <div class="welcome-copy"><h1 id="welcomeTitle"><em>Mindful</em><br>Day</h1><div class="welcome-lines"><p id="welcomeQuestion">당신의 오늘 하루는 어떤 색인가요?</p><p id="welcomeDescription">오늘의 감정과 닮은 컬러를 찾아보세요.</p></div><button type="button" id="welcomeStart">시작하기</button></div>
 </dialog>
 <aside class="app-tour" id="appTour" hidden>
   <div class="tour-highlight" id="tourHighlight" aria-hidden="true"></div><button type="button" class="tour-touch-cue" id="tourTouchCue" aria-label="터치해 색 바꾸기" hidden></button>
+  <div class="tour-shake-cue" id="tourShakeCue" aria-hidden="true" hidden><svg viewBox="0 0 40 64"><rect x="6" y="2" width="28" height="60" rx="6"/><path d="M16 8h8M17 55h6"/></svg></div><button type="button" class="tour-shake-next" id="tourShakeNext" hidden>다음</button><p class="tour-touch-instruction" id="tourTouchInstruction" role="status" hidden></p><button type="button" class="tour-shake-enable" id="tourShakeEnable" hidden>흔들기 켜기</button>
   <div class="tour-blocker" id="tourBlockTop" hidden></div><div class="tour-blocker" id="tourBlockBottom" hidden></div><div class="tour-blocker" id="tourBlockLeft" hidden></div><div class="tour-blocker" id="tourBlockRight" hidden></div>
   <button type="button" class="tour-word-target" id="tourWordTarget" aria-label="감정 다시 고르기" hidden></button><p class="tour-word-instruction" id="tourWordInstruction" role="status" hidden></p><button type="button" class="tour-minimal-close" id="tourMinimalClose" aria-label="안내 건너뛰기" hidden>×</button>
   <section class="tour-card" id="tourCard" role="dialog" aria-modal="false" aria-labelledby="tourTitle" aria-describedby="tourBody" aria-live="polite">
@@ -1948,7 +1953,7 @@ async function enableShake(){
   try{
     const Motion=window.DeviceMotionEvent;
     const permission=typeof Motion.requestPermission==='function'?await Motion.requestPermission():'granted';
-    if(permission==='granted'){connectShake();showShakeCoach();}
+    if(permission==='granted'){connectShake();if(typeof appTour!=='undefined'&&appTour.active&&appTour.step===0)renderAppTour();else showShakeCoach();}
     else{shake.denied=true;updateShakeCoach();}
   }catch(err){shake.denied=true;updateShakeCoach();}
   finally{shake.busy=false;updateShakeCoach();}
@@ -2022,7 +2027,7 @@ function randomShakeMood(force=12,vector=[12,0,0]){
   if(!chosen.length)toggle(0);
   shake.activeUntil=performance.now()+1700;kickShakeOrbs(vector,force);
   cycleGround();
-  const choices=MOODS.map((_,i)=>i).filter(i=>i!==moodIdx);applyMood(pick(choices));dismissShakeCoach();
+  const choices=MOODS.map((_,i)=>i).filter(i=>i!==moodIdx);applyMood(pick(choices));dismissShakeCoach();if(typeof appTour!=='undefined'&&appTour.active&&appTour.step===0&&appTour.phase==='shake')advanceAppTour(1);
 }
 $('shakeEnable').addEventListener('click',enableShake);
 $('shakeClose').addEventListener('click',dismissShakeCoach);
@@ -2320,13 +2325,13 @@ $('welcomeStart').addEventListener('click',beginFromWelcome);
 $('appWelcome').addEventListener('cancel',e=>{e.preventDefault();beginFromWelcome();});
 
 const APP_TOUR_KEY='mindful-day-ui-tour-v1';
-const appTour={active:false,dismissed:false,step:0,wordOpened:false,originalMenuOpen:false,focus:null,nextAt:0,touchCount:0};
+const appTour={active:false,dismissed:false,step:0,phase:'touch',wordOpened:false,originalMenuOpen:false,focus:null,nextAt:0,touchCount:0};
 function appTourSeen(){try{return !!localStorage.getItem(APP_TOUR_KEY);}catch(error){return false;}}
 function appTourCopy(){return [
   {title:L('터치로 색을 만나세요','Touch to discover colors'),body:L('반투명 원 주변을 세 번 터치해보세요. 색이 달라지고 컬러가 손끝을 따라와요.','Tap around the translucent circle three times. Discover changing colors as the color follows your touch.')},
-  {title:L('마음에 든 순간을 저장하세요','Keep a moment you like'),body:L('아래 세 버튼으로 저장할 수 있어요.','Use these three buttons to save your artwork.'),items:[['quickCapture',L('이미지 캡처 · 지금의 그림 저장','Capture · save the current image')],['quickRecord',L('영상 녹화 · 다시 누르면 녹화 종료','Record · press again to stop')],['quickCopyCode',L('코드 복사 · 움직이는 그림 가져가기','Copy code · keep your moving artwork')]]},
-  {title:L('오른쪽 아래 메뉴를 열어보세요','Explore the menu at the bottom right'),body:L('더 다양한 컬러와 감정을 탐색해보세요.','Explore more colors and feelings.')},
+  {title:'',body:L('더 다양한 컬러와 감정을 탐색해보세요.','Explore more colors and feelings.')},
   {title:L('원하는 방식으로 더 탐색해요','Explore your way'),body:L('다섯 분위기 중 하나를 고르고, 아래 컬러 목록을 좌우로 드래그해보세요. 싱글은 컬러 하나, 멀티는 최대 세 개를 조합해요. 배경과 소리도 여기서 바꿔요.','Choose one of five moods, then drag the color row left or right. Single uses one color; Multi combines up to three. Background and sound are here, too.')},
+  {title:L('마음에 든 순간을 저장하세요','Keep a moment you like'),body:L('아래 세 버튼으로 저장할 수 있어요.','Use these three buttons to save your artwork.'),items:[['quickCapture',L('이미지 캡처 · 지금의 그림 저장','Capture · save the current image')],['quickRecord',L('영상 녹화 · 다시 누르면 녹화 종료','Record · press again to stop')],['quickCopyCode',L('코드 복사 · 움직이는 그림 가져가기','Copy code · keep your moving artwork')]]},
   {title:L('감정을 다시 정의해보세요','Redefine this feeling'),body:L('감정 단어를 터치해\n이 감정을 다시 정의할 수 있어요.','Tap the feeling word\nto choose how these colors feel to you.')}
 ];}
 function appTourPlacement(rect,width,height,W,H){
@@ -2337,10 +2342,10 @@ function appTourPlacement(rect,width,height,W,H){
 }
 function appTourTarget(){
   const rectOf=e=>e?.getBoundingClientRect(),p=rectOf(pc),rects=[];
-  if(appTour.step===0){const x=Math.max(40,Math.min(innerWidth-40,p.left+p.width*.72)),y=Math.max(100,Math.min(innerHeight*.43,p.top+p.height*.27));return {left:x-28,right:x+28,top:y-28,bottom:y+28};}
+  if(appTour.step===0){const x=appTour.phase==='shake'?innerWidth/2:Math.max(40,Math.min(innerWidth-40,p.left+p.width*.72)),y=appTour.phase==='shake'?Math.max(130,innerHeight*.19):Math.max(100,Math.min(innerHeight*.43,p.top+p.height*.27));return {left:x-28,right:x+28,top:y-28,bottom:y+28};}
   if(appTour.step===4){for(const b of $('orbFeelingTargets').querySelectorAll('button')){const r=rectOf(b);if(r.width&&r.height&&r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight)rects.push(r);}if(!rects.length)return {left:p.left+p.width*.1,right:p.right-p.width*.1,top:p.top+p.height*.43,bottom:p.top+p.height*.57};}
-  else if(appTour.step===1)rects.push(...['quickCapture','quickRecord','quickCopyCode'].map(id=>rectOf($(id))));
-  else if(appTour.step===2)rects.push(rectOf($('menuToggle')));
+  else if(appTour.step===3)rects.push(...['quickCapture','quickRecord','quickCopyCode'].map(id=>rectOf($(id))));
+  else if(appTour.step===1)rects.push(rectOf($('menuToggle')));
   else rects.push(rectOf($('labColorHeader')),rectOf($('reviewedCatalogStrip')));
   const valid=rects.filter(r=>r&&r.width&&r.height);if(!valid.length)return {left:20,right:innerWidth-20,top:innerHeight*.35,bottom:innerHeight*.55};
   return {left:Math.min(...valid.map(r=>r.left)),right:Math.max(...valid.map(r=>r.right)),top:Math.min(...valid.map(r=>r.top)),bottom:Math.max(...valid.map(r=>r.bottom))};
@@ -2348,17 +2353,19 @@ function appTourTarget(){
 function renderAppTour(){
   if(!appTour.active)return;const copy=appTourCopy()[appTour.step];
   $('tourCard').hidden=appTour.step===0||appTour.step===4;$('appTour').setAttribute('data-step',String(appTour.step));$('tourMinimalClose').hidden=appTour.step!==0&&appTour.step!==4;$('tourWordInstruction').textContent=copy.body;
+  const motion=typeof mobileMotionAvailable==='function'&&mobileMotionAvailable(),shaking=appTour.step===0&&appTour.phase==='shake';$('tourTouchInstruction').hidden=appTour.step!==0;$('tourTouchInstruction').textContent=shaking?L('휴대폰을 가볍게 흔들어 새로운 컬러를 만나보세요.','Gently shake your phone to discover new colors.'):L('터치해 색을 바꿔보세요.','Tap to change the colors.');$('tourShakeCue').hidden=!shaking;$('tourShakeNext').hidden=!shaking;$('tourShakeNext').textContent=L('다음','Next');$('tourShakeEnable').hidden=!!(!shaking||!motion||shake.enabled||shake.denied);$('tourShakeEnable').textContent=L(shake.busy?'연결 중…':'흔들기 켜기',shake.busy?'Connecting…':'Enable shake');$('tourShakeEnable').disabled=!!shake.busy;
+
   $('tourTouchCount').hidden=true;$('tourTouchCount').textContent=appTour.touchCount+L(' / 3 터치',' / 3 touches');
   $('tourProgress').textContent=(appTour.step+1)+' / 5';$('tourTitle').textContent=copy.title;$('tourBody').textContent=copy.body;
   const items=$('tourItems');items.replaceChildren();for(const [id,text] of copy.items||[]){const row=document.createElement('li'),icon=$(id).querySelector('svg')?.cloneNode(true),label=document.createElement('span');if(icon){icon.setAttribute('aria-hidden','true');row.append(icon);}label.textContent=text;row.append(label);items.append(row);}items.hidden=!copy.items;
-  $('tourPrevious').textContent=L('이전','Back');$('tourPrevious').disabled=appTour.step===0;$('tourSkip').textContent=L('건너뛰기','Skip');$('tourNext').textContent=appTour.step===4?L('시작하기','Start creating'):appTour.step===2?L('메뉴 보기','Show menu'):L('다음','Next');$('tourClose').setAttribute('aria-label',L('사용 안내 닫기','Close guide'));
+  $('tourPrevious').textContent=L('이전','Back');$('tourPrevious').disabled=appTour.step===0;$('tourSkip').textContent=L('건너뛰기','Skip');$('tourNext').textContent=appTour.step===4?L('시작하기','Start creating'):appTour.step===1?L('메뉴 보기','Show menu'):L('다음','Next');$('tourClose').setAttribute('aria-label',L('사용 안내 닫기','Close guide'));
   appTour.nextAt=0;updateAppTour(performance.now(),true);
-  if(appTour.step===3&&typeof startCatalogPeek==='function')startCatalogPeek(true);
+  if(appTour.step===2&&typeof startCatalogPeek==='function')startCatalogPeek(true);
 }
 function startAppTour(){
   if(isAppWelcomeOpen())return false;
   if(S.study||S.studyLoading||S.catalogLoading||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return false;
-  if(appTour.active)return true;appTour.active=true;appTour.step=0;appTour.touchCount=0;appTour.wordOpened=false;appTour.originalMenuOpen=menuOpen;appTour.focus=document.activeElement?.closest?.('#aboutDialog')?$('aboutOpen'):document.activeElement;
+  if(appTour.active)return true;appTour.active=true;appTour.step=0;appTour.phase='touch';appTour.touchCount=0;appTour.wordOpened=false;appTour.originalMenuOpen=menuOpen;appTour.focus=document.activeElement?.closest?.('#aboutDialog')?$('aboutOpen'):document.activeElement;
   hideGuide();dismissMenuGuide();clearTimeout(shake.offerTimer);$('shakeCoach').hidden=true;
   setMenuOpen(false);$('appTour').hidden=false;renderAppTour();$('tourTouchCue').focus({preventScroll:true});return true;
 }
@@ -2369,10 +2376,10 @@ function endAppTour(completed=false){
 }
 function advanceAppTour(delta){
   if(!appTour.active)return;if(appTour.step+delta>4){endAppTour(true);return;}
-  appTour.step=Math.max(0,appTour.step+delta);if(appTour.step===0)appTour.touchCount=0;appTour.wordOpened=false;setMenuOpen(appTour.step===3);renderAppTour();$(appTour.step===0?'tourTouchCue':appTour.step===4?'tourWordTarget':'tourNext').focus({preventScroll:true});
+  appTour.step=Math.max(0,appTour.step+delta);if(appTour.step===0){appTour.touchCount=0;appTour.phase='touch';}appTour.wordOpened=false;setMenuOpen(appTour.step===2);renderAppTour();$(appTour.step===0?'tourTouchCue':appTour.step===4?'tourWordTarget':'tourNext').focus({preventScroll:true});
 }
 function noteAppTourTouch(){
-  if(!appTour.active||appTour.step!==0||$('appTour').hidden)return;
+  if(!appTour.active||appTour.step!==0||appTour.phase!=='touch'||$('appTour').hidden)return;
   appTour.touchCount=Math.min(3,appTour.touchCount+1);renderAppTour();
 }
 function updateAppTour(now,force=false){
@@ -2381,9 +2388,10 @@ function updateAppTour(now,force=false){
   if(appTour.step===4&&appTour.wordOpened&&!S.reviewing){endAppTour(true);return;}
   const suspended=S.reviewing||imageBusy||['prep','rec','making'].includes(vstate)||aboutDialog.open||$('catalogCategoryDialog').open||!sheet.hidden||!imageChoices.hidden;
   $('appTour').hidden=suspended;if(suspended)return;
-  if(appTour.step===0&&appTour.touchCount>=3&&(typeof tiles==='undefined'||chosen.every(i=>tiles[i].cur===tiles[i].to))){advanceAppTour(1);return;}
+  if(appTour.step===0&&appTour.phase==='touch'&&appTour.touchCount>=3&&(typeof tiles==='undefined'||chosen.every(i=>tiles[i].cur===tiles[i].to))){appTour.phase='shake';if(typeof mobileMotionAvailable==='function'&&mobileMotionAvailable()&&typeof window.DeviceMotionEvent.requestPermission!=='function')connectShake();renderAppTour();$('tourShakeNext').focus({preventScroll:true});return;}
   const rect=appTourTarget(),W=innerWidth,H=innerHeight,ring=$('tourHighlight'),card=$('tourCard'),cue=$('tourTouchCue');
-  ring.hidden=appTour.step===0||appTour.step===4;cue.setAttribute('aria-label',L('터치해 색 바꾸기','Tap to change the color')+' ('+appTour.touchCount+'/3)');cue.hidden=appTour.step!==0||appTour.touchCount>=3;if(appTour.step===0)Object.assign(cue.style,{left:((rect.left+rect.right)/2)+'px',top:((rect.top+rect.bottom)/2)+'px'});
+  ring.hidden=appTour.step===0||appTour.step===4;cue.setAttribute('aria-label',L('터치해 색 바꾸기','Tap to change the color')+' ('+appTour.touchCount+'/3)');cue.hidden=appTour.step!==0||appTour.phase!=='touch'||appTour.touchCount>=3;if(appTour.step===0)Object.assign(cue.style,{left:((rect.left+rect.right)/2)+'px',top:((rect.top+rect.bottom)/2)+'px'});
+  if(appTour.step===0){const cx=(rect.left+rect.right)/2,tw=Math.min(290,W-32),text=$('tourTouchInstruction');Object.assign(text.style,{left:Math.max(16,Math.min(W-tw-16,cx-tw/2))+'px',top:(rect.bottom+22)+'px'});Object.assign($('tourShakeEnable').style,{left:cx+'px',top:(rect.bottom+30+text.getBoundingClientRect().height)+'px'});Object.assign($('tourShakeCue').style,{left:cx+'px',top:((rect.top+rect.bottom)/2)+'px'});Object.assign($('tourShakeNext').style,{left:cx+'px',top:(rect.bottom+40+text.getBoundingClientRect().height+($('tourShakeEnable').hidden?0:38))+'px'});}
   const left=Math.max(4,rect.left-7),top=Math.max(4,rect.top-7),right=Math.min(W-4,rect.right+7),bottom=Math.min(H-4,rect.bottom+7);
   Object.assign(ring.style,{left:left+'px',top:top+'px',width:Math.max(0,right-left)+'px',height:Math.max(0,bottom-top)+'px'});
   const final=appTour.step===4,blocks=['tourBlockTop','tourBlockBottom','tourBlockLeft','tourBlockRight'];for(const id of blocks)$(id).hidden=!final;$('tourWordTarget').hidden=!final;$('tourWordInstruction').hidden=!final;
@@ -2399,11 +2407,11 @@ function offerAppTour(){
   const param=new URLSearchParams(location.search).get('tour');if(appTour.dismissed||param==='off'||param!=='1'&&appTourSeen()||document.hidden||chosen.length!==1)return;
   startAppTour();
 }
-$('tourTouchCue').addEventListener('animationiteration',()=>{if(!appTour.active||appTour.step!==0||$('appTour').hidden||document.hidden||appTour.touchCount>=3)return;const r=$('tourTouchCue').getBoundingClientRect();touchPoster({clientX:r.left+r.width/2,clientY:r.top+r.height/2,isPrimary:true,pointerType:'tutorial',button:0,target:$('tourTouchCue'),tutorial:true});});
+$('tourTouchCue').addEventListener('animationiteration',()=>{if(!appTour.active||appTour.step!==0||appTour.phase!=='touch'||$('appTour').hidden||document.hidden||appTour.touchCount>=3)return;const r=$('tourTouchCue').getBoundingClientRect();touchPoster({clientX:r.left+r.width/2,clientY:r.top+r.height/2,isPrimary:true,pointerType:'tutorial',button:0,target:$('tourTouchCue'),tutorial:true});});
 $('tourTouchCue').addEventListener('pointerdown',e=>{e.preventDefault();touchPoster(e);});
 $('tourTouchCue').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();const r=e.currentTarget.getBoundingClientRect();touchPoster({clientX:r.left+r.width/2,clientY:r.top+r.height/2,isPrimary:true,pointerType:'keyboard',button:0,target:e.currentTarget});}});
 $('tourWordTarget').addEventListener('click',()=>{const buttons=[...$('orbFeelingTargets').querySelectorAll('button')],button=buttons.find(b=>{const r=b.getBoundingClientRect();return r.width&&r.height&&r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight;});if(button)button.click();});
-$('tourMinimalClose').addEventListener('click',()=>endAppTour());
+$('tourShakeNext').addEventListener('click',()=>advanceAppTour(1));$('tourMinimalClose').addEventListener('click',()=>endAppTour());$('tourShakeEnable').addEventListener('click',enableShake);
 addEventListener('keydown',e=>{if(appTour.active&&appTour.step===4&&!$('appTour').hidden&&e.key==='Tab'){e.preventDefault();$(document.activeElement===$('tourWordTarget')?'tourMinimalClose':'tourWordTarget').focus({preventScroll:true});}},true);
 $('tourNext').addEventListener('click',()=>advanceAppTour(1));$('tourPrevious').addEventListener('click',()=>advanceAppTour(-1));$('tourSkip').addEventListener('click',()=>endAppTour());$('tourClose').addEventListener('click',()=>endAppTour());
 $('replayAppTour').addEventListener('click',()=>{aboutDialog.close();openAppWelcome();});
