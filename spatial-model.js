@@ -15,8 +15,16 @@ function dragOffset(view,dx,dy,mobile,stageWidth){
  if(view==='wall'){const rowHeight=stageWidth/8.65*1.48;return -(Math.abs(dy)>=Math.abs(dx)?dy:dx)/rowHeight*8;}
  return 0;
 }
-function fitScale(view,width,height,mobile){
- if(view==='ribbon')return .85*fitScale('helix',width,height,mobile);
+const ribbonSpans=new Map();
+function ribbonSpan(mobile,cardWidth,perspective){
+ const key=[mobile,cardWidth,perspective].join(':');if(ribbonSpans.has(key))return ribbonSpans.get(key);
+ const edge=mobile?1.5:2.5;let extent=0;
+ for(let i=0;i<=40;i++){const d=edge*i/40,g=geometry('ribbon',d,d,0,mobile,390,cardWidth),a=g.ry*Math.PI/180;
+  for(const sign of [-1,1]){const local=sign*cardWidth*g.scale/2;extent=Math.max(extent,Math.abs((g.x+local*Math.cos(a))*perspective/(perspective-g.z+local*Math.sin(a))));}}
+ const span=extent*2;ribbonSpans.set(key,span);return span;
+}
+function fitScale(view,width,height,mobile,cardWidth=mobile?177:228,perspective=mobile?950:1300){
+ if(view==='ribbon')return Math.min(.85*fitScale('helix',width,height,mobile),(width-(mobile?24:32))/ribbonSpan(mobile,cardWidth,perspective));
  if(!mobile||view==='canvas')return 1;
  if(view==='helix')return Math.max(.25,Math.min(1,(width-20)/(265*.66*1.6+177*.8),(height-24)/(6*60+177*1.2)));
  const pitch=width/8.65;return Math.max(.25,Math.min(1,(height-24)/(8*pitch*1.48+pitch*1.45)));
@@ -25,9 +33,9 @@ function geometry(view,d,index,position,mobile,stageWidth=mobile?390:1000,cardWi
  const r=mobile?265:455;let x,y,z,rx=0,ry=0,rz=0,scale=1,opacity;
  if(view==='canvas'){x=0;y=0;z=-150;scale=.8;opacity=0;}
  else if(view==='ribbon'){
-  const step=34*Math.PI/180,angle=d*step,gap=mobile?18:24,radius=(cardWidth*1.4+gap)/(2*Math.tan(step/2));
-  x=Math.sin(angle)*radius;y=0;z=(Math.cos(angle)-1)*radius;ry=d*34;scale=1.4;
-  opacity=Math.max(0,Math.min(1,(2-Math.abs(d))/.35));
+  const degrees=mobile?34:24,step=degrees*Math.PI/180,angle=d*step,gap=mobile?18:24,radius=(cardWidth*1.4+gap)/(2*Math.tan(step/2));
+  x=Math.sin(angle)*radius;y=0;z=(Math.cos(angle)-1)*radius;ry=d*degrees;scale=1.4;
+  opacity=Math.max(0,Math.min(1,((mobile?1.5:2.5)-Math.abs(d))/.3));
  }
  else if(view==='helix'){x=Math.sin(d*.78)*r*.66;y=d*(mobile?60:83);z=(Math.cos(d*.78)-1)*r*.75;ry=-Math.sin(d*.45)*30;rx=-9;rz=d*4;scale=.85;opacity=Math.min(1,Math.max(0,(5-Math.abs(d))/1.5));}
  else{const columns=8,pitch=stageWidth/8.65;x=(mod(index,columns)-(columns-1)/2)*pitch;y=(Math.floor(index/columns)-position/columns)*pitch*1.48;z=-35;ry=-4;rx=7;rz=-4;scale=pitch*.88/cardWidth;opacity=1;}
