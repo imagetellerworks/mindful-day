@@ -1,9 +1,26 @@
 {
-  "sourceCommit": "cd9015f61a517a21b55d48c8a68e130b6c6c291c",
+  "sourceCommit": "574e60ca466445981d714f37d56bf3a80bcdc3f5",
+  "approvedPreviewCommit": "2318c4745861a325d4de08452ac64a8647c6173c",
   "files": [
     {
       "path": "index.html",
-      "sha256": "6686479ab977db6b682026f3329ef753acd5a9a295106e7dbda7254cefb49c2e"
+      "sha256": "b24458d061f86fcf5d438293c711a921b3fdd8195031add075e589739cf146eb"
+    },
+    {
+      "path": "single-orb-model.js",
+      "sha256": "8a1b1e00f52b4d3f3d0705470488ed58ac0e6c30497b53b89ca7d754689d240f"
+    },
+    {
+      "path": "palette-guide-data.js",
+      "sha256": "4e88c11c2f17c2dd75116fc12cf852c4c244211651d6fe147405522b64f2a102"
+    },
+    {
+      "path": "semantic-mixing-model.js",
+      "sha256": "218e73a6f5d5bccf58eb5ff36cadf5c4c676240afe82405e3d6f9a49b07978bc"
+    },
+    {
+      "path": "color-name-context.js",
+      "sha256": "832ef39a2ad027210f04244de0c5acb5226618f9be03ac3e9d7c47e1575d4c2c"
     },
     {
       "path": "color-feedback-model.js",
@@ -14,32 +31,12 @@
       "sha256": "9a3ed8242f1f867af4eacb7399ae91b41384a910b5942a5dd913534984bfcc22"
     },
     {
-      "path": "color-name-context.js",
-      "sha256": "832ef39a2ad027210f04244de0c5acb5226618f9be03ac3e9d7c47e1575d4c2c"
-    },
-    {
       "path": "reviewed-palettes.js",
       "sha256": "c65eb4b1f10c1c7bb1091935dd9b9cccbd664bed3834ff5d9c824a7b12e7c1c4"
     },
     {
       "path": "reviewed-palette-matcher.js",
       "sha256": "6ecbf0a4db45552c8a357959a6b6c7f8bfd21e9bbb81e51b5188c5225d00e3e9"
-    },
-    {
-      "path": "semantic-mixing-model.js",
-      "sha256": "218e73a6f5d5bccf58eb5ff36cadf5c4c676240afe82405e3d6f9a49b07978bc"
-    },
-    {
-      "path": "palette-guide-data.js",
-      "sha256": "4e88c11c2f17c2dd75116fc12cf852c4c244211651d6fe147405522b64f2a102"
-    },
-    {
-      "path": "single-orb-model.js",
-      "sha256": "8a1b1e00f52b4d3f3d0705470488ed58ac0e6c30497b53b89ca7d754689d240f"
-    },
-    {
-      "path": "fonts/Pretendard-Regular.woff2",
-      "sha256": "fad853f7f47c6c8b103171e7193fa095708cdcd70850a71d93aa5379e8a61d63"
     },
     {
       "path": "fonts/Pretendard-Black.woff2",
@@ -52,6 +49,10 @@
     {
       "path": "fonts/Pretendard-Medium.woff2",
       "sha256": "d03481330eeba0659ab5b87f25ceb504a35de377dd90a0d0aba2982eb2d05e2c"
+    },
+    {
+      "path": "fonts/Pretendard-Regular.woff2",
+      "sha256": "fad853f7f47c6c8b103171e7193fa095708cdcd70850a71d93aa5379e8a61d63"
     }
   ]
 }
