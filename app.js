@@ -16,6 +16,13 @@ let all=[],rows=[],position=0,target=0,view=M.views.includes(location.hash.slice
 const LANGUAGE_KEY='mindful-day-language-v2';let lang='ko';try{const saved=localStorage.getItem(LANGUAGE_KEY);if(saved==='en'||saved==='ko')lang=saved;}catch{}
 const experienceBase=(location.hostname==='imagetellerworks.github.io'||((location.hostname==='127.0.0.1'||location.hostname==='localhost')&&location.pathname.startsWith('/mindful-day/')))?new URL('experience/',location.href).href:'https://imagetellerworks.github.io/mindful-day/experience/';
 const opening=['fresh','ethereal','romantic','original','bold','dreamy','progressive','magical','sensual','harmonious','high voltage','heavenly','forbidden','unique','cosmic majesty','playful','crisp','ravishing','fiery','serene','otherworldly','kinetic','enraptured','clear'];
+function layoutExperienceLink(){
+ if(new URLSearchParams(location.search).get('cards')==='1')return;
+ const link=$('experienceLink'),intro=document.querySelector('.intro');
+ if(innerWidth>760){if(link.parentElement!==intro)intro.append(link);}
+ else if(link.parentElement!==document.querySelector('main'))document.querySelector('main').insertBefore(link,document.querySelector('.collection-tools'));
+}
+addEventListener('resize',layoutExperienceLink);
 function applyLanguage(){
  document.title='Mindful Day';document.documentElement.lang=lang;document.body.classList.toggle('lang-en',lang==='en');const ko=lang==='ko';
  $('heroEyebrow').textContent='A COLLECTION OF FEELINGS';$('heroTitle').innerHTML='<em>Mindful</em> <br class="project-title-break">Day';
@@ -102,5 +109,5 @@ stage.addEventListener('pointerleave',()=>{if(!drag)target=Math.round(target);})
 document.querySelectorAll('[data-about-choice]').forEach(button=>button.addEventListener('click',()=>{const language=button.dataset.aboutChoice;document.querySelectorAll('[data-about-lang]').forEach(section=>section.hidden=section.dataset.aboutLang!==language);document.querySelectorAll('[data-about-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.aboutChoice===language)));}));
 $('aboutBtn').addEventListener('click',()=>{$('aboutDialog').showModal();});$('closeAbout').addEventListener('click',()=>{$('aboutDialog').close();});$('aboutDialog').addEventListener('click',e=>{if(e.target===$('aboutDialog')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});$('aboutDialog').addEventListener('close',pauseForInput);
 reduced.addEventListener('change',()=>{if(reduced.matches){playing=false;updatePlaying();}});document.addEventListener('visibilitychange',()=>{last=performance.now();lastAuto=last;});
-applyLanguage();setView(view,true);fetch('assets/palettes.json').then(r=>{if(!r.ok)throw Error('palette load failed');return r.json();}).then(data=>{const priority=new Map(opening.map((key,i)=>[key,i]));all=data.sort((a,b)=>(priority.get(a.id)??999)-(priority.get(b.id)??999)||a.en.localeCompare(b.en));filter(false);lastAuto=performance.now();requestAnimationFrame(frame);}).catch(()=>{$('empty').hidden=false;$('empty').textContent='컬러 컬렉션을 불러오지 못했어요. 새로고침해주세요.';});
+layoutExperienceLink();applyLanguage();setView(view,true);fetch('assets/palettes.json').then(r=>{if(!r.ok)throw Error('palette load failed');return r.json();}).then(data=>{const priority=new Map(opening.map((key,i)=>[key,i]));all=data.sort((a,b)=>(priority.get(a.id)??999)-(priority.get(b.id)??999)||a.en.localeCompare(b.en));filter(false);lastAuto=performance.now();requestAnimationFrame(frame);}).catch(()=>{$('empty').hidden=false;$('empty').textContent='컬러 컬렉션을 불러오지 못했어요. 새로고침해주세요.';});
 })();

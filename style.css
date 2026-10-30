@@ -40,3 +40,6 @@ body{transition:background-color 1.2s,color 1.2s}.immersive{position:absolute;in
   html:not(.portfolio-embed) main{padding-top:calc(52px + env(safe-area-inset-top,0px))}
   .project-title-break{display:initial}#heroTitle{white-space:normal;max-width:none;font-size:clamp(36px,10.5vw,45px)}
 }
+
+/* Keep the desktop CTA immediately after the collection count in every view. */
+@media(min-width:761px){.intro>#experienceLink{position:static;display:flex;width:max-content;max-width:100%;margin:22px 0 0}}
