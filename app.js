@@ -17,7 +17,7 @@ const LANGUAGE_KEY='mindful-day-language-v2';let lang='ko';try{const saved=local
 const experienceBase=(location.hostname==='imagetellerworks.github.io'||((location.hostname==='127.0.0.1'||location.hostname==='localhost')&&location.pathname.startsWith('/mindful-day/')))?new URL('experience/',location.href).href:'https://imagetellerworks.github.io/mindful-day/experience/';
 const opening=['fresh','ethereal','romantic','original','bold','dreamy','progressive','magical','sensual','harmonious','high voltage','heavenly','forbidden','unique','cosmic majesty','playful','crisp','ravishing','fiery','serene','otherworldly','kinetic','enraptured','clear'];
 function applyLanguage(){
- document.title=lang==='ko'?'Mindful Day — 색으로 만나는 마음':'Mindful Day — A study in feeling';document.documentElement.lang=lang;document.body.classList.toggle('lang-en',lang==='en');const ko=lang==='ko';
+ document.title='Mindful Day';document.documentElement.lang=lang;document.body.classList.toggle('lang-en',lang==='en');const ko=lang==='ko';
  $('heroEyebrow').textContent='A COLLECTION OF FEELINGS';$('heroTitle').innerHTML='Mindful <br class="project-title-break">Day';
  $('introCopy').innerHTML=ko?'색을 바라보는 또 하나의 방식.<br>우리가 이름 붙인 감정을<br>새로운 차원에서 만나보세요.':'A new perspective on color.<br>Explore the feelings we named,<br>in an entirely new dimension.';
  $('edition').innerHTML=ko?'색과 감정<br>인터랙티브 스터디, 2026':'COLOR × EMOTION<br>AN INTERACTIVE STUDY, 2026';$('collectionCount').textContent=ko?'219가지 색, 저마다의 감정':'219 COLORS, COUNTLESS PERSPECTIVES';$('footerQuote').textContent=ko?'색은 말보다 먼저 마음에 닿습니다.':'COLOR IS A LANGUAGE WITHOUT WORDS.';
