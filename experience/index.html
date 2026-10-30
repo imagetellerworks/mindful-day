@@ -464,8 +464,8 @@ body.about-open{overflow:hidden}
         <button type="button" class="btn" id="copyCode">코드 복사</button>
       </div>
       <div class="image-choices" id="imageChoices" role="group" aria-label="이미지 저장 방식" hidden>
-        <button type="button" class="btn" id="savePosterImg">포스터 스타일</button>
-        <button type="button" class="btn" id="saveBackgroundImg">배경 이미지만</button>
+        <button type="button" class="btn" id="savePosterImg">포스터로 저장</button>
+        <button type="button" class="btn" id="saveBackgroundImg">배경만 저장</button>
       </div>
       <p class="status" id="status" role="status"></p>
       <div class="sheet" id="sheet" hidden>
@@ -598,8 +598,8 @@ const UI_EN={
   "영상으로 저장": "Save video",
   "코드 복사": "Copy code",
   "이미지 저장 방식": "Image export style",
-  "포스터 스타일": "Poster style",
-  "배경 이미지만": "Background only",
+  "포스터로 저장": "Save poster",
+  "배경만 저장": "Save background",
   "영상 저장 진행 상태": "Video export progress",
   "준비": "Preparing",
   "녹화 중": "Recording",
@@ -827,28 +827,58 @@ function drawKoreanFeeling(ctx,text,x,y,size){
  ctx.restore();
 }
 
+// Poster and screen layouts share the same protected top/bottom bands.
+function posterCaptionBands(W,H,title='',sub=''){
+ const pad=W*.025,header=title||sub?W*(/^mindful\s*day$/i.test(String(title).trim())?.22:.245):pad;
+ return{top:Math.min(H*.45,header),bottom:Math.max(H*.55,H-W*.12)};
+}
+function captionProtectedBands(ctx,W,H){
+ const canonical=posterCaptionBands(W,H,S.title||'',S.sub||'');
+ const live=(typeof px!=='undefined'&&ctx===px)||(typeof mobilePx!=='undefined'&&ctx===mobilePx);
+ if(!live||typeof getComputedStyle!=='function'||typeof lockSize!=='undefined'&&lockSize)return canonical;
+ const poster=pc.getBoundingClientRect();if(!poster.width||!poster.height)return canonical;
+ const scale=H/poster.height,pad=Math.max(W*.028,16*W/poster.width),viewport=window.visualViewport;
+ let top=Math.max(0,((viewport?.offsetTop||0)-poster.top)*scale)+pad,bottom=Math.min(H,((viewport?.offsetTop||0)+(viewport?.height||innerHeight)-poster.top)*scale)-pad,hasHeader=false;
+ const visible=id=>{const el=document.getElementById(id);if(!el||el.hidden)return null;const css=getComputedStyle(el),r=el.getBoundingClientRect();return css.display==='none'||css.visibility==='hidden'||!r.width||!r.height?null:r;};
+ for(const id of ['experienceBrand','experienceHeaderActions','langBtn']){const r=visible(id);if(r){hasHeader=true;top=Math.max(top,(r.bottom-poster.top)*scale+pad);}}
+ if(!hasHeader||!/^mindful\s*day$/i.test(String(S.title||'').trim()))top=Math.max(top,canonical.top);
+ for(const id of ['mobilePosterFooter','menuToggle']){const r=visible(id);if(r)bottom=Math.min(bottom,(r.top-poster.top)*scale-pad);}
+ const footer=document.querySelector('footer.site');if(footer){const css=getComputedStyle(footer),r=footer.getBoundingClientRect();if(css.display!=='none'&&css.visibility!=='hidden'&&r.width&&r.height)bottom=Math.min(bottom,(r.top-poster.top)*scale-pad);}
+ // The wide backdrop paints its date above the fixed bottom controls.
+ if(document.body.classList.contains('wide-scene'))bottom=Math.min(bottom,H-102*scale);
+ // The desktop poster paints its own date footer inside the canvas.
+ if(!document.body.classList.contains('is-story'))bottom=Math.min(bottom,canonical.bottom);
+ return{top:Math.max(pad,Math.min(top,H-pad*2)),bottom:Math.max(Math.min(top,H-pad*2)+pad,Math.min(H-pad,bottom))};
+}
+
 // Shared by the live canvas, hit areas, and exported HTML.
-function layoutOrbCaptions(orbs,W,H,measure){
-  const gap=W*.028,pad=W*.025,placed=[];
-  const intersects=(box,circle)=>{const x=Math.max(box.left,Math.min(circle.x,box.left+box.width)),y=Math.max(box.top,Math.min(circle.y,box.top+box.height));return Math.hypot(x-circle.x,y-circle.y)<(circle.avoidRadius??circle.radius)+gap*.5;};
-  const overlaps=(a,b)=>a.left<b.left+b.width+gap*.5&&a.left+a.width+gap*.5>b.left&&a.top<b.top+b.height+gap*.5&&a.top+a.height+gap*.5>b.top;
-  return orbs.map((orb,index)=>{
-    const preferred=orb.side||(orb.x<W/2?'right':'left'),textScale=orb.captionScale??1,baseFontSize=Math.max(W*.02,orb.radius*.23),fontSize=baseFontSize*textScale,koSize=Math.max(W*.014,baseFontSize*.56)*textScale*(orb.koScale??1);
-    const enLines=[String(orb.en||'')],koLines=orb.ko?[String(orb.ko)]:[],width=Math.max(...enLines.map(t=>measure(t,fontSize,'en')),...koLines.map(t=>measure(t,koSize,'ko')),0);
-    const height=fontSize*1.06+(koLines.length?koSize*.55+koSize*1.25:0),idealTop=orb.y-height/2,others=orbs.filter((_,i)=>i!==index),options=[];
-    const parentRadius=orb.avoidRadius??orb.radius,parentVisible=orb.x+parentRadius>0&&orb.x-parentRadius<W&&orb.y+parentRadius>0&&orb.y-parentRadius<H;
-    for(const side of [preferred,preferred==='right'?'left':'right']){
-      const anchorLeft=side==='right'?orb.x+orb.radius+gap:orb.x-orb.radius-gap-width;
-      const lefts=[anchorLeft];if(parentVisible)lefts.push(Math.max(pad,Math.min(W-pad-width,anchorLeft)));
-      const rawTops=[idealTop,...others.flatMap(o=>[o.y-(o.avoidRadius??o.radius)-gap-height,o.y+(o.avoidRadius??o.radius)+gap]),...placed.flatMap(p=>[p.top-gap-height,p.top+p.height+gap])];
-      const tops=parentVisible?[...rawTops,...rawTops.map(t=>Math.max(pad,Math.min(H-pad-height,t)))]:rawTops;
-      for(const left of lefts)for(const top of tops){const box={left,top,width,height,fontSize,koSize,enLines,koLines,side,align:side==='right'?'left':'right'};
-        const collision=others.some(o=>intersects(box,o))||placed.some(p=>overlaps(box,p)),overflow=Math.max(0,pad-left)+Math.max(0,left+width-W+pad)+Math.max(0,pad-top)+Math.max(0,top+height-H+pad);
-        options.push({...box,score:(collision?1e12:0)+overflow*1000+Math.abs(left-anchorLeft)*.4+Math.abs(top-idealTop)+(side===preferred?0:W*.08)});
-      }
-    }
-    options.sort((a,b)=>a.score-b.score);const chosen=options[0];placed.push(chosen);return chosen;
-  });
+function layoutOrbCaptions(orbs,W,H,measure,protectedBands=null){
+ const gap=W*.028,pad=W*.025,placed=[],protectedLayout=!!protectedBands;
+ const safeTop=protectedLayout?Math.max(pad,protectedBands.top):pad,safeBottom=protectedLayout?Math.min(H-pad,protectedBands.bottom):H-pad;
+ const clampTop=(top,height)=>Math.max(safeTop,Math.min(safeBottom-height,top));
+ const intersects=(box,circle)=>{const x=Math.max(box.left,Math.min(circle.x,box.left+box.width)),y=Math.max(box.top,Math.min(circle.y,box.top+box.height));return Math.hypot(x-circle.x,y-circle.y)<(circle.avoidRadius??circle.radius)+gap*.5;};
+ const overlaps=(a,b)=>a.left<b.left+b.width+gap*.5&&a.left+a.width+gap*.5>b.left&&a.top<b.top+b.height+gap*.5&&a.top+a.height+gap*.5>b.top;
+ return orbs.map((orb,index)=>{
+  const preferred=orb.side||(orb.x<W/2?'right':'left'),textScale=orb.captionScale??1,baseFontSize=Math.max(W*.02,orb.radius*.23);
+  let fontSize=baseFontSize*textScale,koSize=Math.max(W*.014,baseFontSize*.56)*textScale*(orb.koScale??1);
+  const enLines=[String(orb.en||'')],koLines=orb.ko?[String(orb.ko)]:[];
+  let height=fontSize*1.06+(koLines.length?koSize*1.8:0);
+  if(protectedLayout&&height>safeBottom-safeTop){const fit=Math.max(0,(safeBottom-safeTop)/height);fontSize*=fit;koSize*=fit;height*=fit;}
+  const width=Math.max(...enLines.map(t=>measure(t,fontSize,'en')),...koLines.map(t=>measure(t,koSize,'ko')),0),idealTop=orb.y-height/2,others=orbs.filter((_,i)=>i!==index),options=[];
+  const parentRadius=orb.avoidRadius??orb.radius,parentVisible=orb.x+parentRadius>0&&orb.x-parentRadius<W&&orb.y+parentRadius>0&&orb.y-parentRadius<H;
+  for(const side of [preferred,preferred==='right'?'left':'right']){
+   const anchorLeft=side==='right'?orb.x+orb.radius+gap:orb.x-orb.radius-gap-width;
+   const lefts=[anchorLeft];if(parentVisible||protectedLayout)lefts.push(Math.max(pad,Math.min(W-pad-width,anchorLeft)));
+   const rawTops=[idealTop,...others.flatMap(o=>[o.y-(o.avoidRadius??o.radius)-gap-height,o.y+(o.avoidRadius??o.radius)+gap]),...placed.flatMap(p=>[p.top-gap-height,p.top+p.height+gap])];
+   const tops=protectedLayout?[...rawTops,safeTop,safeBottom-height,(safeTop+safeBottom-height)/2].map(t=>clampTop(t,height)):parentVisible?[...rawTops,...rawTops.map(t=>Math.max(pad,Math.min(H-pad-height,t)))]:rawTops;
+   for(const left of lefts)for(const top of tops){const box={left,top,width,height,fontSize,koSize,enLines,koLines,side,align:side==='right'?'left':'right'};
+    const orbCollision=others.some(o=>intersects(box,o)),labelCollision=placed.some(p=>overlaps(box,p)),collision=orbCollision||labelCollision,overflow=Math.max(0,pad-left)+Math.max(0,left+width-W+pad)+Math.max(0,safeTop-top)+Math.max(0,top+height-safeBottom);
+    // Protected chrome takes precedence when a large color fills the whole canvas.
+    options.push({...box,score:overflow*(protectedLayout?1e14:1000)+(protectedLayout?(labelCollision?1e13:0)+(orbCollision?1e12:0):(collision?1e12:0))+Math.abs(left-anchorLeft)*.4+Math.abs(top-idealTop)+(side===preferred?0:W*.08)});
+   }
+  }
+  options.sort((a,b)=>a.score-b.score);const chosen=options[0];placed.push(chosen);return chosen;
+ });
 }
 
 function layoutSingleFeelingTarget(word,ctx,W,H,wide=false){
@@ -1212,7 +1242,7 @@ function captionLayoutForRows(ctx,W,H,rows,orbWidth=W){
   const frozen=S.reviewing&&feedbackReview?(feedbackReview.artworkScene||feedbackReview.scene):null,T=reduce?0:clock*S.speed;
   const orbs=rows.map((row,i)=>{const slot=chosen.indexOf(row.idx),pl=placements[slot],tile=tiles[row.idx],held=frozen?.orbs[slot],scale=held?held.scale:(pl?.cs??SZ()[slot]*pl?.tj)*(1+.04*S.drift*Math.sin(T*.8+(pl?.ph3||0)));
     return {captionScale:slot===0?.5:.7,koScale:slot===0?.7:1,x:(held?held.position.x:pl?.lx??pl?.x??.5)*W,y:(held?held.position.y:pl?.ly??pl?.y??.5)*H,radius:(held?held.layers[1].r:tile.cur.layers[1].r)*scale*orbWidth,avoidRadius:Math.max(...(held?held.layers:tile.cur.layers).map(l=>l.r+Math.hypot(l.ox,l.oy)))*scale*orbWidth,en:row.word?.en||L('이름 고르기','Choose a name'),ko:lang==='ko'?row.word?.ko||'':'',side:pl?.captionSide};});
-  ctx.save();const layout=layoutOrbCaptions(orbs,W,H,(text,size,kind)=>{if(kind==='ko')return koreanFeelingWidth(ctx,text,size);ctx.font=`italic 500 ${size}px "Cormorant Garamond",Georgia,serif`;return ctx.measureText(text).width;});ctx.restore();
+  ctx.save();const layout=layoutOrbCaptions(orbs,W,H,(text,size,kind)=>{if(kind==='ko')return koreanFeelingWidth(ctx,text,size);ctx.font=`italic 500 ${size}px "Cormorant Garamond",Georgia,serif`;return ctx.measureText(text).width;},captionProtectedBands(ctx,W,H));ctx.restore();
   layout.forEach((caption,i)=>{const pl=placements[chosen.indexOf(rows[i].idx)];if(pl)pl.captionSide=caption.side;});return layout;
 }
 function drawIndividualFeelings(ctx,W,H,rows,orbWidth=W){
@@ -1519,7 +1549,7 @@ document.addEventListener('pointerdown',e=>{
 const IMG_W=1080, IMG_H=1920, VID_W=720, VID_H=1280, VID_MAX=30;
 const imgBtn=$('saveImg'), vidBtn=$('saveVid'), vidLabel=$('vidLabel'), statusEl=$('status');
 const imageChoices=$('imageChoices'),imageChoiceBtns=[$('savePosterImg'),$('saveBackgroundImg')],exportLayer=$('exportLayer');
-function syncExportLayer(){exportLayer.classList.toggle('has-popup',!imageChoices.hidden||!sheet.hidden);}
+function syncExportLayer(){exportLayer.classList.toggle('has-popup',!imageChoices.hidden||!sheet.hidden);$('quickCapture').setAttribute('aria-expanded',String(!imageChoices.hidden));}
 let imageBusy=false;
 function closeImageChoices(){imageChoices.hidden=true;imgBtn.setAttribute('aria-expanded','false');syncExportLayer();}
 function syncQuickExports(){
@@ -1584,10 +1614,13 @@ async function deliver(blob,filename,kind){
   download(blob,filename);say(`${label} 저장했어요.`);}
 
 // 왼쪽은 글자 포함 포스터, 오른쪽은 빛망울과 배경만. 화면/녹화와 별도 캔버스로 PNG 생성.
-imgBtn.addEventListener('click',()=>{
+function toggleImageChoices(){
   if(imgBtn.disabled)return;closeSheet();const open=imageChoices.hidden;
   imageChoices.hidden=!open;imgBtn.setAttribute('aria-expanded',String(open));syncExportLayer();
-});
+  if(open)$('savePosterImg').focus({preventScroll:true});
+}
+function quickCaptureImage(){if(S.canvasMode==='mixing'||chosen.length>1)toggleImageChoices();else return saveImage(false);}
+imgBtn.addEventListener('click',toggleImageChoices);
 async function saveImage(backgroundOnly=false){
   if(imageBusy||imgBtn.disabled)return;noteAppTourAction('export');imageBusy=true;vidBtn.disabled=true;syncImageButtons();
   imgBtn.textContent=tr('이미지 만드는 중…');closeImageChoices();closeSheet();say('');
@@ -1601,10 +1634,10 @@ async function saveImage(backgroundOnly=false){
   }catch(err){say('이미지를 만들지 못했어요. 다시 눌러 주세요.');}
   finally{imageBusy=false;imgBtn.textContent=tr('이미지로 저장');setV(vstate);}
 }
-$('quickCapture').addEventListener('click',()=>saveImage(false));
+$('quickCapture').addEventListener('click',quickCaptureImage);
 $('savePosterImg').addEventListener('click',()=>saveImage(false));
 $('saveBackgroundImg').addEventListener('click',()=>saveImage(true));
-document.addEventListener('pointerdown',e=>{if(!imageChoices.hidden&&!e.target?.closest?.('#imageChoices,#saveImg'))closeImageChoices();});
+document.addEventListener('pointerdown',e=>{if(!imageChoices.hidden&&!e.target?.closest?.('#imageChoices,#saveImg,#quickCapture'))closeImageChoices();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(!imageChoices.hidden||!sheet.hidden)){e.preventDefault();e.stopPropagation();closeImageChoices();closeSheet();}});
 exportLayer.addEventListener('pointerdown',e=>{if(e.target===exportLayer){closeImageChoices();closeSheet();}});
 
@@ -1828,7 +1861,7 @@ function orb(o,cx,cy,size){var steps=o.trail>.01?18:1,tx=Math.cos(o.ta)*o.trail,
 function draw(now){var W=c.width,H=c.height,T=D.reduced?0:((D.clock||0)+(D.paused?0:(now-t0)/1000))*D.speed;x.fillStyle=D.bg;x.fillRect(0,0,W,H);
   var poses=[];D.orbs.forEach(function(o,i){var p=o.p,a=D.reduced?0:p.amp*D.drift,px=p.x+Math.sin(T*p.f1*TAU+p.ph1)*a,py=p.y+Math.cos(T*p.f2*TAU+p.ph2)*a,s=p.s*(1+.04*D.drift*Math.sin(T*.8+p.ph3));orb(o,px*W,py*H,s*W);poses.push({captionScale:i===0?.5:.7,koScale:i===0?.7:1,x:px*W,y:py*H,radius:o.layers[1].r*s*W,avoidRadius:Math.max.apply(null,o.layers.map(function(l){return l.r+Math.hypot(l.ox,l.oy); }))*s*W,en:D.feelings&&D.feelings[i]?D.feelings[i][0]:'',ko:D.feelings&&D.feelings[i]?D.feelings[i][1]:'',side:p.captionSide});});
   var pad=W*.07;drawHeader(x,W,pad,function(z){return font(D.ft,z);},function(z){return font(D.fs,z);},D.title,D.sub,D.ink);x.fillStyle=D.ink;x.textBaseline='top';x.textAlign='left';
-  if(D.feelings&&D.feelings.length>1){var captions=layoutOrbCaptions(poses,W,H,function(text,size,kind){if(kind==='ko')return koreanFeelingWidth(x,text,size);x.font='italic 500 '+size+'px "Cormorant Garamond",Georgia,serif';return x.measureText(text).width;});captions.forEach(function(caption,i){D.orbs[i].p.captionSide=caption.side;x.save();x.fillStyle=D.ink;x.globalAlpha=1;x.textAlign=caption.align;x.textBaseline='top';var xx=caption.align==='left'?caption.left:caption.left+caption.width,yy=caption.top;x.font='italic 500 '+caption.fontSize+'px "Cormorant Garamond",Georgia,serif';caption.enLines.forEach(function(line){x.fillText(line,xx,yy);yy+=caption.fontSize*1.06;});yy+=caption.koSize*.55;caption.koLines.forEach(function(line){drawKoreanFeeling(x,line,xx,yy,caption.koSize);yy+=caption.koSize*1.25;});x.restore();});}
+  if(D.feelings&&D.feelings.length>1){var captions=layoutOrbCaptions(poses,W,H,function(text,size,kind){if(kind==='ko')return koreanFeelingWidth(x,text,size);x.font='italic 500 '+size+'px "Cormorant Garamond",Georgia,serif';return x.measureText(text).width;},posterCaptionBands(W,H,D.title,D.sub));captions.forEach(function(caption,i){D.orbs[i].p.captionSide=caption.side;x.save();x.fillStyle=D.ink;x.globalAlpha=1;x.textAlign=caption.align;x.textBaseline='top';var xx=caption.align==='left'?caption.left:caption.left+caption.width,yy=caption.top;x.font='italic 500 '+caption.fontSize+'px "Cormorant Garamond",Georgia,serif';caption.enLines.forEach(function(line){x.fillText(line,xx,yy);yy+=caption.fontSize*1.06;});yy+=caption.koSize*.55;caption.koLines.forEach(function(line){drawKoreanFeeling(x,line,xx,yy,caption.koSize);yy+=caption.koSize*1.25;});x.restore();});}
   else if(D.feel){var fs2=W*.15;x.save();x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';var fw=x.measureText(D.feel[0]).width;if(fw>W*.84){fs2*=W*.84/fw;x.font='italic 500 '+fs2+'px "Cormorant Garamond",Georgia,serif';}
     x.globalAlpha=1;x.fillStyle=D.feelInk||'#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(D.feel[0],W/2,H/2);if(D.feel[1]){drawKoreanFeeling(x,D.feel[1],W/2,H/2+fs2*.55+W*.031,W*.034);}x.restore();x.fillStyle=D.ink;x.textAlign='left';x.textBaseline='top';}
   var fz=W*.026;x.font=font(D.fs,fz);x.globalAlpha=.8;x.textBaseline='alphabetic';footer(x,W,H,pad,fz,function(z){return font(D.fs,z);},D.foot[0],D.foot[1]);
@@ -1865,7 +1898,7 @@ ${fams.length?`<link rel="stylesheet" href="https://fonts.googleapis.com/css2?${
 <canvas id="c" role="img" aria-label="${esc(D.title)}"></canvas>
 <scr${'ipt'}>
 var D=${JSON.stringify(D).replace(/</g,'\\u003c')};
-${RUNTIME.trim().replace('FOOTER_SRC',footer.toString()+'\n'+drawHeader.toString()).replace('CAPTION_LAYOUT_SRC',()=>koreanFeelingWidth.toString()+'\n'+drawKoreanFeeling.toString()+'\n'+layoutOrbCaptions.toString())}
+${RUNTIME.trim().replace('FOOTER_SRC',footer.toString()+'\n'+drawHeader.toString()).replace('CAPTION_LAYOUT_SRC',()=>koreanFeelingWidth.toString()+'\n'+drawKoreanFeeling.toString()+'\n'+posterCaptionBands.toString()+'\n'+layoutOrbCaptions.toString())}
 <\/script>
 </bo${'dy'}>
 </html>
@@ -2540,4 +2573,5 @@ void usageAnalytics.start();
 </script>
 
 </body></html>
+
 
