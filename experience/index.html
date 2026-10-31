@@ -1852,6 +1852,15 @@ async function deliver(blob,filename,kind,target='share',destination=null){
   download(blob,filename);if(kind==='image')noteAppTourAction('image-saved');say(`${label} 저장했어요.`);}
 
 // 왼쪽은 글자 포함 포스터, 오른쪽은 빛망울과 배경만. 화면/녹화와 별도 캔버스로 PNG 생성.
+async function prepareMobileImageFiles(poster,background){
+  if(!mobileSaveDevice)return null;
+  const files={},time=stamp();
+  await Promise.all([['poster',poster],['background',background]].map(async([style,canvas])=>{
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+    if(!blob)throw new Error('PNG encoding failed');
+    const filename=`mindfulday-${style}-${time}.png`;files[style]={blob,filename,file:new File([blob],filename,{type:blob.type})};
+  }));return files;
+}
 async function toggleImageChoices(){
   if(imgBtn.disabled)return;
   if(!imageChoices.hidden){closeImageChoices();return;}
@@ -1861,7 +1870,8 @@ async function toggleImageChoices(){
     await warmFonts();if(request!==imagePreviewRequest)return;
     const poster=document.createElement('canvas'),background=document.createElement('canvas');
     for(const canvas of [poster,background]){canvas.width=IMG_W;canvas.height=IMG_H;renderPoster(canvas.getContext('2d'),IMG_W,IMG_H,canvas===poster);}
-    imagePreview={poster,background,codes:{poster:buildCode(),background:buildCode(true)}};renderImageExportPreview();imageChoices.hidden=false;noteAppTourAction('image-open');
+    const mobileFiles=await prepareMobileImageFiles(poster,background);if(request!==imagePreviewRequest)return;
+    imagePreview={poster,background,mobileFiles,codes:{poster:buildCode(),background:buildCode(true)}};renderImageExportPreview();imageChoices.hidden=false;noteAppTourAction('image-open');
     imgBtn.setAttribute('aria-expanded','true');syncExportLayer();
   }catch(err){closeImageChoices();say('이미지를 만들지 못했어요. 다시 눌러 주세요.');}
   finally{imageBusy=false;setV(vstate);}
@@ -1875,6 +1885,26 @@ function renderImageExportPreview(){
 function selectImageExportStyle(style){if(imageBusy||!['poster','background'].includes(style))return;imageExportStyle=style;renderImageExportPreview();}
 function quickCaptureImage(){return toggleImageChoices();}
 imgBtn.addEventListener('click',toggleImageChoices);
+async function savePreviewImageToPhotos(){
+  if(!mobileSaveDevice)return saveImage(imageExportStyle==='background');
+  if(imageBusy||imgBtn.disabled||!imagePreview)return;
+  const preview=imagePreview,request=imagePreviewRequest,saved=preview.mobileFiles?.[imageExportStyle];if(!saved)return;
+  noteAppTourAction('export');usageAnalytics.track('image_created',{format:imageExportStyle});
+  if(!navigator.share||!navigator.canShare?.({files:[saved.file]})){
+    closeImageChoices();openSheet(saved.blob,saved.filename,'image','link');noteAppTourAction('image-created');return;
+  }
+  imageBusy=true;vidBtn.disabled=true;syncImageButtons();say('');
+  try{
+    // Encode before showing the preview so the native share call retains user activation from this tap.
+    await navigator.share({files:[saved.file],title:'mindful day'});
+    if(request!==imagePreviewRequest||imagePreview!==preview)return;
+    closeImageChoices();say('사진 앱이나 선택한 앱에서 저장 결과를 확인해 주세요.',5000);noteAppTourAction('image-saved');
+  }catch(error){
+    if(request!==imagePreviewRequest||imagePreview!==preview)return;
+    if(error?.name==='AbortError'||error?.code==='declined'){closeImageChoices();noteAppTourAction('dismiss');}
+    else say('저장 메뉴를 열지 못했어요. 다시 눌러 주세요.',5000);
+  }finally{imageBusy=false;setV(vstate);}
+}
 async function saveImage(backgroundOnly=false,target='share'){
   if(imageBusy||imgBtn.disabled)return;const preview=imagePreview,filename=`mindfulday-${backgroundOnly?'background':'poster'}-${stamp()}.png`;noteAppTourAction('export');imageBusy=true;vidBtn.disabled=true;syncImageButtons();
   imgBtn.textContent=tr('이미지 만드는 중…');closeImageChoices();closeSheet();say('');
@@ -1894,7 +1924,7 @@ $('closeImagePreview').addEventListener('click',()=>{closeImageChoices();if(appT
 $('savePosterImg').addEventListener('click',()=>selectImageExportStyle('poster'));
 $('saveBackgroundImg').addEventListener('click',()=>selectImageExportStyle('background'));
 $('saveImageToFile').addEventListener('click',()=>saveImage(imageExportStyle==='background','file'));
-$('saveImageToPhotos').addEventListener('click',()=>saveImage(imageExportStyle==='background'));
+$('saveImageToPhotos').addEventListener('click',savePreviewImageToPhotos);
 $('saveImageCode').addEventListener('click',()=>copyPosterCode(imageExportStyle==='background',imagePreview?.codes[imageExportStyle]));
 document.addEventListener('pointerdown',e=>{if(!imageChoices.hidden&&!e.target?.closest?.('#imageChoices,#saveImg,#quickCapture'))closeImageChoices();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(!imageChoices.hidden||!sheet.hidden)){e.preventDefault();e.stopPropagation();closeImageChoices();closeSheet();}});
