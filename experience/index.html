@@ -417,6 +417,8 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
 
 /* One evenly spaced row: Home, Save, Record, Mood, Colors, Sound, Settings. */
 .footer-exports{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));width:min(356px,100%);gap:8px;align-items:start}
+.is-story footer.site{justify-content:center}
+.quick-color-tray{left:50%;transform:translateX(-50%)}
 .footer-exports .quick-export,.is-story .footer-exports .menu-toggle,.is-story.menu-open .footer-exports #menuToggle{width:100%;min-width:0;max-width:none;height:44px;margin:0;padding:0;justify-self:stretch;align-items:center;justify-content:center}
 .footer-exports #soundBtn,.footer-exports #soundBtn[aria-pressed="true"]{display:flex;flex-direction:row;aspect-ratio:auto;gap:0;background:rgba(28,26,34,.6);color:#fff;border:0;border-radius:12px}
 .footer-exports #soundBtn .ic{display:grid;place-items:center;width:19px;height:19px;color:inherit}.footer-exports #soundBtn .ic svg{display:block;width:19px;height:19px}.footer-exports #soundBtn .rl{color:var(--mobile-ink,var(--ink))}
@@ -536,9 +538,9 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
       <div class="image-choices" id="imageChoices" role="group" aria-label="이미지 저장 방식" hidden>
         <div class="image-choice-header"><span>미리보기</span><button type="button" class="image-choice-close" id="closeImagePreview" aria-label="닫기"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m3 3 10 10M13 3 3 13" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button></div>
         <div class="image-choice-preview"><canvas id="imageExportPreview" width="1080" height="1920" role="img" aria-label="저장할 포스터"></canvas></div>
-        <div class="image-format-options" role="radiogroup" aria-label="저장할 구성"><button type="button" id="savePosterImg" role="radio" aria-checked="true">포스터<span>글자 포함</span></button><button type="button" id="saveBackgroundImg" role="radio" aria-checked="false">배경만<span>컬러만</span></button></div>
+        <div class="image-format-options" role="radiogroup" aria-label="저장할 구성"><button type="button" id="savePosterImg" role="radio" aria-checked="true">포스터<span>글자 포함</span></button><button type="button" id="saveBackgroundImg" role="radio" aria-checked="false">배경만<span>제목 유지</span></button></div>
         <div class="image-choice-actions"><button type="button" class="btn desktop-file-save" id="saveImageToFile" hidden><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>파일로 저장</button><button type="button" class="btn" id="saveImageToPhotos"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 6h4l2-2h4l2 2h4v14H4Z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="12.5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>사진첩에 저장</button><button type="button" class="btn" id="saveImageCode"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>코드 복사</button></div>
-        <p class="image-choice-hint">포스터는 글자와 함께, 이미지는 컬러만 저장해요.</p><p class="image-choice-hint" id="desktopSaveHint" hidden></p>
+        <p class="image-choice-hint">포스터는 감정 글자와 함께, 배경은 제목과 보조문구를 남겨요.</p><p class="image-choice-hint" id="desktopSaveHint" hidden></p>
       </div>
       <p class="status" id="status" role="status"></p>
       <div class="sheet" id="sheet" hidden>
@@ -641,7 +643,7 @@ const UI_EN={
   "저장한 결과는 사진 앱에서 확인해 주세요.":"Find the saved result in Photos.",
   "아래 버튼을 눌러 저장할 앱을 선택하세요.":"Choose an app with the button below.",
   "기기에 따라 저장 메뉴가 다를 수 있어요.":"Save options may vary by device.",
-  "무드":"Mood","컬러 고르기":"Choose colors","무드 고르기":"Choose a mood","설정":"Settings","설정 열기":"Open settings","설정 닫기":"Close settings","세부 설정":"Detailed settings","빠른 조작":"Quick controls","홈":"Home","저장":"Save","녹화":"Record","저장할 구성":"Export content","포스터":"Poster","배경만":"Background","글자 포함":"With text","컬러만":"Colors only","오프화이트 배경":"Off-white background","어두운 배경":"Dark background",
+  "무드":"Mood","컬러 고르기":"Choose colors","무드 고르기":"Choose a mood","설정":"Settings","설정 열기":"Open settings","설정 닫기":"Close settings","세부 설정":"Detailed settings","빠른 조작":"Quick controls","홈":"Home","저장":"Save","녹화":"Record","저장할 구성":"Export content","포스터":"Poster","배경만":"Background","글자 포함":"With text","컬러만":"Colors only","제목 유지":"Keep title","오프화이트 배경":"Off-white background","어두운 배경":"Dark background",
   "빠른 저장": "Quick save",
   "멀티 배색 200세트 살펴보기": "Explore 200 color combinations",
   "후보색이 바뀌는 간격": "Candidate color interval",
@@ -689,7 +691,7 @@ const UI_EN={
   "이미지 저장 방식": "Image export style",
   "포스터로 저장": "Save poster",
   "미리보기": "Preview",
-  "포스터는 글자와 함께, 이미지는 컬러만 저장해요.": "Posters include text. Images save only the colors.",
+  "포스터는 감정 글자와 함께, 배경은 제목과 보조문구를 남겨요.": "Posters include emotion words; backgrounds keep the title and subtitle.",
   "영상 저장 진행 상태": "Video export progress",
   "준비": "Preparing",
   "녹화 중": "Recording",
@@ -1100,7 +1102,7 @@ function positionCatalogDropdown(){
 }
 function openCatalogCategories(){
   if(S.study||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return;
-  if(typeof stopCatalogPeek==='function')stopCatalogPeek();
+  hideShakeCoach();if(typeof stopCatalogPeek==='function')stopCatalogPeek();
   if(!reviewedExploration){cycleColors();return;}
   const dialog=$('catalogCategoryDialog'),box=$('catalogCategoryOptions');if(dialog.open){closeCatalogCategories(true);return;}
   const label=L('감정 고르기','Choose a feeling');dialog.setAttribute('aria-label',label);box.setAttribute('aria-label',label);box.replaceChildren();const current=catalogCategoryFor(S.catalogCategory);
@@ -1527,6 +1529,7 @@ function drawPosterText(ctx,W,H,G,screen=false){if(new URLSearchParams(location.
 function renderPoster(ctx,W,H,withText=true){const G=groundColors();
   ctx.fillStyle=G.bg;ctx.fillRect(0,0,W,H);drawSceneOrbs(ctx,W,H);
   if(withText)drawPosterText(ctx,W,H,G);
+  else drawHeader(ctx,W,W*.07,z=>fontStr(S.ft,'t',z),z=>fontStr(S.fs,'s',z),S.title||'',S.sub||'',G.ink);
 }
 function drawPoster(){syncExperienceBrand();renderPoster(px,pc.width,pc.height);}
 // 모바일에서는 같은 장면을 화면 전체로 펼치되, 문구와 푸터는 기존 포스터 영역에 배치.
@@ -1910,7 +1913,7 @@ async function saveImage(backgroundOnly=false,target='share'){
   imgBtn.textContent=tr('이미지 만드는 중…');closeImageChoices();closeSheet();say('');
   try{
     const destination=target==='file'?await requestFileDestination(filename,'image'):null;
-    if(!backgroundOnly)await warmFonts();
+    await warmFonts();
     let canvas=preview&&preview[backgroundOnly?'background':'poster'];
     if(!canvas){canvas=document.createElement('canvas');canvas.width=IMG_W;canvas.height=IMG_H;renderPoster(canvas.getContext('2d'),IMG_W,IMG_H,!backgroundOnly);}
     const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
@@ -2170,7 +2173,7 @@ function buildCode(backgroundOnly=false){
       layers:o.layers.map(L=>({c:tf(L.col).map(Math.round).join(','),r:r3(L.r),ox:r3(L.ox),oy:r3(L.oy),s:r3(clamp(1-(1-L.soft)*S.soft,0,.95)),a:r3(L.a)}))};})};
   const individualRows=S.reviewing&&feedbackReview?.targetIdx!=null?feedbackReview.feelings:S.orbFeelingRows||[];if(individualRows.length>1){D.feelings=individualRows.map(r=>[r.word?.en||'',lang==='ko'?r.word?.ko||'':'']);D.feel=null;}
   if(S.reviewing&&feedbackReview){D.drift=0;D.orbs=(feedbackReview.artworkScene||feedbackReview.scene).orbs.map(o=>({trail:0,ta:0,p:{x:o.position.x,y:o.position.y,s:o.scale,ph1:0,ph2:0,ph3:0,f1:0,f2:0,amp:0},layers:o.layers.map(l=>({c:l.col.join(','),r:l.r,ox:l.ox,oy:l.oy,s:l.soft,a:l.a}))}));}
-  if(backgroundOnly){D.title='';D.sub='';D.feel=null;D.feelings=null;D.foot=['',''];}
+  if(backgroundOnly){D.feel=null;D.feelings=null;D.foot=['',''];}
   const fams=[...new Set([...[ft,fs].filter(f=>f.id!=='pretendard').map(f=>f.id==='futura'?'family=Jost:wght@400;500':`family=${f.fam.replace(/ /g,'+')}:wght@${f.tw===f.sw?f.tw:Math.min(f.tw,f.sw)+';'+Math.max(f.tw,f.sw)}`)])];
   const esc=t=>t.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
   return `<!doctype html>
@@ -2241,14 +2244,14 @@ function updateMenuToggle(){const button=$('menuToggle');button.setAttribute('ar
   button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="9" cy="7" r="2.5" fill="var(--shortcut-bg,#36333b)" stroke="currentColor" stroke-width="1.3"/><circle cx="15" cy="17" r="2.5" fill="var(--shortcut-bg,#36333b)" stroke="currentColor" stroke-width="1.3"/></svg><span class="quick-label">'+L('설정','Settings')+'</span>';
 }
 function setMenuOpen(open){
-  menuOpen=!!open;if(menuOpen){closeQuickColors();closeCatalogCategories();closeImageChoices();closeSheet();menuTipShown=true;dismissMenuGuide();}
+  menuOpen=!!open;if(menuOpen){hideShakeCoach();closeQuickColors();closeCatalogCategories();closeImageChoices();closeSheet();menuTipShown=true;dismissMenuGuide();}
   document.body.classList.toggle('menu-open',menuOpen);syncCustomizePanel();
   if(!menuOpen)closeMSheet();resize();drawPoster();drawMobileBackdrop();
 }
 function closeQuickColors(){stopMultiIntro();quickColorOpen=false;document.body.classList.remove('colors-open');$('quickColorTray').hidden=true;$('quickColors').setAttribute('aria-expanded','false');stopCatalogPeek();}
 function openQuickColors(){
   if(S.study||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return;
-  if(menuOpen)setMenuOpen(false);closeCatalogCategories();closeImageChoices();closeSheet();quickColorOpen=true;document.body.classList.add('colors-open');$('quickColorTray').hidden=false;$('quickColors').setAttribute('aria-expanded','true');
+  hideShakeCoach();if(menuOpen)setMenuOpen(false);closeCatalogCategories();closeImageChoices();closeSheet();quickColorOpen=true;document.body.classList.add('colors-open');$('quickColorTray').hidden=false;$('quickColors').setAttribute('aria-expanded','true');
   renderReviewedCatalog();syncQuickBackground();noteAppTourAction('colors-open');startCatalogPeek();positionQuickColors();
 }
 function positionQuickColors(){if(!quickColorOpen)return;const footer=document.querySelector('footer.site').getBoundingClientRect(),viewport=window.visualViewport;$('quickColorTray').style.bottom=Math.max(90,(viewport?.height||innerHeight)-footer.top+16)+'px';}
@@ -2287,7 +2290,8 @@ function updateShakeCoach(){
   button.textContent=tr(shake.busy?'연결 중…':shake.denied?'흔들기 권한 다시 확인':'흔들기 켜기');
 }
 function dismissShakeCoach(){shake.hidden=true;clearTimeout(shake.offerTimer);clearTimeout(shake.hideTimer);$('shakeCoach').hidden=true;if(shake.offered)offerMenuGuide();}
-function showShakeCoach(){if(shake.hidden||document.hidden)return;updateShakeCoach();$('shakeCoach').hidden=false;
+function hideShakeCoach(){clearTimeout(shake.offerTimer);clearTimeout(shake.hideTimer);$('shakeCoach').hidden=true;}
+function showShakeCoach(){if(shake.hidden||document.hidden||menuOpen||quickColorOpen||$('catalogCategoryDialog').open||appTour?.active||isAppWelcomeOpen())return;updateShakeCoach();$('shakeCoach').hidden=false;
   if(shake.enabled){clearTimeout(shake.hideTimer);shake.hideTimer=setTimeout(dismissShakeCoach,9000);}
 }
 function prepareShakeInput(){if(mobileMotionAvailable()&&typeof window.DeviceMotionEvent.requestPermission!=='function')connectShake();}
@@ -2358,7 +2362,7 @@ function stepShakeMotion(pl,dt){const m=pl.shakeMotion;if(!m)return;
 }
 function handleDeviceShake(event){
   if(!shake.enabled)return;
-  if(document.hidden||S.reviewing||S.studyLoading||S.study||imageBusy||vstate==='prep'||vstate==='making'||menuOpen||quickColorOpen||aboutDialog.open||!imageChoices.hidden||!sheet.hidden||isAppWelcomeOpen()||$('catalogCategoryDialog').open){shake.peak=null;shake.gravity=null;shake.inputAt=null;return;}
+  if(document.hidden||S.reviewing||S.studyLoading||S.study||imageBusy||vstate==='prep'||vstate==='making'||aboutDialog.open||!imageChoices.hidden||!sheet.hidden||isAppWelcomeOpen()){shake.peak=null;shake.gravity=null;shake.inputAt=null;return;}
   const v=motionVector(event);if(!v)return;const now=performance.now(),m=Math.hypot(...v),dt=clamp((now-(shake.inputAt??now-16))/1000,.008,.04);shake.inputAt=now;
   // 무드 전환 횟수와 별개로, 인식된 흔들기의 연속 입력은 실제 위치·속도에 계속 전달.
   if(now<shake.activeUntil&&m>1.3){driveShakeOrbs(v,dt);if(m>6)shake.activeUntil=Math.max(shake.activeUntil,now+400);}
