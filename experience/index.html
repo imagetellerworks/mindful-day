@@ -423,6 +423,19 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
 @media(max-width:380px){.footer-exports{gap:6px}}
 @media(max-width:340px){.footer-exports{gap:4px}}
 .tour-shake-enable{border:0;background:rgba(28,26,34,.68);color:#fff}
+
+/* A single on/off switch selects Single (off) or Multi (on). */
+.quick-color-tray .mode-switch{align-items:center;gap:5px}.mode-switch>span{font:400 11px var(--f-body);opacity:.55;white-space:nowrap}.mode-switch>span[data-active="true"]{opacity:1}
+.quick-color-tray .mode-switch #modeToggle{position:relative;display:block;width:44px;min-width:44px;height:36px;min-height:36px;padding:0;border:0;background:transparent;color:inherit;cursor:pointer}
+.mode-toggle::before{content:'';position:absolute;left:3px;right:3px;top:7px;bottom:7px;border-radius:20px;background:rgba(83,80,95,.35);transition:background .18s}
+.mode-toggle-thumb{position:absolute;left:6px;top:10px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0002;transition:transform .18s,background .18s}
+.mode-toggle[aria-checked="true"]::before{background:var(--ui-ink,#24212b)}.mode-toggle[aria-checked="true"] .mode-toggle-thumb{transform:translateX(16px);background:var(--ui-inverse,#fff)}.mode-toggle:focus-visible{outline:1px solid currentColor;outline-offset:2px;border-radius:20px}
+/* Reserve a 9:16 media frame before the video metadata or image bytes arrive. */
+.export-layer .sheet[data-media]{width:var(--save-sheet-width,min(360px,calc(100vw - 24px)));padding:12px;text-align:center}
+.export-layer .sheet[data-media] .sheet-prev{position:relative;flex:none;height:var(--save-media-height,42dvh);width:calc(var(--save-media-height,42dvh)*.5625);max-width:100%;aspect-ratio:9/16;margin-inline:auto}
+.export-layer .sheet[data-media] .sheet-prev img,.export-layer .sheet[data-media] .sheet-prev video{display:block;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:9/16;object-fit:contain}
+.export-layer .sheet-msg{text-align:center;font-size:var(--save-hint-size,12px);line-height:1.6}.save-first-line{display:inline-block;white-space:nowrap}.save-second-line{display:block;margin-top:2px;white-space:normal;overflow-wrap:break-word}.export-layer .sheet-btns{justify-content:center;align-items:center}.export-layer .sheet-btns .btn{font-size:12px;padding:10px 12px}
+@media(prefers-reduced-motion:reduce){.mode-toggle::before,.mode-toggle-thumb{transition:none}}
 </style>
 
 <header class="experience-brand" id="experienceBrand" aria-label="MINDFUL DAY"><h1 class="experience-wordmark">MINDFUL<br>DAY<span class="brand-dot" aria-hidden="true"></span></h1><p class="experience-tagline" id="experienceTagline">What’s your mood today?</p></header>
@@ -459,7 +472,7 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
     <div class="menu-scroll" role="region" aria-label="모든 설정" tabindex="-1"><header class="settings-heading"><h2>설정</h2><button type="button" id="closeSettings" aria-label="설정 닫기">×</button></header>
     <div class="dock" id="dock">
       <div class="lab-color-header" id="labColorHeader"></div>
-      <div class="mode-switch" id="modeSwitch" role="group" aria-label="만들기 모드"><button type="button" id="singleMode" aria-pressed="true">싱글</button><button type="button" id="mixingMode" aria-pressed="false">멀티</button></div>
+      <div class="mode-switch" id="modeSwitch" role="group" aria-label="만들기 모드"><span id="singleMode" data-active="true">싱글</span><button type="button" class="mode-toggle" id="modeToggle" role="switch" aria-label="멀티 모드" aria-checked="false"><span class="mode-toggle-thumb" aria-hidden="true"></span></button><span id="mixingMode" data-active="false">멀티</span></div>
       <div class="dock-tiles" id="dockTiles"><div id="railTiles"></div></div>
       <div class="dock-tools" id="dockTools">
 
@@ -608,6 +621,12 @@ const UI_EN={
   "더 세밀하게 조정하고 싶나요?":"Want finer control?","설정에서 크기·색조·소리를 조정해보세요.":"Adjust size, tone and sound in Settings.",
   "소리 설정":"Sound settings",
   "흔들기 권한 다시 확인":"Retry motion access","화면 터치로 계속 탐색할 수 있어요.":"You can keep exploring by touch.",
+  "멀티 모드":"Multi mode",
+  "아래 버튼을 누른 뒤 ‘이미지 저장’을 선택하세요.":"Tap below and choose “Save Image”.",
+  "아래 버튼을 누른 뒤 ‘비디오 저장’을 선택하세요.":"Tap below and choose “Save Video”.",
+  "저장한 결과는 사진 앱에서 확인해 주세요.":"Find the saved result in Photos.",
+  "아래 버튼을 눌러 저장할 앱을 선택하세요.":"Choose an app with the button below.",
+  "기기에 따라 저장 메뉴가 다를 수 있어요.":"Save options may vary by device.",
   "무드":"Mood","컬러 고르기":"Choose colors","무드 고르기":"Choose a mood","설정":"Settings","설정 열기":"Open settings","설정 닫기":"Close settings","세부 설정":"Detailed settings","빠른 조작":"Quick controls","홈":"Home","저장":"Save","녹화":"Record","저장할 구성":"Export content","포스터":"Poster","배경만":"Background","글자 포함":"With text","컬러만":"Colors only","오프화이트 배경":"Off-white background","어두운 배경":"Dark background",
   "빠른 저장": "Quick save",
   "멀티 배색 200세트 살펴보기": "Explore 200 color combinations",
@@ -745,7 +764,6 @@ const UI_EN={
   "아래 버튼을 누른 뒤 ‘이미지 저장’을 선택하세요. 저장한 결과는 사진 앱에서 확인해 주세요.": "Tap the button below, then choose “Save Image”. Find your saved file in the Photos app.",
   "아래 버튼을 누른 뒤 ‘비디오 저장’을 선택하세요. 저장한 결과는 사진 앱에서 확인해 주세요.": "Tap the button below, then choose “Save Video”. Find your saved file in the Photos app.",
   "이 브라우저에서는 소리를 시작할 수 없어요.": "This browser could not start audio.",
-  "영상이 준비됐어요.": "Your video is ready.",
   "휴대폰을 가볍게 흔들어보세요.": "Give your phone a gentle shake.",
   "새로운 무드를 만나보세요.": "Discover a new mood.",
   "흔들기 켜기": "Enable shake",
@@ -1093,7 +1111,7 @@ function setCanvasMode(mode){
   refreshTiles();showFeeling(chosen[0]);resize();noteAppTourAction('mode');
 }
 function updateModeUI(){
-  const mixing=S.canvasMode==='mixing';$('singleMode').setAttribute('aria-pressed',String(!mixing));$('mixingMode').setAttribute('aria-pressed',String(mixing));
+  const mixing=S.canvasMode==='mixing';$('singleMode').setAttribute('data-active',String(!mixing));$('mixingMode').setAttribute('data-active',String(mixing));$('modeToggle').setAttribute('aria-checked',String(mixing));$('modeToggle').setAttribute('aria-label',L('멀티 모드','Multi mode'));$('modeToggle').title=L(mixing?'싱글로 전환':'멀티로 전환',mixing?'Switch to Single':'Switch to Multi');
   $('singleMode').textContent=L('싱글','Single');$('mixingMode').textContent=L('멀티','Multi');
   document.body.classList.toggle('mixing-mode',mixing);
 }
@@ -1645,21 +1663,36 @@ function download(blob,filename){const u=URL.createObjectURL(blob),a=document.cr
 
 const sheet=$('sheet'), sheetPrev=$('sheetPrev'), sheetMsg=$('sheetMsg'), shShare=$('shShare');
 const applePhotos=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-function saveMenuHint(kind){
-  if(applePhotos)return tr(`아래 버튼을 누른 뒤 ‘${kind==='image'?'이미지':'비디오'} 저장’을 선택하세요. 저장한 결과는 사진 앱에서 확인해 주세요.`);
-  return tr('아래 버튼을 누른 뒤 저장할 앱을 선택하세요. 기기에 따라 저장 메뉴가 다를 수 있어요.');
+function saveMenuHintLines(kind){
+  if(applePhotos)return[tr(`아래 버튼을 누른 뒤 ‘${kind==='image'?'이미지':'비디오'} 저장’을 선택하세요.`),tr('저장한 결과는 사진 앱에서 확인해 주세요.')];
+  return[tr('아래 버튼을 눌러 저장할 앱을 선택하세요.'),tr('기기에 따라 저장 메뉴가 다를 수 있어요.')];
 }
-let sheetFile=null, sheetURL='';
-function closeSheet(){sheet.hidden=true;sheetPrev.innerHTML='';sheetFile=null;statusEl.textContent='';if(sheetURL){URL.revokeObjectURL(sheetURL);sheetURL='';}syncExportLayer();}
+function saveMenuHint(kind){return saveMenuHintLines(kind).join(' ');}
+function renderSaveMenuHint(kind){
+  sheetMsg.replaceChildren();saveMenuHintLines(kind).forEach((text,i)=>{const span=document.createElement('span');span.className=i?'save-second-line':'save-first-line';span.textContent=text;sheetMsg.append(span);});
+}
+function fitSaveSheet(){
+  if(sheet.hidden||!sheet.dataset.media)return;
+  const viewport=window.visualViewport,W=viewport?.width||innerWidth,H=viewport?.height||innerHeight,style=getComputedStyle(sheet),padding=parseFloat(style.paddingLeft)+parseFloat(style.paddingRight)+parseFloat(style.borderLeftWidth)+parseFloat(style.borderRightWidth),maxWidth=W-24,oldWidth=Math.min(360,W-32),mediaHeight=Math.min(H*.42,480),mediaWidth=mediaHeight*9/16;
+  sheet.style.setProperty('--save-media-height',mediaHeight+'px');sheet.style.removeProperty('--save-hint-size');
+  const first=sheetMsg.querySelector('.save-first-line');let firstWidth=first?.getBoundingClientRect().width||0;
+  if(first&&firstWidth>maxWidth-padding){const font=parseFloat(getComputedStyle(first).fontSize)*(maxWidth-padding)/firstWidth;sheet.style.setProperty('--save-hint-size',font+'px');firstWidth=first.getBoundingClientRect().width;}
+  const halfMargins=mediaWidth+padding+Math.max(0,oldWidth-padding-mediaWidth)/2;
+  sheet.style.setProperty('--save-sheet-width',Math.min(maxWidth,Math.max(halfMargins,firstWidth+padding,230))+'px');
+}
+let sheetFile=null, sheetURL='',sheetRevision=0;
+function closeSheet(){sheetRevision++;sheet.hidden=true;delete sheet.dataset.media;sheetPrev.innerHTML='';sheetPrev.removeAttribute('aria-busy');sheetFile=null;statusEl.textContent='';if(sheetURL){URL.revokeObjectURL(sheetURL);sheetURL='';}syncExportLayer();}
 function openSheet(blob,filename,kind,mode){
-  closeSheet();sheetFile={blob,filename,kind};
+  closeSheet();const revision=sheetRevision;sheetFile={blob,filename,kind};sheet.dataset.media=kind;sheetPrev.setAttribute('aria-busy','true');
   if(kind==='image'||mode==='link'){
-    const fr=new FileReader();fr.onload=()=>{const img=new Image();img.src=fr.result;img.alt=tr('저장할 이미지');sheetPrev.appendChild(img);};fr.readAsDataURL(blob);
-  }else{sheetURL=URL.createObjectURL(blob);const v=document.createElement('video');v.src=sheetURL;v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.controls=true;sheetPrev.appendChild(v);}
+    const fr=new FileReader();fr.onload=()=>{if(revision!==sheetRevision)return;const img=new Image();img.width=IMG_W;img.height=IMG_H;img.src=fr.result;img.alt=tr('저장할 이미지');sheetPrev.appendChild(img);sheetPrev.removeAttribute('aria-busy');};fr.readAsDataURL(blob);
+  }else{sheetURL=URL.createObjectURL(blob);const v=document.createElement('video');v.width=VID_W;v.height=VID_H;v.preload='metadata';v.src=sheetURL;v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.controls=true;v.addEventListener('loadedmetadata',()=>{if(revision===sheetRevision)sheetPrev.removeAttribute('aria-busy');});sheetPrev.appendChild(v);}
   if(mode==='link'){shShare.hidden=true;
     sheetMsg.textContent=tr('이미지를 길게 눌러 ‘사진 앱에 저장’을 고르세요. 컴퓨터에서는 오른쪽 클릭 후 ‘이미지를 다른 이름으로 저장’을 고르세요.');}
-  else{shShare.hidden=false;sheetMsg.textContent=saveMenuHint(kind);}
-  sheet.hidden=false;syncExportLayer();}
+  else{shShare.hidden=false;renderSaveMenuHint(kind);}
+  sheet.hidden=false;syncExportLayer();fitSaveSheet();
+}
+addEventListener('resize',fitSaveSheet);window.visualViewport?.addEventListener('resize',fitSaveSheet);
 shShare.addEventListener('click',async()=>{if(!sheetFile)return;const shared=sheetFile;
   try{await navigator.share({files:[new File([shared.blob],shared.filename,{type:shared.blob.type})],title:'mindful day'});const kind=shared.kind;closeSheet();say('사진 앱이나 선택한 앱에서 저장 결과를 확인해 주세요.');if(kind==='image')noteAppTourAction('image-saved');}
   catch(err){say(err&&err.name==='AbortError'?'저장 메뉴를 닫았어요.':'저장 메뉴를 열지 못했어요. 다시 눌러 주세요.');}});
@@ -1671,7 +1704,7 @@ async function deliver(blob,filename,kind){
   if(dl){try{await dl.save({filename,data:blob});if(kind==='image')noteAppTourAction('image-saved');say(`${label} 저장했어요.`);}catch(err){say(saveErr(err));}return;}
   if(inClaude){if(kind==='image'){openSheet(blob,filename,kind,'link');noteAppTourAction('image-created');say('이미지가 준비됐어요.');}else say('이 링크에서는 영상을 파일로 받을 수 없어요.');return;}
   const file=new File([blob],filename,{type:blob.type});
-  if(navigator.canShare&&navigator.canShare({files:[file]})){openSheet(blob,filename,kind,'web');if(kind==='image')noteAppTourAction('image-created');say(kind==='image'?'이미지가 준비됐어요.':'영상이 준비됐어요.');return;}
+  if(navigator.canShare&&navigator.canShare({files:[file]})){openSheet(blob,filename,kind,'web');if(kind==='image')noteAppTourAction('image-created');say(kind==='image'?'이미지가 준비됐어요.':'');return;}
   download(blob,filename);if(kind==='image')noteAppTourAction('image-saved');say(`${label} 저장했어요.`);}
 
 // 왼쪽은 글자 포함 포스터, 오른쪽은 빛망울과 배경만. 화면/녹화와 별도 캔버스로 PNG 생성.
@@ -2418,8 +2451,7 @@ function loadReviewedPaletteSet(){
 }
 addEventListener('focus',()=>{void refreshReviewedReferences();});
 document.addEventListener('visibilitychange',()=>{tiles.forEach(t=>t.exposureAt=null);if(!document.hidden)void refreshReviewedReferences();});
-$('singleMode').addEventListener('click',()=>setCanvasMode('single'));
-$('mixingMode').addEventListener('click',()=>setCanvasMode('mixing'));
+$('modeToggle').addEventListener('click',()=>setCanvasMode(S.canvasMode==='mixing'?'single':'mixing'));
 $('canvasMoodChoice').addEventListener('pointerdown',handleChoicePointer);
 $('skipMood').addEventListener('click',rejectMoodWords);
 $('previousMood').addEventListener('click',previousMoodPage);
@@ -2475,7 +2507,7 @@ function appTourCopy(){return {
  category:{body:L('주요 감정을 선택하세요.','Choose a main mood.')},
  colors:{body:L('컬러 버튼을 눌러 이 무드의 배색을 만나보세요.','Tap Colors to explore this mood’s palettes.')},
  slider:{body:L('여기에서 더 고를 수 있어요.\n컬러 목록을 좌우로 밀어보세요.','Find more colors here.\nSlide the row left or right.')},
- mode:{body:L('여러 개의 컬러를 동시에 고를 수도 있어요.','You can also choose several colors at once.')},
+ mode:{body:L('멀티를 켜면 여러 개의 컬러를 동시에 고를 수 있어요.','Turn on Multi to choose several colors at once.')},
  mix:{body:''},
  background:{body:L('작은 배경색 원으로 바탕도 바꿔볼 수 있어요.','Use these small swatches to change the background.')},
  save:{body:L('마음에 와닿는 컬러를 사진으로 남겨볼까요? 아래 저장 버튼을 눌러보세요.','Keep a color that speaks to you. Tap Save below.')},
@@ -2664,6 +2696,7 @@ void usageAnalytics.start();
 </script>
 
 </body></html>
+
 
 
 
