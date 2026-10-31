@@ -1530,7 +1530,11 @@ function drawPosterText(ctx,W,H,G,screen=false){if(new URLSearchParams(location.
 function renderPoster(ctx,W,H,withText=true){const G=groundColors();
   ctx.fillStyle=G.bg;ctx.fillRect(0,0,W,H);drawSceneOrbs(ctx,W,H);
   if(withText)drawPosterText(ctx,W,H,G);
-  else drawHeader(ctx,W,W*.07,z=>fontStr(S.ft,'t',z),z=>fontStr(S.fs,'s',z),S.title||'',S.sub||'',G.ink);
+  else{const pad=W*.07,fz=W*.026;
+    drawHeader(ctx,W,pad,z=>fontStr(S.ft,'t',z),z=>fontStr(S.fs,'s',z),S.title||'',S.sub||'',G.ink);
+    ctx.fillStyle=G.ink;ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.globalAlpha=.8;
+    footer(ctx,W,H,pad,fz,id=>fontStr(S.fs,'s',id),stampText(),colorNames());
+  }
 }
 function drawPoster(){syncExperienceBrand();renderPoster(px,pc.width,pc.height);}
 // 모바일에서는 같은 장면을 화면 전체로 펼치되, 문구와 푸터는 기존 포스터 영역에 배치.
@@ -2175,7 +2179,7 @@ function buildCode(backgroundOnly=false){
       layers:o.layers.map(L=>({c:tf(L.col).map(Math.round).join(','),r:r3(L.r),ox:r3(L.ox),oy:r3(L.oy),s:r3(clamp(1-(1-L.soft)*S.soft,0,.95)),a:r3(L.a)}))};})};
   const individualRows=S.reviewing&&feedbackReview?.targetIdx!=null?feedbackReview.feelings:S.orbFeelingRows||[];if(individualRows.length>1){D.feelings=individualRows.map(r=>[r.word?.en||'',lang==='ko'?r.word?.ko||'':'']);D.feel=null;}
   if(S.reviewing&&feedbackReview){D.drift=0;D.orbs=(feedbackReview.artworkScene||feedbackReview.scene).orbs.map(o=>({trail:0,ta:0,p:{x:o.position.x,y:o.position.y,s:o.scale,ph1:0,ph2:0,ph3:0,f1:0,f2:0,amp:0},layers:o.layers.map(l=>({c:l.col.join(','),r:l.r,ox:l.ox,oy:l.oy,s:l.soft,a:l.a}))}));}
-  if(backgroundOnly){D.feel=null;D.feelings=null;D.foot=['',''];}
+  if(backgroundOnly){D.feel=null;D.feelings=null;}
   const fams=[...new Set([...[ft,fs].filter(f=>f.id!=='pretendard').map(f=>f.id==='futura'?'family=Jost:wght@400;500':`family=${f.fam.replace(/ /g,'+')}:wght@${f.tw===f.sw?f.tw:Math.min(f.tw,f.sw)+';'+Math.max(f.tw,f.sw)}`)])];
   const esc=t=>t.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
   return `<!doctype html>
