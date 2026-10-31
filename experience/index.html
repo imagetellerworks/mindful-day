@@ -1344,17 +1344,33 @@ function paletteDescription(idx){
   return paletteNameCache.get(key);
 }
 function colorNames(){if(chosen.length>1)return '';return chosen.map(i=>paletteDescription(i)?.descriptor.en||colorName(i)).filter(Boolean).join('  /  ');}
+function createColorFooterState(){return{ready:false,text:'',alpha:0,from:0,target:0,at:0};}
+function stepColorFooterState(state,names,changing,now){
+  if(!state.ready){Object.assign(state,{ready:true,text:changing?'':names,alpha:!changing&&names?1:0,from:0,target:!changing&&names?1:0,at:now});state.from=state.alpha;}
+  const duration=state.target?240:180,t=Math.max(0,Math.min(1,(now-state.at)/duration)),ease=t*t*(3-2*t);
+  state.alpha=state.from+(state.target-state.from)*ease;
+  if(!changing&&state.alpha===0)state.text=names;
+  const target=!changing&&names===state.text&&names?1:0;
+  if(target!==state.target){state.from=state.alpha;state.target=target;state.at=now;}
+  return{text:state.text,alpha:state.alpha};
+}
+const colorFooterState=createColorFooterState();
+function colorFooterFrame(now=performance.now()){
+  const changing=chosen.some(i=>tiles[i].cur!==tiles[i].to)||!!S.catalogLoading;
+  const frame=stepColorFooterState(colorFooterState,changing?'':colorNames(),changing,now);
+  return chosen.length===1?frame:{text:'',alpha:0};
+}
 function colorName(idx){if(idx==null){if(!chosen.length)return '';idx=chosen[0];}const L=tiles[idx].cur.layers,body=tf(L[1].col),adj=hueWord(body,0);
   if(adj==='Cobalt'){const [brightness,chroma]=rgb2oklch(body),tone=brightness>=.72&&chroma<.18?'Light ':brightness<.5?'Deep ':'';return 'Cobalt '+tone+'Blue';}
   let noun=hueWord(tf(L[0].col),1);if(HUE_WORDS.some(x=>x[1]===adj&&x[2]===noun))noun=hueWord(tf(L[3].col),1);
   if(HUE_WORDS.some(x=>x[1]===adj&&x[2]===noun))noun={Ruby:'Heart',Coral:'Reef',Amber:'Hour',Golden:'Field',Citrus:'Grove',Mint:'Leaf',Jade:'Stone',Azure:'Bay',Cobalt:'Deep',Indigo:'Night',Violet:'Haze',Orchid:'Garden',Rose:'Quartz'}[adj]||'Light';
   return adj+' '+noun;}
 // 푸터: 날짜는 왼쪽, 구성색은 오른쪽. 긴 배색명은 날짜 위에서 줄바꿈한다.
-function footer(ctx,W,H,pad,fz,fnt,left,names){const y=H-pad*.85, gap=W*.05;
+function footer(ctx,W,H,pad,fz,fnt,left,names,animated=false){const frame=animated?colorFooterFrame():{text:names,alpha:1},baseAlpha=ctx.globalAlpha;names=frame.text;const y=H-pad*.85, gap=W*.05;
   ctx.font=fnt(fz);const lw=ctx.measureText(left).width;let sz=fz;ctx.font=fnt(sz);
   while(ctx.measureText(names).width>W-pad*2-lw-gap&&sz>fz*.72){sz-=fz*.04;ctx.font=fnt(sz);}
   const fits=ctx.measureText(names).width<=W-pad*2-lw-gap;
-  ctx.font=fnt(fz);ctx.fillText(left,pad,y);ctx.textAlign='right';
+  ctx.font=fnt(fz);ctx.fillText(left,pad,y);ctx.textAlign='right';ctx.globalAlpha=baseAlpha*frame.alpha;
   if(fits){ctx.font=fnt(sz);ctx.fillText(names,W-pad,y);}else{ctx.font=fnt(fz);const lines=[];let line='';for(const word of names.split(/\s+/)){const next=line?line+' '+word:word;if(line&&ctx.measureText(next).width>W-pad*2){lines.push(line);line=word;}else line=next;}if(line)lines.push(line);lines.forEach((text,i)=>ctx.fillText(text,W-pad,y-fz*1.6*(lines.length-i),W-pad*2));}
   ctx.textAlign='left';ctx.globalAlpha=1;}
 // 제목과 작은 문구를 두 줄로 가운데 정렬. 화면과 저장 결과에 동일하게 적용.
@@ -1420,6 +1436,7 @@ function captionLayoutForRows(ctx,W,H,rows,orbWidth=W){
   layout.forEach((caption,i)=>{const pl=placements[chosen.indexOf(rows[i].idx)];if(pl){pl.captionSide=caption.side;pl.captionOrderY=caption.orderY;pl.captionOrders=pl.captionOrders||{};pl.captionOrders[layoutKey]=caption.orderY;}});return layout;
 }
 function drawIndividualFeelings(ctx,W,H,rows,orbWidth=W){
+  if(typeof vstate!=='undefined'&&['prep','rec','making'].includes(vstate))return;
   if(typeof isShakeTourOpen==='function'&&isShakeTourOpen())return;
   const layout=captionLayoutForRows(ctx,W,H,rows,orbWidth);ctx.save();ctx.globalAlpha=1;ctx.textBaseline='top';ctx.fillStyle=groundColors().ink;
   layout.forEach(caption=>{const x=caption.left+caption.width/2;ctx.textAlign='center';ctx.font=`italic 500 ${caption.fontSize}px "Cormorant Garamond",Georgia,serif`;let y=caption.top;
@@ -1495,7 +1512,7 @@ function feelGlyph(ctx,W,H,text,alpha,sc){const display=typeof feel!=='undefined
   ctx.translate(W/2,H/2);ctx.scale(sc,sc);ctx.fillText(display,0,0);
   const ko=lang==='ko'?(typeof feel!=='undefined'&&feel?.text===text?feel.ko||FEEL_KO[text]:FEEL_KO[text]):'';if(ko){const ksz=document.body.classList.contains('wide-scene')?W*.035:W*10.7/Math.max(1,pc.clientWidth||W);drawKoreanFeeling(ctx,ko,0,sz*.55+ksz*.9,ksz);}
   ctx.restore();}
-function drawFeeling(ctx,W,H){if(typeof isShakeTourOpen==='function'&&isShakeTourOpen())return;const now=performance.now();
+function drawFeeling(ctx,W,H){if(typeof vstate!=='undefined'&&['prep','rec','making'].includes(vstate))return;if(typeof isShakeTourOpen==='function'&&isShakeTourOpen())return;const now=performance.now();
   const rows=S.reviewing&&feedbackReview?.targetIdx!=null?feedbackReview.selectedWord?feedbackReview.feelings:[]:S.orbFeelingRows||[];
   if(rows.length>1){drawIndividualFeelings(ctx,W,H,rows);return;}
   if(prevFeel){const e=(now-prevFeel.t0)/1000;if(e>.4)prevFeel=null;else feelGlyph(ctx,W,H,prevFeel.text,1-e/.4,1);}
@@ -1514,7 +1531,7 @@ function drawSceneOrbs(ctx,W,H,orbWidth=W){
     pl.lx=x;pl.ly=y;pl.lr=sc*.38;
     drawOrb(ctx,tiles[idx].cur,x*W,y*H,sc*orbWidth);});
 }
-function drawPosterText(ctx,W,H,G,screen=false){if(new URLSearchParams(location.search).get('showroom')==='1')return;
+function drawPosterText(ctx,W,H,G,screen=false,animatedFooter=false){if(new URLSearchParams(location.search).get('showroom')==='1')return;
   if(typeof isAppWelcomeOpen==='function'&&isAppWelcomeOpen())return;
   drawFeeling(ctx,W,H);
   const pad=W*.07;
@@ -1522,21 +1539,21 @@ function drawPosterText(ctx,W,H,G,screen=false){if(new URLSearchParams(location.
   ctx.fillStyle=G.ink;ctx.textBaseline='top';ctx.textAlign='left';
   // 아래 푸터: 날짜 · 시간 (왼쪽), 색 이름 (오른쪽)
   const fz=W*.026;ctx.font=fontStr(S.fs,'s',fz);ctx.globalAlpha=.8;ctx.textBaseline='alphabetic';
-  if(!screen)footer(ctx,W,H,pad,fz,id=>fontStr(S.fs,'s',id),stampText(),colorNames());
+  if(!screen)footer(ctx,W,H,pad,fz,id=>fontStr(S.fs,'s',id),stampText(),animatedFooter?'':colorNames(),animatedFooter);
   if(!chosen.length){ctx.textBaseline='middle';ctx.textAlign='center';ctx.font=fontStr('pretendard','s',W*.036);
     ctx.fillText(tr('컬러 하나를 골라 주세요'),W/2,H*.6);ctx.textAlign='left';}
 }
 // 저장/녹화는 항상 원래 9:16 포스터 캔버스를 사용. 모바일 배경과 메뉴는 포함하지 않음.
-function renderPoster(ctx,W,H,withText=true){const G=groundColors();
+function renderPoster(ctx,W,H,withText=true,animatedFooter=false){const G=groundColors();
   ctx.fillStyle=G.bg;ctx.fillRect(0,0,W,H);drawSceneOrbs(ctx,W,H);
-  if(withText)drawPosterText(ctx,W,H,G);
+  if(withText)drawPosterText(ctx,W,H,G,false,animatedFooter);
   else{const pad=W*.07,fz=W*.026;
     drawHeader(ctx,W,pad,z=>fontStr(S.ft,'t',z),z=>fontStr(S.fs,'s',z),S.title||'',S.sub||'',G.ink);
     ctx.fillStyle=G.ink;ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.globalAlpha=.8;
-    footer(ctx,W,H,pad,fz,id=>fontStr(S.fs,'s',id),stampText(),colorNames());
+    footer(ctx,W,H,pad,fz,id=>fontStr(S.fs,'s',id),stampText(),animatedFooter?'':colorNames(),animatedFooter);
   }
 }
-function drawPoster(){syncExperienceBrand();renderPoster(px,pc.width,pc.height);}
+function drawPoster(){syncExperienceBrand();renderPoster(px,pc.width,pc.height,!['prep','rec','making'].includes(vstate),true);}
 // 모바일에서는 같은 장면을 화면 전체로 펼치되, 문구와 푸터는 기존 포스터 영역에 배치.
 function drawMobileBackdrop(){if(new URLSearchParams(location.search).get('showroom')==='1')return;
   if(!document.body.classList.contains('is-story'))return;
@@ -1553,13 +1570,13 @@ function drawMobileBackdrop(){if(new URLSearchParams(location.search).get('showr
     mobilePx.save();mobilePx.translate((r.width-tw)/2,0);if(multiRows.length<=1)drawFeeling(mobilePx,tw,r.height);
     mobilePx.translate(0,10);if(!/^mindful\s*day$/i.test(String(S.title||'').trim()))drawHeader(mobilePx,tw,pad,z=>fontStr(S.ft,'t',z),z=>fontStr(S.fs,'s',z),S.title||'',S.sub||'',G.ink);mobilePx.restore();
     mobilePx.fillStyle=G.ink;mobilePx.font=fontStr(S.fs,'s',12);mobilePx.globalAlpha=.8;mobilePx.textBaseline='alphabetic';
-    footer(mobilePx,r.width,r.height-50,24,12,z=>fontStr(S.fs,'s',z),stampText(),colorNames());
-  }else{drawSceneOrbs(mobilePx,r.width,r.height);drawPosterText(mobilePx,r.width,r.height,G,true);}
+    footer(mobilePx,r.width,r.height-50,24,12,z=>fontStr(S.fs,'s',z),stampText(),'',true);
+  }else{drawSceneOrbs(mobilePx,r.width,r.height);drawPosterText(mobilePx,r.width,r.height,G,true,true);}
   mobilePx.restore();syncMobilePosterFooter();
 }
 function syncMobilePosterFooter(){
   const el=document.getElementById("mobilePosterFooter");if(!el)return;
-  const date=stampText(),names=colorNames();if($("mobileStamp").textContent!==date)$("mobileStamp").textContent=date;if($("mobileColorNames").textContent!==names)$("mobileColorNames").textContent=names;
+  const date=stampText(),frame=colorFooterFrame(),names=frame.text;if($("mobileStamp").textContent!==date)$("mobileStamp").textContent=date;if($("mobileColorNames").textContent!==names)$("mobileColorNames").textContent=names;const opacity=String(frame.alpha);if($("mobileColorNames").style.opacity!==opacity)$("mobileColorNames").style.opacity=opacity;
   const top=menuOpen?$("menuOverlay").getBoundingClientRect().top:null;
   const bottom=top!=null&&top>0?Math.max(82,innerHeight-top+12):82;
   const value=`calc(${bottom}px + env(safe-area-inset-bottom,0px))`;if(el.style.bottom!==value)el.style.bottom=value;
