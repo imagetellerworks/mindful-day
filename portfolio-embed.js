@@ -31,3 +31,31 @@ addEventListener('DOMContentLoaded',()=>{const link=document.getElementById('exp
 function send(){const r=link.getBoundingClientRect();parent.postMessage({type:'mindful-cta',href:link.href,rect:{left:r.left,top:r.top,width:r.width,height:r.height},color:getComputedStyle(link).color},origin)}
 const size=new ResizeObserver(send);size.observe(link);if(intro)size.observe(intro);new MutationObserver(send).observe(link,{attributes:true,attributeFilter:['href']});new MutationObserver(send).observe(document.body,{attributes:true,attributeFilter:['class','data-gallery-view']});addEventListener('resize',send);addEventListener('load',send);document.fonts?.ready.then(send);send()})
 })();
+
+// Reuse the original mobile artwork rules, including future layout refinements.
+// The original view controls keep their geometry for the ribbon anchor, but stay invisible.
+(()=>{
+ if(!document.documentElement.matches('.portfolio-embed.cards-embed'))return;
+ const live=document.createElement('style');live.id='portfolio-live-artwork';
+ document.head.append(live);
+ function mirror(rules){
+  let css='';
+  for(const rule of rules){
+   if(rule.type===CSSRule.STYLE_RULE){
+    const selectors=rule.selectorText.split(',').filter(selector=>/\.(?:stage|space|immersive(?:-art)?|bottom-controls|view-switch)(?![\w-])/.test(selector));
+    if(!selectors.length)continue;
+    const declarations=Array.from(rule.style).map(name=>name+':'+rule.style.getPropertyValue(name)+'!important').join(';');
+    css+=selectors.map(selector=>selector.includes('html:not(.portfolio-embed)')?selector.replaceAll('html:not(.portfolio-embed)','html.portfolio-embed.cards-embed'):'.portfolio-embed.cards-embed '+selector).join(',')+'{'+declarations+'}';
+   }else if(rule.cssRules){
+    const inner=mirror(rule.cssRules);if(inner)css+=rule.cssText.slice(0,rule.cssText.indexOf('{')+1)+inner+'}';
+   }
+  }
+  return css;
+ }
+ function sync(){
+  const original=Array.from(document.styleSheets).find(sheet=>sheet.href&&new URL(sheet.href).pathname.endsWith('/style.css'));
+  if(!original)return;
+  try{live.textContent='@media(max-width:760px){'+mirror(original.cssRules)+'.portfolio-embed.cards-embed .bottom-controls{display:flex!important;visibility:hidden!important;pointer-events:none!important}}';}catch{}
+ }
+ addEventListener('DOMContentLoaded',sync,{once:true});addEventListener('load',sync,{once:true});
+})();
