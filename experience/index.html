@@ -538,7 +538,7 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
         <div class="image-choice-preview"><canvas id="imageExportPreview" width="1080" height="1920" role="img" aria-label="저장할 포스터"></canvas></div>
         <div class="image-format-options" role="radiogroup" aria-label="저장할 구성"><button type="button" id="savePosterImg" role="radio" aria-checked="true">포스터<span>글자 포함</span></button><button type="button" id="saveBackgroundImg" role="radio" aria-checked="false">배경만<span>컬러만</span></button></div>
         <div class="image-choice-actions"><button type="button" class="btn desktop-file-save" id="saveImageToFile" hidden><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>파일로 저장</button><button type="button" class="btn" id="saveImageToPhotos"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 6h4l2-2h4l2 2h4v14H4Z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="12.5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>사진첩에 저장</button><button type="button" class="btn" id="saveImageCode"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>코드 복사</button></div>
-        <p class="image-choice-hint">포스터는 글자와 함께, 이미지는 컬러만 저장해요.</p>
+        <p class="image-choice-hint">포스터는 글자와 함께, 이미지는 컬러만 저장해요.</p><p class="image-choice-hint" id="desktopSaveHint" hidden></p>
       </div>
       <p class="status" id="status" role="status"></p>
       <div class="sheet" id="sheet" hidden>
@@ -697,6 +697,12 @@ const UI_EN={
   "사진첩에 저장": "Save to Photos",
   "파일로 저장": "Save file",
   "파일 다운로드를 시작했어요.": "File download started.",
+  "파일을 저장했어요.": "File saved.",
+  "파일을 저장하지 못했어요. 다시 시도해 주세요.": "Could not save the file. Please try again.",
+  "파일로 저장을 누르면 저장 위치를 고를 수 있어요.": "Choose Save file to select a save location.",
+  "파일 저장 위치는 브라우저 설정에서 선택해 주세요.": "Choose the download location in your browser settings.",
+  "Safari 설정 → 일반 → 파일 다운로드 위치에서 ‘다운로드할 때마다 묻기’를 선택하세요.": "In Safari Settings → General → File download location, choose Ask for each download.",
+  "브라우저의 다운로드 설정에서 저장 위치를 매번 묻도록 설정해 주세요.": "In your browser’s download settings, enable asking where to save each file.",
   "파일로 저장을 누르면 컴퓨터에 다운로드돼요.": "Choose Save file to download to your computer.",
   "사진 앱이나 다른 앱으로 보내려면 사진첩에 저장을 선택하세요.": "Choose Save to Photos to send it to Photos or another app.",
   "닫기": "Close",
@@ -831,7 +837,7 @@ function setLanguage(next,persist=true){
   if(persist){languagePreference=lang;try{localStorage.setItem('mindful-day-language-v2',lang);}catch(err){}}
   if(typeof appTour!=='undefined'){ $('replayAppTour').textContent=L('사용 방법 다시 보기','Show me how to use it');if(appTour.active)renderAppTour();}
   if(typeof appWelcome!=='undefined'&&appWelcome.active)renderAppWelcome();
-  updateShakeCoach();updateMenuToggle();updateAboutLanguage();updateModeUI();renderMoodChoices();showFeeling(chosen[0]);fit=null;resize();drawPoster();drawMobileBackdrop();
+  updateShakeCoach();updateMenuToggle();updateAboutLanguage();updateModeUI();updateDesktopSaveHint();renderMoodChoices();showFeeling(chosen[0]);fit=null;resize();drawPoster();drawMobileBackdrop();
 }
 
 // ================= 색 유틸 =================
@@ -1750,10 +1756,29 @@ const say=(t,duration=0)=>{clearTimeout(statusTimer);statusEl.textContent=tr(t);
 const saveErr=err=>err&&(err.code==='declined'||err.name==='AbortError')?'':err&&err.code==='rate_limited'?'저장 창이 이미 떠 있어요. 잠시 후 다시 눌러 주세요.':'저장하지 못했어요. 다시 눌러 주세요.';
 function download(blob,filename){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);}
 
+function canChooseFileLocation(){return !mobileSaveDevice&&typeof window.showSaveFilePicker==='function';}
+function desktopSaveHint(){
+ if(mobileSaveDevice||canChooseFileLocation())return '';
+ const safari=/Safari\//.test(navigator.userAgent)&&!/Chrome|Chromium|CriOS|Edg|OPR/.test(navigator.userAgent);
+ return tr(safari?'Safari 설정 → 일반 → 파일 다운로드 위치에서 ‘다운로드할 때마다 묻기’를 선택하세요.':'브라우저의 다운로드 설정에서 저장 위치를 매번 묻도록 설정해 주세요.');
+}
+function updateDesktopSaveHint(){const hint=$('desktopSaveHint');hint.textContent=desktopSaveHint();hint.hidden=!hint.textContent;}
+function requestFileDestination(filename,kind){
+ if(!canChooseFileLocation())return null;
+ const extension=kind==='image'?'.png':filename.endsWith('.webm')?'.webm':'.mp4',mime=kind==='image'?'image/png':extension==='.webm'?'video/webm':'video/mp4';
+ return window.showSaveFilePicker({id:'mindful-day-'+kind,suggestedName:filename,types:[{description:extension.slice(1).toUpperCase(),accept:{[mime]:[extension]}}]});
+}
+async function writeFileDestination(blob,filename,destination){
+ if(!destination){download(blob,filename);return 'download';}
+ let writable;
+ try{writable=await destination.createWritable();await writable.write(blob);await writable.close();return 'saved';}
+ catch(error){if(writable)try{await writable.abort();}catch(abortError){}throw error;}
+}
+
 const sheet=$('sheet'), sheetPrev=$('sheetPrev'), sheetMsg=$('sheetMsg'), shShare=$('shShare');
 const applePhotos=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 function saveMenuHintLines(kind){
-  if(!mobileSaveDevice)return[tr('파일로 저장을 누르면 컴퓨터에 다운로드돼요.'),tr('사진 앱이나 다른 앱으로 보내려면 사진첩에 저장을 선택하세요.')];
+  if(!mobileSaveDevice)return canChooseFileLocation()?[tr('파일로 저장을 누르면 저장 위치를 고를 수 있어요.'),tr('사진 앱이나 다른 앱으로 보내려면 사진첩에 저장을 선택하세요.')]:[tr('파일 저장 위치는 브라우저 설정에서 선택해 주세요.'),desktopSaveHint()];
   if(applePhotos)return[tr(`아래 버튼을 누른 뒤 ‘${kind==='image'?'이미지':'비디오'} 저장’을 선택하세요.`),tr('저장한 결과는 사진 앱에서 확인해 주세요.')];
   return[tr('아래 버튼을 눌러 저장할 앱을 선택하세요.'),tr('기기에 따라 저장 메뉴가 다를 수 있어요.')];
 }
@@ -1770,7 +1795,7 @@ function fitSaveSheet(){
 }
 let sheetFile=null, sheetURL='',sheetRevision=0,sheetReader=null;
 function closeSheet(){
- sheetRevision++;sheet.hidden=true;$('shFile').hidden=true;shShare.disabled=false;delete sheet.dataset.media;
+ sheetRevision++;sheet.hidden=true;$('shFile').hidden=true;$('shFile').disabled=false;shShare.disabled=false;delete sheet.dataset.media;
  if(sheetReader){const reader=sheetReader;sheetReader=null;reader.onload=null;reader.onloadend=null;if(reader.readyState===1)reader.abort();}
  sheetPrev.querySelectorAll('img,video,audio').forEach(media=>{if(typeof media.pause==='function')media.pause();media.removeAttribute('src');if(typeof media.load==='function')media.load();});
  sheetPrev.innerHTML='';sheetPrev.removeAttribute('aria-busy');sheetFile=null;statusEl.textContent='';
@@ -1788,8 +1813,17 @@ function openSheet(blob,filename,kind,mode){
   sheet.hidden=false;syncExportLayer();fitSaveSheet();
 }
 addEventListener('resize',fitSaveSheet);window.visualViewport?.addEventListener('resize',fitSaveSheet);
-function saveSheetFile(){
-  if(!sheetFile)return;const saved=sheetFile;download(saved.blob,saved.filename);closeSheet();say('파일 다운로드를 시작했어요.');if(saved.kind==='image')noteAppTourAction('image-saved');
+async function saveSheetFile(){
+ if(!sheetFile||$('shFile').disabled)return;const saved=sheetFile,revision=sheetRevision;$('shFile').disabled=true;
+ try{
+  const destination=await requestFileDestination(saved.filename,saved.kind);if(revision!==sheetRevision||sheetFile!==saved)return;
+  const result=await writeFileDestination(saved.blob,saved.filename,destination);if(revision!==sheetRevision||sheetFile!==saved)return;
+  closeSheet();say(result==='saved'?'파일을 저장했어요.':'파일 다운로드를 시작했어요.',5000);if(saved.kind==='image')noteAppTourAction('image-saved');
+ }catch(error){
+  if(revision!==sheetRevision||sheetFile!==saved)return;
+  if(error?.name==='AbortError'){closeSheet();return;}
+  say('파일을 저장하지 못했어요. 다시 시도해 주세요.',5000);
+ }finally{if(revision===sheetRevision&&sheetFile===saved)$('shFile').disabled=false;}
 }
 $('shFile').addEventListener('click',saveSheetFile);
 async function shareSheetFile(){
@@ -1807,8 +1841,8 @@ async function shareSheetFile(){
 shShare.addEventListener('click',shareSheetFile);
 $('shClose').addEventListener('click',()=>{closeSheet();if(appTour?.active&&tourStage()==='image-share')noteAppTourAction('dismiss');});
 
-async function deliver(blob,filename,kind,target='share'){
-  if(target==='file'){download(blob,filename);if(kind==='image')noteAppTourAction('image-saved');say('파일 다운로드를 시작했어요.');return;}
+async function deliver(blob,filename,kind,target='share',destination=null){
+  if(target==='file'){const result=await writeFileDestination(blob,filename,destination);if(kind==='image')noteAppTourAction('image-saved');say(result==='saved'?'파일을 저장했어요.':'파일 다운로드를 시작했어요.',5000);return;}
   if(!dlReady)await Promise.race([dlP,new Promise(r=>setTimeout(r,2000))]);
   const label=kind==='image'?'이미지를':'영상을';
   if(dl){try{await dl.save({filename,data:blob});if(kind==='image')noteAppTourAction('image-saved');say(`${label} 저장했어요.`);}catch(err){say(saveErr(err));}return;}
@@ -1836,22 +1870,23 @@ async function toggleImageChoices(){
 function renderImageExportPreview(){
   if(!imagePreview)return;const source=imagePreview[imageExportStyle],preview=$('imageExportPreview');preview.width=source.width;preview.height=source.height;preview.getContext('2d').drawImage(source,0,0);
   preview.setAttribute('aria-label',imageExportStyle==='poster'?tr('저장할 포스터'):tr('저장할 이미지'));
-  $('savePosterImg').setAttribute('aria-checked',String(imageExportStyle==='poster'));$('saveBackgroundImg').setAttribute('aria-checked',String(imageExportStyle==='background'));
+  $('savePosterImg').setAttribute('aria-checked',String(imageExportStyle==='poster'));$('saveBackgroundImg').setAttribute('aria-checked',String(imageExportStyle==='background'));updateDesktopSaveHint();
 }
 function selectImageExportStyle(style){if(imageBusy||!['poster','background'].includes(style))return;imageExportStyle=style;renderImageExportPreview();}
 function quickCaptureImage(){return toggleImageChoices();}
 imgBtn.addEventListener('click',toggleImageChoices);
 async function saveImage(backgroundOnly=false,target='share'){
-  if(imageBusy||imgBtn.disabled)return;const preview=imagePreview;noteAppTourAction('export');imageBusy=true;vidBtn.disabled=true;syncImageButtons();
+  if(imageBusy||imgBtn.disabled)return;const preview=imagePreview,filename=`mindfulday-${backgroundOnly?'background':'poster'}-${stamp()}.png`;noteAppTourAction('export');imageBusy=true;vidBtn.disabled=true;syncImageButtons();
   imgBtn.textContent=tr('이미지 만드는 중…');closeImageChoices();closeSheet();say('');
   try{
+    const destination=target==='file'?await requestFileDestination(filename,'image'):null;
     if(!backgroundOnly)await warmFonts();
     let canvas=preview&&preview[backgroundOnly?'background':'poster'];
     if(!canvas){canvas=document.createElement('canvas');canvas.width=IMG_W;canvas.height=IMG_H;renderPoster(canvas.getContext('2d'),IMG_W,IMG_H,!backgroundOnly);}
     const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
-    if(blob){usageAnalytics.track('image_created',{format:backgroundOnly?'background':'poster'});await deliver(blob,`mindfulday-${backgroundOnly?'background':'poster'}-${stamp()}.png`,'image',target);}
+    if(blob){usageAnalytics.track('image_created',{format:backgroundOnly?'background':'poster'});await deliver(blob,filename,'image',target,destination);}
     else say('이미지를 만들지 못했어요. 다시 눌러 주세요.');
-  }catch(err){say('이미지를 만들지 못했어요. 다시 눌러 주세요.');}
+  }catch(err){if(err?.name!=='AbortError')say(target==='file'?'파일을 저장하지 못했어요. 다시 시도해 주세요.':'이미지를 만들지 못했어요. 다시 눌러 주세요.',5000);}
   finally{imageBusy=false;imgBtn.textContent=tr('이미지로 저장');setV(vstate);}
 }
 $('quickCapture').addEventListener('click',quickCaptureImage);
@@ -2624,7 +2659,7 @@ function appTourCopy(){return {
  background:{body:L('작은 배경색 원으로 바탕도 바꿔볼 수 있어요.','Use these small swatches to change the background.')},
  save:{body:L('마음에 와닿는 컬러를 사진으로 남겨볼까요? 아래 저장 버튼을 눌러보세요.','Keep a color that speaks to you. Tap Save below.')},
  image:{body:mobileSaveDevice?L('포스터 또는 배경만을 고른 뒤 사진첩에 저장을 눌러보세요. 움직이는 컬러는 코드로 복사할 수도 있어요.','Choose Poster or Background, then Save to Photos. You can also copy the animated color as code.'):L('포스터 또는 배경만을 고른 뒤 파일로 저장을 눌러보세요. 움직이는 컬러는 코드로 복사할 수도 있어요.','Choose Poster or Background, then Save file. You can also copy the animated color as code.')},
- 'image-share':{body:L(applePhotos?'사진첩에 저장을 누르고, 기기 저장 메뉴에서 이미지 저장을 선택하세요.':mobileSaveDevice?'아래 저장 버튼으로 기기의 저장 메뉴를 열어주세요.':'파일로 저장을 누르면 컴퓨터에 다운로드돼요.',applePhotos?'Tap Save to Photos, then choose Save Image in your device’s menu.':mobileSaveDevice?'Use the save button below to open your device’s save menu.':'Use Save file to download it to your computer.')},
+ 'image-share':{body:L(applePhotos?'사진첩에 저장을 누르고, 기기 저장 메뉴에서 이미지 저장을 선택하세요.':mobileSaveDevice?'아래 저장 버튼으로 기기의 저장 메뉴를 열어주세요.':canChooseFileLocation()?'파일로 저장을 누르고 저장 위치를 선택하세요.':'파일로 저장하기 전, 브라우저의 다운로드 위치 설정을 확인해 주세요.',applePhotos?'Tap Save to Photos, then choose Save Image in your device’s menu.':mobileSaveDevice?'Use the save button below to open your device’s save menu.':canChooseFileLocation()?'Choose Save file, then select a save location.':'Before saving, check your browser’s download location settings.')},
  record:{body:L('움직이는 컬러도 남길 수 있어요. 녹화를 누르고, 한 번 더 누르면 끝나요.','Keep the colors in motion. Tap Record, then tap again to stop.')},
  idle:{body:''},
  rename:{body:L('이 컬러를 설명하는 감정을 바꿔볼까요?','Shall we try another feeling for this color?')},
