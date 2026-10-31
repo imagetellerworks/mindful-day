@@ -617,7 +617,7 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
   </section>
 </aside>
 <div class="export-layer" id="exportLayer"></div>
-<script src="adaptive-guide.js?v=588978588a99"></script>
+<script src="adaptive-guide.js?v=81b01a355741"></script>
 <script src="single-orb-model.js?v=8a1b1e00f52b"></script>
 <script src="palette-guide-data.js?v=4e88c11c2f17"></script>
 <script src="semantic-mixing-model.js?v=218e73a6f5d5"></script>
@@ -2254,7 +2254,7 @@ function setMenuOpen(open){
   document.body.classList.toggle('menu-open',menuOpen);syncCustomizePanel();
   if(!menuOpen)closeMSheet();resize();drawPoster();drawMobileBackdrop();
 }
-function closeQuickColors(){stopMultiIntro();quickColorOpen=false;document.body.classList.remove('colors-open');$('quickColorTray').hidden=true;$('quickColors').setAttribute('aria-expanded','false');stopCatalogPeek();}
+function closeQuickColors(){const wasOpen=quickColorOpen;stopMultiIntro();quickColorOpen=false;document.body.classList.remove('colors-open');$('quickColorTray').hidden=true;$('quickColors').setAttribute('aria-expanded','false');stopCatalogPeek();if(wasOpen)noteAppTourAction('colors-close');}
 function openQuickColors(){
   if(S.study||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return;
   hideShakeCoach();dismissMenuGuide();if(menuOpen)setMenuOpen(false);closeCatalogCategories();closeImageChoices();closeSheet();quickColorOpen=true;document.body.classList.add('colors-open');$('quickColorTray').hidden=false;$('quickColors').setAttribute('aria-expanded','true');
