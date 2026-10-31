@@ -1072,19 +1072,23 @@ function selectReviewedCatalogWord(key){
   else{const idx=tiles.findIndex((t,i)=>!chosen.includes(i)),tile=tiles[idx],palette=reviewedOrbPalette(row);Object.assign(tile,{reviewed:row,generated:false,cur:palette,from:palette,to:palette,dirty:true,meaningKey:null,exposureAt:null});tile.el.style.background=row.scene.background;Object.assign(S,{hue:0,sat:1,light:0,contrast:1,soft:1});toggle(idx);}
   showFeeling(chosen[0]);updateColorUI();refreshTiles();renderReviewedCatalog();noteAppTourAction('palette');
 }
-function applyRandomMoodCategory(){
- if(!reviewedExploration)return null;
- const choices=catalogCategoryList().filter(category=>category.count&&category.id!==catalogCategoryFor(S.catalogCategory)?.id),category=pick(choices);
- if(!category)return null;
- S.catalogCategory=category.id;S.exploreCategory=category.members.slice();
- const rows=catalogRowsForCategory(),currentBackground=groundColors().bg,background=rows.some(row=>row.scene.background===currentBackground)?currentBackground:rows[0]?.scene.background,pool=rows.filter(row=>row.scene.background===background),used=new Set();
+function applyCatalogCategory(category,random=false){
+ if(!reviewedExploration||!category||S.study||S.studyLoading||imageBusy||['prep','making'].includes(vstate))return null;
+ const rows=explorationReferences().filter(row=>category.members.includes(row.categoryId));if(!rows.length)return null;
+ stopMultiIntro();S.catalogCategory=category.id;S.exploreCategory=category.members.slice();
+ const currentBackground=groundColors().bg,keepBackground=random||S.canvasMode==='mixing',background=keepBackground&&rows.some(row=>row.scene.background===currentBackground)?currentBackground:rows[0].scene.background,pool=rows.filter(row=>row.scene.background===background),used=new Set();
  chosen.forEach(index=>{
-  const available=pool.filter(row=>!used.has(row.wordKey)),proposed=reviewedExploration.next({category:category.members,background,avoid:pool.filter(row=>used.has(row.wordKey)).map(row=>reviewedExploration.identity(row))}),row=available.find(row=>row.wordKey===proposed?.wordKey)||pick(available.length?available:pool);
-  if(row){used.add(row.wordKey);retarget(tiles[index],1.2,true,row);}
+  const available=pool.filter(row=>!used.has(row.wordKey)),proposed=random?reviewedExploration.next({category:category.members,background,avoid:pool.filter(row=>used.has(row.wordKey)).map(row=>reviewedExploration.identity(row))}):null,row=available.find(row=>row.wordKey===proposed?.wordKey)||(random?pick(available.length?available:pool):(available[0]||pool[0]));
+  if(row){used.add(row.wordKey);retarget(tiles[index],random?1.2:.65,true,row);}
  });
  Array.from($('catalogCategoryOptions').children).forEach(button=>button.setAttribute('aria-selected',String(button.dataset.categoryId===category.id)));
  if(chosen.length)S.combo=tiles[chosen[0]].combo;
- updateColorUI();refreshTiles();showFeeling(chosen[0]);showToast(L(category.ko,category.en));if(typeof strum==='function')strum();return category;
+ updateColorUI();refreshTiles();showFeeling(chosen[0]);return category;
+}
+function applyRandomMoodCategory(){
+ if(!reviewedExploration)return null;
+ const choices=catalogCategoryList().filter(category=>category.count&&category.id!==catalogCategoryFor(S.catalogCategory)?.id),category=applyCatalogCategory(pick(choices),true);
+ if(category){showToast(L(category.ko,category.en));if(typeof strum==='function')strum();}return category;
 }
 
 function closeCatalogCategories(restoreFocus=false){
@@ -1092,10 +1096,9 @@ function closeCatalogCategories(restoreFocus=false){
 }
 function chooseCatalogCategory(id,automatic=false){
   if(!automatic)stopMoodIntro();
-  const category=catalogCategoryFor(id);if(!category)return;S.catalogCategory=category.id;S.exploreCategory=category.members.slice();
-  Array.from($('catalogCategoryOptions').children).forEach(button=>button.setAttribute('aria-selected',String(button.dataset.categoryId===category.id)));
-  if(S.canvasMode!=='mixing'){const row=catalogRowsForCategory()[0];if(row)selectReviewedCatalogWord(row.wordKey);}updateColorUI();renderReviewedCatalog();noteAppTourAction('category');
+  if(applyCatalogCategory(catalogCategoryFor(id))){renderReviewedCatalog();noteAppTourAction('category');}
 }
+
 function positionCatalogDropdown(){
   const dialog=$('catalogCategoryDialog');if(!dialog.open)return;const anchor=$('colorBtn').closest('.footer-exports')?.getBoundingClientRect()||$('colorBtn').getBoundingClientRect(),pad=12;
   dialog.style.width=Math.min(380,anchor.width,innerWidth-pad*2)+'px';const bounds=dialog.getBoundingClientRect();
