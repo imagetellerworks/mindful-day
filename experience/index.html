@@ -617,7 +617,7 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
   </section>
 </aside>
 <div class="export-layer" id="exportLayer"></div>
-<script src="adaptive-guide.js?v=81b01a355741"></script>
+<script src="adaptive-guide.js?v=0a2fa8d7dd37"></script>
 <script src="single-orb-model.js?v=8a1b1e00f52b"></script>
 <script src="palette-guide-data.js?v=4e88c11c2f17"></script>
 <script src="semantic-mixing-model.js?v=218e73a6f5d5"></script>
@@ -1064,7 +1064,7 @@ function renderReviewedCatalog(){
 }
 function selectReviewedCatalogWord(key){
   if(multiIntro.active&&!multiIntro.selecting)stopMultiIntro();
-  if(!reviewedExploration||S.study||S.studyLoading||imageBusy||['prep','rec','making'].includes(vstate))return;
+  if(!reviewedExploration||S.study||S.studyLoading||imageBusy||['prep','making'].includes(vstate))return;
   const row=explorationReferences().find(r=>r.wordKey===key);if(!row)return;if(S.reviewing)endMoodReview();
   const existing=chosen.find(i=>tiles[i].reviewed?.wordKey===key);
   if(existing!=null){toggle(existing);renderReviewedCatalog();return;}
@@ -1102,7 +1102,7 @@ function positionCatalogDropdown(){
   Object.assign(dialog.style,{left:Math.max(pad,Math.min(innerWidth-bounds.width-pad,anchor.left))+'px',top:Math.max(pad,anchor.top-bounds.height-14)+'px'});
 }
 function openCatalogCategories(){
-  if(S.study||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return;
+  if(S.study||S.reviewing||imageBusy||['prep','making'].includes(vstate))return;
   hideShakeCoach();dismissMenuGuide();if(typeof stopCatalogPeek==='function')stopCatalogPeek();
   if(!reviewedExploration){cycleColors();return;}
   const dialog=$('catalogCategoryDialog'),box=$('catalogCategoryOptions');if(dialog.open){closeCatalogCategories(true);return;}
@@ -1129,7 +1129,7 @@ function startCatalogPeek(force=false){
 }
 function updateCatalogPeek(now){
   if(!catalogPeek.active)return;
-  if(!(typeof quickColorOpen!=='undefined'?quickColorOpen:menuOpen)||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate)||$('catalogCategoryDialog').open||aboutDialog.open||!sheet.hidden||!imageChoices.hidden){stopCatalogPeek();return;}
+  if(!(typeof quickColorOpen!=='undefined'?quickColorOpen:menuOpen)||S.reviewing||imageBusy||['prep','making'].includes(vstate)||$('catalogCategoryDialog').open||aboutDialog.open||!sheet.hidden||!imageChoices.hidden){stopCatalogPeek();return;}
   const strip=$('reviewedCatalogStrip'),hint=$('catalogDragHint'),ms=now-catalogPeek.startAt;
   if(ms>=3800){strip.scrollLeft=catalogPeek.scroll;stopCatalogPeek();return;}
   strip.scrollLeft=catalogPeek.scroll+catalogPeek.distance*catalogPeekProgress(ms);
@@ -1198,7 +1198,7 @@ function toggleCanvasModeWithIntro(){
 }
 function updateMultiIntro(now){
  if(!multiIntro.active)return;
- if(!quickColorOpen||S.canvasMode!=='mixing'||document.hidden||S.reviewing||S.study||imageBusy||['prep','rec','making'].includes(vstate)){stopMultiIntro();return;}
+ if(!quickColorOpen||S.canvasMode!=='mixing'||document.hidden||S.reviewing||S.study||imageBusy||['prep','making'].includes(vstate)){stopMultiIntro();return;}
  if(now<multiIntro.at)return;
  if(multiIntro.phase==='cue'){
   const before=chosen.length;addMultiIntroCandidate(multiIntro.candidate);if(chosen.length<=before){stopMultiIntro();return;}
@@ -1754,7 +1754,7 @@ function closeImageChoices(){imagePreviewRequest++;imagePreview=null;const previ
 function syncQuickExports(){
   const capture=$('quickCapture'),video=$('quickRecord');if(!capture||!video)return;
   capture.disabled=imgBtn.disabled;video.disabled=vidBtn.disabled;
-  for(const id of ['quickColors','colorBtn'])if($(id))$(id).disabled=imgBtn.disabled||['prep','rec','making'].includes(vstate);
+  for(const id of ['quickColors','colorBtn'])if($(id))$(id).disabled=imageBusy||['prep','making'].includes(vstate);
   const captureLabel=imageBusy?L('이미지 만드는 중…','Creating image…'):L('이미지 캡처','Capture image');
   capture.setAttribute('aria-label',captureLabel);capture.title=captureLabel;capture.setAttribute('aria-busy',String(imageBusy));
   const recording=vstate==='rec',time=recording?mss(recStart?(performance.now()-recStart)/1000:0):'';
@@ -2273,7 +2273,7 @@ function setMenuOpen(open){
 }
 function closeQuickColors(){const wasOpen=quickColorOpen;stopMultiIntro();quickColorOpen=false;document.body.classList.remove('colors-open');$('quickColorTray').hidden=true;$('quickColors').setAttribute('aria-expanded','false');stopCatalogPeek();if(wasOpen)noteAppTourAction('colors-close');}
 function openQuickColors(){
-  if(S.study||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return;
+  if(S.study||S.reviewing||imageBusy||['prep','making'].includes(vstate))return;
   hideShakeCoach();dismissMenuGuide();if(menuOpen)setMenuOpen(false);closeCatalogCategories();closeImageChoices();closeSheet();quickColorOpen=true;document.body.classList.add('colors-open');$('quickColorTray').hidden=false;$('quickColors').setAttribute('aria-expanded','true');
   renderReviewedCatalog();syncQuickBackground();noteAppTourAction('colors-open');startCatalogPeek();positionQuickColors();
 }
@@ -2720,8 +2720,8 @@ function updateMoodIntro(now){
 function appTourSeen(){try{return !!localStorage.getItem(APP_TOUR_KEY);}catch(error){return false;}}
 function appTourCopy(){return {
  touch:{body:L('터치해 색을 바꿔보세요.','Tap to change the colors.')},
- shake:{body:typeof mobileMotionAvailable==='function'&&!mobileMotionAvailable()?L('화면을 두 번 더 터치해 새로운 컬러를 만나보세요.','Tap the canvas twice more to discover new colors.'):L('휴대폰을 가볍게 흔들어 새로운 컬러를 만나보세요.','Gently shake your phone to discover new colors.')},
- practice:{body:shake.denied?L('동작 권한이 허용되지 않았어요. 터치로 계속하거나 권한을 다시 확인해보세요.','Motion access was not allowed. Continue by touch or retry access.'):shake.enabled?L('흔들기가 켜졌어요. 가볍게 흔들거나 터치해보세요.','Shake is enabled. Try a gentle shake or tap.'):L('두 번 더 터치하거나 가볍게 흔들어보세요.','Try two more taps or gentle shakes.')},
+ shake:{body:shake.denied?L('동작 권한을 다시 허용한 뒤 휴대폰을 흔들어주세요.','Allow motion access, then shake your phone.'):L('휴대폰을 가볍게 흔들어 무드를 바꿔보세요.','Gently shake your phone to change the mood.')},
+ practice:{body:shake.denied?L('동작 권한을 다시 허용한 뒤 휴대폰을 흔들어주세요.','Allow motion access, then shake your phone.'):appTour.flow?.practice>0?L('한 번 더 흔들어 다른 무드를 만나보세요.','Shake once more to discover another mood.'):L('휴대폰을 가볍게 흔들어 무드를 바꿔보세요.','Gently shake your phone to change the mood.')},
  mood:{body:L('아래 무드 버튼에서 주요 감정을 골라보세요.','Choose a main mood with the Mood button below.')},
  category:{body:L('주요 감정이 달라지는 모습을 살펴보세요.\n원하는 무드를 고른 뒤, 무드 버튼을 다시 눌러 닫아주세요.','Watch the main moods change.\nChoose a mood, then tap Mood again to close.')},
  colors:{body:L('컬러 버튼을 눌러 이 무드의 배색을 만나보세요.','Tap Colors to explore this mood’s palettes.')},
@@ -2744,8 +2744,8 @@ function appTourPlacement(rect,width,height,W,H){
 }
 function appTourTarget(){
  const stage=tourStage(),p=pc.getBoundingClientRect(),rects=[];
- if(['touch','practice'].includes(stage)){
-  const positions=[[.72,.26],[.27,.63],[.73,.70]],count=stage==='touch'?appTour.flow.touches:appTour.flow.practice,point=positions[count%positions.length];
+ if(stage==='touch'){
+  const positions=[[.72,.26],[.27,.63],[.73,.70]],count=appTour.flow.touches,point=positions[count%positions.length];
   const x=Math.max(42,Math.min(innerWidth-42,p.left+p.width*point[0])),y=Math.max(120,Math.min(innerHeight-150,p.top+p.height*point[1]));return{left:x-28,right:x+28,top:y-28,bottom:y+28};
  }
  if(stage==='rename'){for(const b of $('orbFeelingTargets').querySelectorAll('button')){const r=b.getBoundingClientRect();if(r.width&&r.height&&r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight){rects.push(r);break;}}}
@@ -2774,7 +2774,9 @@ function noteAppTourAction(type){
 }
 function noteAppTourTouch(){noteAppTourAction('touch');}
 function renderAppTour(){
- if(!appTour?.active)return;const stage=tourStage(),copy=appTourCopy()[stage],minimal=['touch','shake','practice','rename'].includes(stage);
+ if(!appTour?.active)return;const stage=tourStage();
+ if(['shake','practice'].includes(stage)&&!mobileMotionAvailable()){noteAppTourAction('motion-unavailable');return;}
+ const copy=appTourCopy()[stage],minimal=['touch','shake','practice','rename'].includes(stage);
  document.documentElement.classList.toggle('tour-shake-active',isShakeTourOpen());
  $('appTour').setAttribute('data-stage',stage);$('appTour').setAttribute('data-step',String(appTour.step));
  $('tourCard').hidden=minimal||['mix','idle','done'].includes(stage);$('tourMinimalClose').hidden=!minimal;
@@ -2807,7 +2809,7 @@ function updateAppTour(now,force=false){
  if(previous!==tourStage()){syncAppTourStage(previous);return;}
  const stage=tourStage();$('appTour').hidden=!!suspended||['mix','idle'].includes(stage);if($('appTour').hidden)return;
  const rect=appTourTarget(),W=innerWidth,H=innerHeight,ring=$('tourHighlight'),card=$('tourCard'),cue=$('tourTouchCue');
- const touching=stage==='touch',practicing=stage==='practice';cue.hidden=!(touching||practicing)||!!appTour.flow.pending;cue.setAttribute('aria-label',L('터치해 색 바꾸기','Tap to change the color'));Object.assign(cue.style,{left:((rect.left+rect.right)/2)+'px',top:((rect.top+rect.bottom)/2)+'px'});
+ const touching=stage==='touch';cue.hidden=!touching||!!appTour.flow.pending;cue.setAttribute('aria-label',L('터치해 색 바꾸기','Tap to change the color'));Object.assign(cue.style,{left:((rect.left+rect.right)/2)+'px',top:((rect.top+rect.bottom)/2)+'px'});
  ring.hidden=['touch','shake','practice','rename'].includes(stage);
  if(['touch','shake','practice'].includes(stage)){
   const tw=Math.min(290,W-32),text=$('tourTouchInstruction'),cx=isShakeTourOpen()?W/2:(rect.left+rect.right)/2;

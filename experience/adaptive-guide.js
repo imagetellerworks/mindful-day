@@ -11,6 +11,7 @@ function event(s,type,now=0){
  if(['save','image','image-share'].includes(s.stage)&&type==='image-saved')return enter(s,'record',now);
  if(s.stage==='record'&&type==='record-stop')return enter(s,'idle',now);
  if(['colors','slider','mode','mix','background'].includes(s.stage)&&type==='colors-close')return enter(s,'save',now);
+ if(type==='motion-unavailable'&&['shake','practice'].includes(s.stage))return enter(s,'mood',now);
  if(type==='settled'){if(s.pending)enter(s,s.pending,now);return s;}
  if(type==='tick'){if(s.stage==='idle'&&!s.exported&&!s.renamed&&s.idleTouches>=5&&now-s.startedAt>=30000&&now-s.enteredAt>=12000)enter(s,'rename',now);return s;}
  if(type==='review-open'){s.renamed=true;if(s.stage==='rename')s.wordOpened=true;return s;}
@@ -18,7 +19,7 @@ function event(s,type,now=0){
  const explore=type==='touch'||type==='shake';
  if(s.stage==='touch'&&type==='touch'){s.touches=Math.min(3,s.touches+1);if(s.touches===3)s.pending='shake';}
  else if(s.stage==='shake'&&type==='enable')enter(s,'practice',now);
- else if(['shake','practice'].includes(s.stage)&&explore){if(s.stage==='shake')enter(s,'practice',now);s.practice++;if(s.practice>=2)s.pending='mood';}
+ else if(['shake','practice'].includes(s.stage)&&type==='shake'){if(s.stage==='shake')enter(s,'practice',now);s.practice++;if(s.practice>=2)s.pending='mood';}
  else if(s.stage==='mood'&&type==='mood-open')enter(s,'category',now);
  else if(s.stage==='category'&&type==='mood-close')enter(s,'colors',now);
  else if(s.stage==='colors'&&type==='colors-open')enter(s,'slider',now);
