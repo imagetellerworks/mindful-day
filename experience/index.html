@@ -403,7 +403,7 @@ body.about-open{overflow:hidden}
 .wide-scene .menu-overlay{top:108px;bottom:108px;max-height:calc(100dvh - 216px);padding:0;width:min(380px,calc(100vw - 32px))}.wide-scene .menu-scroll{height:100%}.is-story .mobile-poster-footer{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 .colors-open #mobilePosterFooter{visibility:hidden}
 body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#appTour[data-stage="image-share"]:not([hidden])) #sheet{top:calc(50% + 36px);max-height:calc(100dvh - 140px)}
-.image-format-options{display:grid;grid-template-columns:1fr 1fr;gap:6px}.image-format-options button{border:1px solid var(--line);border-radius:9px;padding:8px 6px;background:transparent;color:var(--ui-ink);font:500 12px var(--f-body);cursor:pointer}.image-format-options button[aria-checked="true"]{background:var(--ui-ink);color:var(--ui-inverse)}.image-format-options span{display:block;font-weight:400;font-size:10px;margin-top:4px;opacity:.75}.image-choice-preview canvas{height:min(36dvh,340px)}
+.image-format-options{display:grid;grid-template-columns:1fr 1fr;gap:6px}.image-format-options button{border:1px solid var(--line);border-radius:9px;padding:8px 6px;background:transparent;color:var(--ui-ink);font:500 12px var(--f-body);cursor:pointer}.image-format-options button[aria-checked="true"]{background:var(--ui-ink);color:var(--ui-inverse)}.image-format-options span{display:block;font-weight:400;font-size:10px;margin-top:4px;opacity:.75}.image-choice-preview canvas{height:min(44dvh,420px,max(80px,calc(100dvh - 290px)))}
 #appTour[data-stage="image"] .tour-card,#appTour[data-stage="image-share"] .tour-card{padding:12px 34px 12px 14px;font-size:11px;line-height:1.5;background:rgba(246,246,247,.70)}
 @media(max-width:360px){.footer-exports{gap:6px}.quick-export,.is-story .menu-toggle,.is-story.menu-open #menuToggle{width:42px;min-width:42px;height:44px}.quick-label{font-size:9px}.quick-color-tray{width:calc(100vw - 32px)}}
 
@@ -434,7 +434,7 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
 .mode-toggle[aria-checked="true"]::before{background:var(--ui-ink,#24212b)}.mode-toggle[aria-checked="true"] .mode-toggle-thumb{transform:translateX(16px);background:var(--ui-inverse,#fff)}.mode-toggle:focus-visible{outline:1px solid currentColor;outline-offset:2px;border-radius:20px}
 /* Reserve a 9:16 media frame before the video metadata or image bytes arrive. */
 .export-layer .sheet[data-media]{padding:14px;text-align:center}
-.export-layer .sheet[data-media] .sheet-prev{position:relative;flex:none;height:var(--save-media-height,42dvh);width:calc(var(--save-media-height,42dvh)*.5625);max-width:100%;aspect-ratio:9/16;margin-inline:auto}
+.export-layer .sheet[data-media] .sheet-prev{position:relative;flex:none;height:var(--save-media-height,50dvh);width:calc(var(--save-media-height,50dvh)*.5625);max-width:100%;aspect-ratio:9/16;margin-inline:auto}
 .export-layer .sheet[data-media] .sheet-prev img,.export-layer .sheet[data-media] .sheet-prev video{display:block;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:9/16;object-fit:contain}
 .export-layer .sheet-msg{text-align:center;font-size:var(--save-hint-size,12px);line-height:1.6}.save-first-line{display:inline-block;white-space:nowrap}.save-second-line{display:block;margin-top:2px;white-space:normal;overflow-wrap:break-word}.export-layer .sheet-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}.export-layer .sheet-btns .btn{width:100%;min-width:0;min-height:44px;font-size:13px;padding:12px 6px}
 @media(prefers-reduced-motion:reduce){.mode-toggle::before,.mode-toggle-thumb{transition:none}}
@@ -540,7 +540,7 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
         <div class="image-choice-preview"><canvas id="imageExportPreview" width="1080" height="1920" role="img" aria-label="저장할 포스터"></canvas></div>
         <div class="image-format-options" role="radiogroup" aria-label="저장할 구성"><button type="button" id="savePosterImg" role="radio" aria-checked="true">포스터<span>글자 포함</span></button><button type="button" id="saveBackgroundImg" role="radio" aria-checked="false">배경만<span>제목 유지</span></button></div>
         <div class="image-choice-actions"><button type="button" class="btn desktop-file-save" id="saveImageToFile" hidden><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>파일로 저장</button><button type="button" class="btn" id="saveImageToPhotos"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 6h4l2-2h4l2 2h4v14H4Z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="12.5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>사진첩에 저장</button><button type="button" class="btn" id="saveImageCode"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>코드 복사</button></div>
-        <p class="image-choice-hint">포스터는 감정 글자와 함께, 배경은 제목과 보조문구를 남겨요.</p><p class="image-choice-hint" id="desktopSaveHint" hidden></p>
+        <p class="image-choice-hint" id="desktopSaveHint" hidden></p>
       </div>
       <p class="status" id="status" role="status"></p>
       <div class="sheet" id="sheet" hidden>
@@ -634,6 +634,7 @@ function readLanguagePreference(){
   try{const value=localStorage.getItem('mindful-day-language-v2');return value==='ko'||value==='en'?value:null;}catch(err){return null;}
 }
 const UI_EN={
+  "비디오 저장":"Save video",
   "더 세밀하게 조정하고 싶나요?":"Want finer control?","설정에서 크기·색조·소리를 조정해보세요.":"Adjust size, tone and sound in Settings.",
   "소리 설정":"Sound settings",
   "흔들기 권한 다시 확인":"Retry motion access","화면 터치로 계속 탐색할 수 있어요.":"You can keep exploring by touch.",
@@ -691,7 +692,6 @@ const UI_EN={
   "이미지 저장 방식": "Image export style",
   "포스터로 저장": "Save poster",
   "미리보기": "Preview",
-  "포스터는 감정 글자와 함께, 배경은 제목과 보조문구를 남겨요.": "Posters include emotion words; backgrounds keep the title and subtitle.",
   "영상 저장 진행 상태": "Video export progress",
   "준비": "Preparing",
   "녹화 중": "Recording",
@@ -816,7 +816,7 @@ const tr=text=>{const ko=originalUI(text);return lang==='en'?(UI_EN[ko]||text):k
 const L=(ko,en)=>lang==='en'?en:ko;
 const staticText=[],staticAttrs=[];
 function captureLanguageNodes(){
-  const skip='#selectionHint,#choiceSource,#choiceStatus,#moodChoices,#saveImg,#vidLabel,#count,#moodName,#presets,#ground,#soundBtnD,#status,#formats,#sheetMsg,#toast,#pause,#shakeLead,#shakeSub,#shakeEnable,#menuToggle';
+  const skip='#selectionHint,#choiceSource,#choiceStatus,#moodChoices,#saveImg,#vidLabel,#count,#moodName,#presets,#ground,#soundBtnD,#status,#formats,#sheetMsg,#toast,#pause,#shakeLead,#shakeSub,#shakeEnable,#menuToggle,#shShare';
   const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let node;
   while(node=walk.nextNode()){
     const key=node.nodeValue.trim();if(UI_EN[key]&&!node.parentElement.closest('script,style,'+skip))staticText.push({node,key,raw:node.nodeValue});
@@ -839,7 +839,7 @@ function setLanguage(next,persist=true){
   if(persist){languagePreference=lang;try{localStorage.setItem('mindful-day-language-v2',lang);}catch(err){}}
   if(typeof appTour!=='undefined'){ $('replayAppTour').textContent=L('사용 방법 다시 보기','Show me how to use it');if(appTour.active)renderAppTour();}
   if(typeof appWelcome!=='undefined'&&appWelcome.active)renderAppWelcome();
-  updateShakeCoach();updateMenuToggle();updateAboutLanguage();updateModeUI();updateDesktopSaveHint();renderMoodChoices();showFeeling(chosen[0]);fit=null;resize();drawPoster();drawMobileBackdrop();
+  updateShakeCoach();updateMenuToggle();updateAboutLanguage();updateModeUI();updateDesktopSaveHint();if(typeof sheetFile!=='undefined'&&sheetFile)shShare.textContent=tr(sheetFile.kind==='video'?'비디오 저장':'사진첩에 저장');renderMoodChoices();showFeeling(chosen[0]);fit=null;resize();drawPoster();drawMobileBackdrop();
 }
 
 // ================= 색 유틸 =================
@@ -1782,24 +1782,25 @@ async function writeFileDestination(blob,filename,destination){
 const sheet=$('sheet'), sheetPrev=$('sheetPrev'), sheetMsg=$('sheetMsg'), shShare=$('shShare');
 const applePhotos=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 function saveMenuHintLines(kind){
+  if(kind==='video')return[];
   if(!mobileSaveDevice)return canChooseFileLocation()?[tr('파일로 저장을 누르면 저장 위치를 고를 수 있어요.'),tr('사진 앱이나 다른 앱으로 보내려면 사진첩에 저장을 선택하세요.')]:[tr('파일 저장 위치는 브라우저 설정에서 선택해 주세요.'),desktopSaveHint()];
   if(applePhotos)return[tr(`아래 버튼을 누른 뒤 ‘${kind==='image'?'이미지':'비디오'} 저장’을 선택하세요.`),tr('저장한 결과는 사진 앱에서 확인해 주세요.')];
   return[tr('아래 버튼을 눌러 저장할 앱을 선택하세요.'),tr('기기에 따라 저장 메뉴가 다를 수 있어요.')];
 }
 function saveMenuHint(kind){return saveMenuHintLines(kind).join(' ');}
 function renderSaveMenuHint(kind){
-  sheetMsg.replaceChildren();saveMenuHintLines(kind).forEach((text,i)=>{const span=document.createElement('span');span.className=i?'save-second-line':'save-first-line';span.textContent=text;sheetMsg.append(span);});
+  sheetMsg.replaceChildren();const lines=saveMenuHintLines(kind);sheetMsg.hidden=!lines.length;lines.forEach((text,i)=>{const span=document.createElement('span');span.className=i?'save-second-line':'save-first-line';span.textContent=text;sheetMsg.append(span);});
 }
 function fitSaveSheet(){
   if(sheet.hidden||!sheet.dataset.media)return;
-  const viewport=window.visualViewport,H=viewport?.height||innerHeight,style=getComputedStyle(sheet),padding=parseFloat(style.paddingLeft)+parseFloat(style.paddingRight)+parseFloat(style.borderLeftWidth)+parseFloat(style.borderRightWidth),contentWidth=sheet.getBoundingClientRect().width-padding,mediaHeight=Math.min(H*.42,480);
+  const viewport=window.visualViewport,H=viewport?.height||innerHeight,style=getComputedStyle(sheet),padding=parseFloat(style.paddingLeft)+parseFloat(style.paddingRight)+parseFloat(style.borderLeftWidth)+parseFloat(style.borderRightWidth),contentWidth=sheet.getBoundingClientRect().width-padding,mediaHeight=Math.min(H*.50,540,contentWidth*16/9);
   sheet.style.setProperty('--save-media-height',mediaHeight+'px');sheet.style.removeProperty('--save-hint-size');
   const first=sheetMsg.querySelector('.save-first-line'),firstWidth=first?.getBoundingClientRect().width||0;
   if(first&&firstWidth>contentWidth){const font=parseFloat(getComputedStyle(first).fontSize)*contentWidth/firstWidth;sheet.style.setProperty('--save-hint-size',font+'px');}
 }
 let sheetFile=null, sheetURL='',sheetRevision=0,sheetReader=null;
 function closeSheet(){
- sheetRevision++;sheet.hidden=true;$('shFile').hidden=true;$('shFile').disabled=false;shShare.disabled=false;delete sheet.dataset.media;
+ sheetRevision++;sheet.hidden=true;sheetMsg.hidden=false;sheetMsg.replaceChildren();$('shFile').hidden=true;$('shFile').disabled=false;shShare.disabled=false;delete sheet.dataset.media;
  if(sheetReader){const reader=sheetReader;sheetReader=null;reader.onload=null;reader.onloadend=null;if(reader.readyState===1)reader.abort();}
  sheetPrev.querySelectorAll('img,video,audio').forEach(media=>{if(typeof media.pause==='function')media.pause();media.removeAttribute('src');if(typeof media.load==='function')media.load();});
  sheetPrev.innerHTML='';sheetPrev.removeAttribute('aria-busy');sheetFile=null;statusEl.textContent='';
@@ -1813,7 +1814,7 @@ function openSheet(blob,filename,kind,mode){
   $('shFile').hidden=mobileSaveDevice||mode==='link';
   if(mode==='link'){shShare.hidden=true;
     sheetMsg.textContent=tr('이미지를 길게 눌러 ‘사진 앱에 저장’을 고르세요. 컴퓨터에서는 오른쪽 클릭 후 ‘이미지를 다른 이름으로 저장’을 고르세요.');}
-  else{shShare.hidden=false;renderSaveMenuHint(kind);}
+  else{shShare.hidden=false;shShare.textContent=tr(kind==='video'?'비디오 저장':'사진첩에 저장');renderSaveMenuHint(kind);}
   sheet.hidden=false;syncExportLayer();fitSaveSheet();
 }
 addEventListener('resize',fitSaveSheet);window.visualViewport?.addEventListener('resize',fitSaveSheet);
@@ -2710,7 +2711,7 @@ function appTourCopy(){return {
  save:{body:L('마음에 와닿는 컬러를 사진으로 남겨볼까요? 아래 저장 버튼을 눌러보세요.','Keep a color that speaks to you. Tap Save below.')},
  image:{body:mobileSaveDevice?L('포스터 또는 배경만을 고른 뒤 사진첩에 저장을 눌러보세요. 움직이는 컬러는 코드로 복사할 수도 있어요.','Choose Poster or Background, then Save to Photos. You can also copy the animated color as code.'):L('포스터 또는 배경만을 고른 뒤 파일로 저장을 눌러보세요. 움직이는 컬러는 코드로 복사할 수도 있어요.','Choose Poster or Background, then Save file. You can also copy the animated color as code.')},
  'image-share':{body:L(applePhotos?'사진첩에 저장을 누르고, 기기 저장 메뉴에서 이미지 저장을 선택하세요.':mobileSaveDevice?'아래 저장 버튼으로 기기의 저장 메뉴를 열어주세요.':canChooseFileLocation()?'파일로 저장을 누르고 저장 위치를 선택하세요.':'파일로 저장하기 전, 브라우저의 다운로드 위치 설정을 확인해 주세요.',applePhotos?'Tap Save to Photos, then choose Save Image in your device’s menu.':mobileSaveDevice?'Use the save button below to open your device’s save menu.':canChooseFileLocation()?'Choose Save file, then select a save location.':'Before saving, check your browser’s download location settings.')},
- record:{body:L('움직이는 컬러도 남길 수 있어요. 녹화를 누르고, 한 번 더 누르면 끝나요.','Keep the colors in motion. Tap Record, then tap again to stop.')},
+ record:{body:L('컬러를 탐색하는 과정을 화면 녹화할 수 있어요.\n녹화를 한 번 더 누르면 끝나요.','Record your color exploration.\nTap Record, explore, then tap again to finish.')},
  idle:{body:''},
  rename:{body:L('이 컬러를 설명하는 감정을 바꿔볼까요?','Shall we try another feeling for this color?')},
  done:{body:''}
