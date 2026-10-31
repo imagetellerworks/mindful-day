@@ -19,7 +19,7 @@ function event(s,type,now=0){
  else if(s.stage==='shake'&&type==='enable')enter(s,'practice',now);
  else if(['shake','practice'].includes(s.stage)&&explore){if(s.stage==='shake')enter(s,'practice',now);s.practice++;if(s.practice>=2)s.pending='save';}
  else if(s.stage==='mood'&&type==='mood-open')enter(s,'category',now);
- else if(s.stage==='category'&&type==='category')enter(s,'colors',now);
+ else if(s.stage==='category'&&type==='mood-close')enter(s,'colors',now);
  else if(s.stage==='colors'&&type==='colors-open')enter(s,'slider',now);
  else if(s.stage==='slider'&&['palette','browse'].includes(type))enter(s,'mode',now);
  else if(s.stage==='mode'&&type==='mode')enter(s,'mix',now);

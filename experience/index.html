@@ -617,7 +617,7 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
   </section>
 </aside>
 <div class="export-layer" id="exportLayer"></div>
-<script src="adaptive-guide.js?v=2cdc64178dbc"></script>
+<script src="adaptive-guide.js?v=588978588a99"></script>
 <script src="single-orb-model.js?v=8a1b1e00f52b"></script>
 <script src="palette-guide-data.js?v=4e88c11c2f17"></script>
 <script src="semantic-mixing-model.js?v=218e73a6f5d5"></script>
@@ -1088,9 +1088,10 @@ function applyRandomMoodCategory(){
 }
 
 function closeCatalogCategories(restoreFocus=false){
-  const dialog=$('catalogCategoryDialog');if(dialog.open)dialog.close();document.body.classList.remove('moods-open');$('colorBtn').setAttribute('aria-expanded','false');if(restoreFocus)$('colorBtn').focus({preventScroll:true});
+  const dialog=$('catalogCategoryDialog'),wasOpen=dialog.open;stopMoodIntro();if(wasOpen)dialog.close();document.body.classList.remove('moods-open');$('colorBtn').setAttribute('aria-expanded','false');if(restoreFocus)$('colorBtn').focus({preventScroll:true});if(wasOpen)noteAppTourAction('mood-close');
 }
-function chooseCatalogCategory(id){
+function chooseCatalogCategory(id,automatic=false){
+  if(!automatic)stopMoodIntro();
   const category=catalogCategoryFor(id);if(!category)return;S.catalogCategory=category.id;S.exploreCategory=category.members.slice();
   Array.from($('catalogCategoryOptions').children).forEach(button=>button.setAttribute('aria-selected',String(button.dataset.categoryId===category.id)));
   if(S.canvasMode!=='mixing'){const row=catalogRowsForCategory()[0];if(row)selectReviewedCatalogWord(row.wordKey);}updateColorUI();renderReviewedCatalog();noteAppTourAction('category');
@@ -1102,7 +1103,7 @@ function positionCatalogDropdown(){
 }
 function openCatalogCategories(){
   if(S.study||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return;
-  hideShakeCoach();if(typeof stopCatalogPeek==='function')stopCatalogPeek();
+  hideShakeCoach();dismissMenuGuide();if(typeof stopCatalogPeek==='function')stopCatalogPeek();
   if(!reviewedExploration){cycleColors();return;}
   const dialog=$('catalogCategoryDialog'),box=$('catalogCategoryOptions');if(dialog.open){closeCatalogCategories(true);return;}
   const label=L('감정 고르기','Choose a feeling');dialog.setAttribute('aria-label',label);box.setAttribute('aria-label',label);box.replaceChildren();const current=catalogCategoryFor(S.catalogCategory);
@@ -2233,8 +2234,8 @@ function hideGuide(){guideGone=true;const guide=$('guide');guide.classList.add('
 
 let menuTipShown=false,menuTipTimer=0,menuTipHideTimer=0;
 function dismissMenuGuide(){clearTimeout(menuTipTimer);clearTimeout(menuTipHideTimer);$('menuGuide').hidden=true;}
-function offerMenuGuide(){if(typeof appTour!=='undefined'&&appTour.active)return;if(menuTipShown||menuOpen||!mq.matches||document.hidden)return;menuTipShown=true;
-  menuTipTimer=setTimeout(()=>{if(menuOpen||document.hidden)return;$('menuGuide').hidden=false;menuTipHideTimer=setTimeout(dismissMenuGuide,9000);},450);
+function offerMenuGuide(){if(typeof appTour!=='undefined'&&appTour.active)return;if(menuTipShown||menuOpen||quickColorOpen||$('catalogCategoryDialog').open||!mq.matches||document.hidden)return;menuTipShown=true;
+  menuTipTimer=setTimeout(()=>{if(menuOpen||quickColorOpen||$('catalogCategoryDialog').open||document.hidden||appTour?.active)return;$('menuGuide').hidden=false;menuTipHideTimer=setTimeout(dismissMenuGuide,9000);},450);
 }
 $('menuGuideClose').addEventListener('click',dismissMenuGuide);
 
@@ -2251,7 +2252,7 @@ function setMenuOpen(open){
 function closeQuickColors(){stopMultiIntro();quickColorOpen=false;document.body.classList.remove('colors-open');$('quickColorTray').hidden=true;$('quickColors').setAttribute('aria-expanded','false');stopCatalogPeek();}
 function openQuickColors(){
   if(S.study||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate))return;
-  hideShakeCoach();if(menuOpen)setMenuOpen(false);closeCatalogCategories();closeImageChoices();closeSheet();quickColorOpen=true;document.body.classList.add('colors-open');$('quickColorTray').hidden=false;$('quickColors').setAttribute('aria-expanded','true');
+  hideShakeCoach();dismissMenuGuide();if(menuOpen)setMenuOpen(false);closeCatalogCategories();closeImageChoices();closeSheet();quickColorOpen=true;document.body.classList.add('colors-open');$('quickColorTray').hidden=false;$('quickColors').setAttribute('aria-expanded','true');
   renderReviewedCatalog();syncQuickBackground();noteAppTourAction('colors-open');startCatalogPeek();positionQuickColors();
 }
 function positionQuickColors(){if(!quickColorOpen)return;const footer=document.querySelector('footer.site').getBoundingClientRect(),viewport=window.visualViewport;$('quickColorTray').style.bottom=Math.max(90,(viewport?.height||innerHeight)-footer.top+16)+'px';}
@@ -2679,13 +2680,28 @@ const APP_TOUR_KEY='mindful-day-ui-tour-v3';
 var appTour={active:false,dismissed:false,step:0,phase:'touch',flow:null,originalMenuOpen:false,focus:null,nextAt:0};
 function tourStage(){return appTour?.flow?.stage||'done';}
 function isShakeTourOpen(){return !!appTour?.active&&['shake','practice'].includes(tourStage());}
+const moodIntro={active:false,ids:[],index:0,nextAt:0};
+function stopMoodIntro(){moodIntro.active=false;}
+function startMoodIntro(){
+ stopMoodIntro();if(!appTour?.active||tourStage()!=='category'||!$('catalogCategoryDialog').open)return;
+ const ids=catalogCategoryList().filter(c=>c.count&&c.id!==S.catalogCategory).map(c=>c.id).slice(0,3);
+ Object.assign(moodIntro,{active:ids.length>0,ids,index:0,nextAt:performance.now()+700});
+}
+function updateMoodIntro(now){
+ if(!moodIntro.active)return;
+ if(!appTour?.active||tourStage()!=='category'||!$('catalogCategoryDialog').open){stopMoodIntro();return;}
+ if(document.hidden||menuOpen||aboutDialog.open||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate)||now<moodIntro.nextAt||chosen.some(i=>tiles[i].cur!==tiles[i].to))return;
+ const id=moodIntro.ids[moodIntro.index++];moodIntro.nextAt=now+2600;
+ if(moodIntro.index>=moodIntro.ids.length)stopMoodIntro();
+ chooseCatalogCategory(id,true);
+}
 function appTourSeen(){try{return !!localStorage.getItem(APP_TOUR_KEY);}catch(error){return false;}}
 function appTourCopy(){return {
  touch:{body:L('터치해 색을 바꿔보세요.','Tap to change the colors.')},
  shake:{body:typeof mobileMotionAvailable==='function'&&!mobileMotionAvailable()?L('화면을 두 번 더 터치해 새로운 컬러를 만나보세요.','Tap the canvas twice more to discover new colors.'):L('휴대폰을 가볍게 흔들어 새로운 컬러를 만나보세요.','Gently shake your phone to discover new colors.')},
  practice:{body:shake.denied?L('동작 권한이 허용되지 않았어요. 터치로 계속하거나 권한을 다시 확인해보세요.','Motion access was not allowed. Continue by touch or retry access.'):shake.enabled?L('흔들기가 켜졌어요. 가볍게 흔들거나 터치해보세요.','Shake is enabled. Try a gentle shake or tap.'):L('두 번 더 터치하거나 가볍게 흔들어보세요.','Try two more taps or gentle shakes.')},
  mood:{body:L('아래 무드 버튼에서 주요 감정을 골라보세요.','Choose a main mood with the Mood button below.')},
- category:{body:L('주요 감정을 선택하세요.','Choose a main mood.')},
+ category:{body:L('주요 감정이 달라지는 모습을 살펴보세요.\n원하는 무드를 고른 뒤, 무드 버튼을 다시 눌러 닫아주세요.','Watch the main moods change.\nChoose a mood, then tap Mood again to close.')},
  colors:{body:L('컬러 버튼을 눌러 이 무드의 배색을 만나보세요.','Tap Colors to explore this mood’s palettes.')},
  slider:{body:L('여기에서 더 고를 수 있어요.\n컬러 목록을 좌우로 밀어보세요.','Find more colors here.\nSlide the row left or right.')},
  mode:{body:L('멀티를 켜면 여러 개의 컬러를 동시에 고를 수 있어요.','Turn on Multi to choose several colors at once.')},
@@ -2722,12 +2738,15 @@ function syncAppTourStage(previous){
   if(stage==='idle'){try{localStorage.setItem(APP_TOUR_KEY,'done');}catch(error){}}
   if(['save','record','mood','rename'].includes(stage)){setMenuOpen(false);closeQuickColors();}
   if(['slider','mode','mix','background'].includes(stage)&&!quickColorOpen)openQuickColors();
+  if(previous==='category'&&stage!=='category')stopMoodIntro();
+  if(stage==='category')startMoodIntro();
   if(stage==='slider'&&typeof startCatalogPeek==='function')startCatalogPeek(true);
  }
  renderAppTour();
 }
 function noteAppTourAction(type){
  if(!appTour?.active)return;
+ if(['touch','shake'].includes(type)&&tourStage()==='category')stopMoodIntro();
  if(['touch','shake'].includes(type)&&($('appTour').hidden&& !['mix','idle'].includes(tourStage())||isAppWelcomeOpen()||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate)))return;
  const previous=tourStage();AdaptiveGuide.event(appTour.flow,type,performance.now());syncAppTourStage(previous);
 }
@@ -2753,13 +2772,13 @@ function startAppTour(){
  closeQuickColors();hideGuide();dismissMenuGuide();clearTimeout(shake.offerTimer);$('shakeCoach').hidden=true;setMenuOpen(false);$('appTour').hidden=false;renderAppTour();$('tourTouchCue').focus({preventScroll:true});return true;
 }
 function endAppTour(completed=false){
- if(!appTour?.active)return;appTour.active=false;appTour.dismissed=true;$('appTour').hidden=true;document.documentElement.classList.remove('tour-shake-active');renderOrbFeelingTargets();menuTipShown=true;
+ if(!appTour?.active)return;stopMoodIntro();appTour.active=false;appTour.dismissed=true;$('appTour').hidden=true;document.documentElement.classList.remove('tour-shake-active');renderOrbFeelingTargets();menuTipShown=true;
  try{localStorage.setItem(APP_TOUR_KEY,completed?'done':'skipped');}catch(error){}
  setMenuOpen(appTour.originalMenuOpen);appTour.focus?.focus?.({preventScroll:true});
 }
 function updateAppTour(now,force=false){
  if(!appTour?.active||!force&&now<appTour.nextAt)return;appTour.nextAt=now+100;
- const previous=tourStage();
+ updateMoodIntro(now);const previous=tourStage();
  if(previous==='rename')AdaptiveGuide.event(appTour.flow,S.reviewing?'review-open':'review-close',now);
  const suspended=menuOpen||S.reviewing||imageBusy||['prep','rec','making'].includes(vstate)||aboutDialog.open||!sheet.hidden&&tourStage()!=='image-share'||!imageChoices.hidden&&tourStage()!=='image'||document.hidden;
  if(!suspended){if(chosen.every(i=>tiles[i].cur===tiles[i].to)&&!placements.some(p=>p.touchMove||p.shakeMotion))AdaptiveGuide.event(appTour.flow,'settled',now);AdaptiveGuide.event(appTour.flow,'tick',now);}
@@ -2794,7 +2813,7 @@ $('tourTouchCue').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '
 $('tourWordTarget').addEventListener('click',()=>{const button=[...$('orbFeelingTargets').querySelectorAll('button')].find(b=>{const r=b.getBoundingClientRect();return r.width&&r.height&&r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight;});if(button)button.click();});
 $('tourShakeNext').addEventListener('click',()=>noteAppTourAction('enable'));$('tourMinimalClose').addEventListener('click',()=>endAppTour());$('tourShakeEnable').addEventListener('click',enableShake);$('tourShakeCue').addEventListener('click',enableShake);
 $('tourNext').addEventListener('click',()=>{if(tourStage()==='mode')noteAppTourAction('mode');else if(tourStage()==='background')noteAppTourAction('background-skip');else if(tourStage()==='save')noteAppTourAction('continue');});
-function dismissAppTourHint(){if(!appTour?.active)return;if(['image','image-share'].includes(tourStage())){closeImageChoices();closeSheet();}if(tourStage()==='category')closeCatalogCategories();noteAppTourAction('dismiss');}
+function dismissAppTourHint(){if(!appTour?.active)return;if(['image','image-share'].includes(tourStage())){closeImageChoices();closeSheet();}if(tourStage()==='category'){closeCatalogCategories(true);return;}noteAppTourAction('dismiss');}
 $('tourClose').addEventListener('click',dismissAppTourHint);$('tourSkip').addEventListener('click',()=>endAppTour());
 document.addEventListener('pointerdown',e=>{if(!appTour?.active||$('appTour').hidden||$('tourCard').hidden||e.target?.closest?.('#appTour,button,input,select,textarea,summary,a,#quickColorTray,#catalogCategoryDialog,#imageChoices,#sheet'))return;e.preventDefault();e.stopPropagation();dismissAppTourHint();},true);
 $('replayAppTour').addEventListener('click',()=>{aboutDialog.close();openAppWelcome();});
