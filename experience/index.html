@@ -413,9 +413,15 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
 .is-story .menu-overlay .menu-scroll{height:100%;max-height:100%;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;padding:0 12px 14px;gap:12px;scrollbar-gutter:auto}
 .settings-heading{position:sticky;top:0;z-index:3;flex:none;min-height:48px;padding:6px 0;background:var(--popup-bg);border-bottom:1px solid var(--line)}.settings-heading h2{font-size:14px}.settings-heading button{height:32px;width:32px;font-size:24px}
 .is-story .menu-overlay #more .more-body{gap:12px}.is-story .menu-overlay .group{gap:8px}.is-story .menu-overlay .group h3{font-size:12px}.is-story .menu-overlay .ctl{gap:4px}.is-story #settingsSound{display:none}
-.settings-audio{display:none;position:fixed;z-index:45;left:auto;right:calc(max(12px,env(safe-area-inset-right,0px)) + min(380px,calc(100vw - 84px)) + 16px);bottom:calc(16px + env(safe-area-inset-bottom,0px))}.is-story.menu-open .settings-audio{display:block}
-.settings-audio #soundBtn,.settings-audio #soundBtn[aria-pressed="true"]{display:grid;place-items:center;width:44px;height:44px;min-height:44px;padding:0;border:0;border-radius:12px;background:rgba(28,26,34,.6);color:#fff;cursor:pointer}.settings-audio #soundBtn .ic{display:grid;place-items:center;width:24px;height:24px;color:inherit}.settings-audio #soundBtn .ic svg{display:block;width:21px;height:21px}.settings-audio #soundBtn .rl{display:none}
 .is-story.menu-open .story-stage{pointer-events:auto}
+
+/* One evenly spaced row: Home, Save, Record, Mood, Colors, Sound, Settings. */
+.footer-exports{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));width:min(356px,100%);gap:8px;align-items:start}
+.footer-exports .quick-export,.is-story .footer-exports .menu-toggle,.is-story.menu-open .footer-exports #menuToggle{width:100%;min-width:0;max-width:none;height:44px;margin:0;padding:0;justify-self:stretch;align-items:center;justify-content:center}
+.footer-exports #soundBtn,.footer-exports #soundBtn[aria-pressed="true"]{display:flex;flex-direction:row;aspect-ratio:auto;gap:0;background:rgba(28,26,34,.6);color:#fff;border:0;border-radius:12px}
+.footer-exports #soundBtn .ic{display:grid;place-items:center;width:19px;height:19px;color:inherit}.footer-exports #soundBtn .ic svg{display:block;width:19px;height:19px}.footer-exports #soundBtn .rl{color:var(--mobile-ink,var(--ink))}
+@media(max-width:380px){.footer-exports{gap:6px}}
+@media(max-width:340px){.footer-exports{gap:4px}}
 </style>
 
 <header class="experience-brand" id="experienceBrand" aria-label="MINDFUL DAY"><h1 class="experience-wordmark">MINDFUL<br>DAY<span class="brand-dot" aria-hidden="true"></span></h1><p class="experience-tagline" id="experienceTagline">What’s your mood today?</p></header>
@@ -546,7 +552,6 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
   <div class="color-tray-controls"><div id="quickModeSlot"></div><div class="quick-background" id="quickBackground" role="group" aria-label="배경색"><span>배경</span><button type="button" data-ground="white" aria-label="오프화이트 배경" aria-pressed="false" style="--swatch:#e6e6e6"></button><button type="button" data-ground="dark" aria-label="어두운 배경" aria-pressed="false" style="--swatch:#121019"></button></div></div>
   <div id="quickPaletteSlot"></div>
 </section>
-<aside class="settings-audio" id="settingsAudio" aria-label="소리 설정"></aside>
 <div id="catalogDragHint" class="catalog-drag-hint" hidden></div>
 <dialog class="category-dialog" id="catalogCategoryDialog" aria-label="감정 고르기" aria-modal="false"><div class="category-options" id="catalogCategoryOptions" role="listbox" aria-label="감정 고르기"></div></dialog>
 
@@ -893,7 +898,7 @@ function captionProtectedBands(ctx,W,H){
  const visible=id=>{const el=document.getElementById(id);if(!el||el.hidden)return null;const css=getComputedStyle(el),r=el.getBoundingClientRect();return css.display==='none'||css.visibility==='hidden'||!r.width||!r.height?null:r;};
  for(const id of ['experienceBrand','experienceHeaderActions','langBtn']){const r=visible(id);if(r){hasHeader=true;top=Math.max(top,(r.bottom-poster.top)*scale+pad);}}
  if(!hasHeader||!document.body.classList.contains('is-story')||!/^mindful\s*day$/i.test(String(S.title||'').trim()))top=Math.max(top,canonical.top);
- for(const id of ['mobilePosterFooter','menuToggle','quickColorTray','menuOverlay','settingsAudio']){const r=visible(id);if(r)bottom=Math.min(bottom,(r.top-poster.top)*scale-pad);}
+ for(const id of ['mobilePosterFooter','menuToggle','quickColorTray','menuOverlay']){const r=visible(id);if(r)bottom=Math.min(bottom,(r.top-poster.top)*scale-pad);}
  const footer=document.querySelector('footer.site');if(footer){const css=getComputedStyle(footer),r=footer.getBoundingClientRect();if(css.display!=='none'&&css.visibility!=='hidden'&&r.width&&r.height)bottom=Math.min(bottom,(r.top-poster.top)*scale-pad);}
  // The wide backdrop paints its date above the fixed bottom controls.
  if(document.body.classList.contains('wide-scene'))bottom=Math.min(bottom,H-102*scale);
@@ -2038,7 +2043,7 @@ function positionQuickColors(){if(!quickColorOpen)return;const footer=document.q
 function syncQuickBackground(){if(typeof GROUNDS==='undefined')return;const bg=groundColors().bg;for(const b of $('quickBackground').querySelectorAll('[data-ground]')){const row=GROUNDS.find(g=>g[0]===b.dataset.ground);b.setAttribute('aria-pressed',String(row?.[2]===bg));}}
 $('menuToggle').addEventListener('click',()=>setMenuOpen(!menuOpen));$('closeSettings').addEventListener('click',()=>{setMenuOpen(false);$('menuToggle').focus();});
 $('quickColors').addEventListener('click',()=>{if(quickColorOpen)closeQuickColors();else openQuickColors();});
-document.addEventListener('pointerdown',e=>{if(quickColorOpen&&!e.target?.closest?.('#quickColorTray,#quickColors,#appTour'))closeQuickColors();if(menuOpen&&!e.target?.closest?.('#menuOverlay,#menuToggle,#settingsAudio,#appTour'))setMenuOpen(false);});
+document.addEventListener('pointerdown',e=>{if(quickColorOpen&&!e.target?.closest?.('#quickColorTray,#quickColors,#appTour'))closeQuickColors();if(menuOpen&&!e.target?.closest?.('#menuOverlay,#menuToggle,#appTour'))setMenuOpen(false);});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&(menuOpen||quickColorOpen)){e.preventDefault();const colors=quickColorOpen;closeQuickColors();setMenuOpen(false);$(colors?'quickColors':'menuToggle').focus();}});
 addEventListener('resize',positionQuickColors);window.visualViewport?.addEventListener('resize',positionQuickColors);
 function alignLanguageToggle(){const button=$('langBtn');if(!button)return;let center;
@@ -2586,7 +2591,7 @@ function setupAtlasHome(){const params=new URLSearchParams(location.search),home
 // ================= 시작 =================
 setupAtlasHome();
 exportLayer.append(imageChoices,sheet,statusEl);setupCatalogDrag();
-relocate();$('quickModeSlot').append($('modeSwitch'));$('quickPaletteSlot').append($('railTiles'));$('settingsAudio').append($('soundBtn'));updateMenuToggle();
+relocate();$('quickModeSlot').append($('modeSwitch'));$('quickPaletteSlot').append($('railTiles'));$('menuToggle').before($('soundBtn'));$('soundBtn').className='quick-export';$('soundBtn').querySelector('.rl').classList.add('quick-label');updateMenuToggle();
 if(reviewedExploration)activateReviewedPalette(tiles[chosen[0]]);
 updateColorUI();renderPresets();renderGround();refreshTiles();setV('idle');updateFormats();soundUI();
 captureLanguageNodes();
@@ -2655,6 +2660,7 @@ void usageAnalytics.start();
 </script>
 
 </body></html>
+
 
 
 
