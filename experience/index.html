@@ -538,7 +538,7 @@ body:has(#appTour[data-stage="image"]:not([hidden])) #imageChoices,body:has(#app
       <div class="image-choices" id="imageChoices" role="group" aria-label="이미지 저장 방식" hidden>
         <div class="image-choice-header"><span>미리보기</span><button type="button" class="image-choice-close" id="closeImagePreview" aria-label="닫기"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m3 3 10 10M13 3 3 13" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button></div>
         <div class="image-choice-preview"><canvas id="imageExportPreview" width="1080" height="1920" role="img" aria-label="저장할 포스터"></canvas></div>
-        <div class="image-format-options" role="radiogroup" aria-label="저장할 구성"><button type="button" id="savePosterImg" role="radio" aria-checked="true">포스터<span>글자 포함</span></button><button type="button" id="saveBackgroundImg" role="radio" aria-checked="false">배경만<span>제목 유지</span></button></div>
+        <div class="image-format-options" role="radiogroup" aria-label="저장할 구성"><button type="button" id="savePosterImg" role="radio" aria-checked="true">포스터 스타일<span>감정단어 포함</span></button><button type="button" id="saveBackgroundImg" role="radio" aria-checked="false">이미지만<span>감정단어 제외</span></button></div>
         <div class="image-choice-actions"><button type="button" class="btn desktop-file-save" id="saveImageToFile" hidden><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>파일로 저장</button><button type="button" class="btn" id="saveImageToPhotos"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 6h4l2-2h4l2 2h4v14H4Z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="12.5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>사진첩에 저장</button><button type="button" class="btn" id="saveImageCode"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>코드 복사</button></div>
         <p class="image-choice-hint" id="desktopSaveHint" hidden></p>
       </div>
@@ -644,7 +644,7 @@ const UI_EN={
   "저장한 결과는 사진 앱에서 확인해 주세요.":"Find the saved result in Photos.",
   "아래 버튼을 눌러 저장할 앱을 선택하세요.":"Choose an app with the button below.",
   "기기에 따라 저장 메뉴가 다를 수 있어요.":"Save options may vary by device.",
-  "무드":"Mood","컬러 고르기":"Choose colors","무드 고르기":"Choose a mood","설정":"Settings","설정 열기":"Open settings","설정 닫기":"Close settings","세부 설정":"Detailed settings","빠른 조작":"Quick controls","홈":"Home","저장":"Save","녹화":"Record","저장할 구성":"Export content","포스터":"Poster","배경만":"Background","글자 포함":"With text","컬러만":"Colors only","제목 유지":"Keep title","오프화이트 배경":"Off-white background","어두운 배경":"Dark background",
+  "무드":"Mood","컬러 고르기":"Choose colors","무드 고르기":"Choose a mood","설정":"Settings","설정 열기":"Open settings","설정 닫기":"Close settings","세부 설정":"Detailed settings","빠른 조작":"Quick controls","홈":"Home","저장":"Save","녹화":"Record","저장할 구성":"Export content","포스터":"Poster","포스터 스타일":"Poster style","감정단어 포함":"With emotion words","이미지만":"Image only","감정단어 제외":"Without emotion words","배경만":"Background","글자 포함":"With text","컬러만":"Colors only","제목 유지":"Keep title","오프화이트 배경":"Off-white background","어두운 배경":"Dark background",
   "빠른 저장": "Quick save",
   "멀티 배색 200세트 살펴보기": "Explore 200 color combinations",
   "후보색이 바뀌는 간격": "Candidate color interval",
@@ -1860,7 +1860,7 @@ async function deliver(blob,filename,kind,target='share',destination=null){
   if(navigator.canShare&&navigator.canShare({files:[file]})){openSheet(blob,filename,kind,'web');if(kind==='image')noteAppTourAction('image-created');say(kind==='image'?'이미지가 준비됐어요.':'');return;}
   download(blob,filename);if(kind==='image')noteAppTourAction('image-saved');say(`${label} 저장했어요.`);}
 
-// 왼쪽은 글자 포함 포스터, 오른쪽은 빛망울과 배경만. 화면/녹화와 별도 캔버스로 PNG 생성.
+// 감정 단어 포함 여부를 고른다. 제목·푸터는 두 구성에 유지하며 별도 캔버스로 PNG 생성.
 async function prepareMobileImageFiles(poster,background){
   if(!mobileSaveDevice)return null;
   const files={},time=stamp();
@@ -2713,7 +2713,7 @@ function appTourCopy(){return {
  mix:{body:''},
  background:{body:L('작은 배경색 원으로 바탕도 바꿔볼 수 있어요.','Use these small swatches to change the background.')},
  save:{body:L('마음에 와닿는 컬러를 사진으로 남겨볼까요? 아래 저장 버튼을 눌러보세요.','Keep a color that speaks to you. Tap Save below.')},
- image:{body:mobileSaveDevice?L('포스터 또는 배경만을 고른 뒤 사진첩에 저장을 눌러보세요. 움직이는 컬러는 코드로 복사할 수도 있어요.','Choose Poster or Background, then Save to Photos. You can also copy the animated color as code.'):L('포스터 또는 배경만을 고른 뒤 파일로 저장을 눌러보세요. 움직이는 컬러는 코드로 복사할 수도 있어요.','Choose Poster or Background, then Save file. You can also copy the animated color as code.')},
+ image:{body:mobileSaveDevice?L('원하는 저장 방식을 고른 뒤 사진첩에 저장을 눌러보세요. 움직이는 컬러는 코드로 복사할 수도 있어요.','Choose Poster style or Image only, then Save to Photos. You can also copy the animated color as code.'):L('원하는 저장 방식을 고른 뒤 파일로 저장을 눌러보세요. 움직이는 컬러는 코드로 복사할 수도 있어요.','Choose Poster style or Image only, then Save file. You can also copy the animated color as code.')},
  'image-share':{body:L(applePhotos?'사진첩에 저장을 누르고, 기기 저장 메뉴에서 이미지 저장을 선택하세요.':mobileSaveDevice?'아래 저장 버튼으로 기기의 저장 메뉴를 열어주세요.':canChooseFileLocation()?'파일로 저장을 누르고 저장 위치를 선택하세요.':'파일로 저장하기 전, 브라우저의 다운로드 위치 설정을 확인해 주세요.',applePhotos?'Tap Save to Photos, then choose Save Image in your device’s menu.':mobileSaveDevice?'Use the save button below to open your device’s save menu.':canChooseFileLocation()?'Choose Save file, then select a save location.':'Before saving, check your browser’s download location settings.')},
  record:{body:L('컬러를 탐색하는 과정을 화면 녹화할 수 있어요.\n녹화를 한 번 더 누르면 끝나요.','Record your color exploration.\nTap Record, explore, then tap again to finish.')},
  idle:{body:''},
