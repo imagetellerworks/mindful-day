@@ -1,8 +1,10 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><script id="welcome-gate">
+document.documentElement.classList.add('experience-loading');
 (()=>{const p=new URLSearchParams(location.search);let seen=false;try{seen=!!localStorage.getItem('mindful-day-welcome-v1');}catch(error){}
 if(p.get('tour')!=='off'&&!p.has('study')&&!p.has('set')&&(p.get('tour')==='1'||!seen))document.documentElement.classList.add('welcome-pending');})();
 </script>
-<style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+<style id="experience-critical-style">html.experience-loading{background:#e6e6e6!important}html.experience-loading body{opacity:0!important;pointer-events:none!important}
+:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
 .app-tour{position:fixed;inset:0;z-index:90;pointer-events:none}.app-tour[hidden]{display:none}.tour-highlight{position:fixed;box-sizing:border-box;border:1px solid rgba(255,255,255,.95);border-radius:16px;box-shadow:0 0 0 9999px rgba(15,15,24,.24);pointer-events:none}.tour-card{position:fixed;box-sizing:border-box;width:min(340px,calc(100vw - 28px));max-height:calc(100dvh - 28px);overflow:auto;padding:20px;border:1px solid rgba(35,32,45,.12);border-radius:18px;background:rgba(246,246,247,.70);color:#24212b;box-shadow:0 10px 40px rgba(20,18,28,.14);pointer-events:auto;font:400 13px/1.65 var(--f-body);text-align:left;text-shadow:none;-webkit-text-stroke:0}.tour-card header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px}.tour-progress{font-size:11px;opacity:.6}.tour-close{display:grid;place-items:center;width:44px;height:44px;border:0;background:none;color:inherit;cursor:pointer}.tour-card h2{margin:0 0 8px;font:500 17px/1.45 var(--f-body);word-break:keep-all}.tour-card p{margin:0;word-break:keep-all}.tour-card ul{list-style:none;padding:0;margin:14px 0 0}.tour-card li{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:12px}.tour-card li svg{width:22px;height:22px;flex:none}.tour-card .stop-icon{display:none}.tour-card nav{display:flex;align-items:center;gap:10px;margin-top:18px}.tour-card nav button{min-height:44px;padding:8px 10px;border:0;border-radius:22px;font:400 12px/1.4 var(--f-body);cursor:pointer;color:inherit;background:transparent}.tour-card nav button:disabled{opacity:.3;cursor:default}.tour-card nav #tourNext{margin-left:auto;background:#24212b;color:#fff;padding-inline:18px}.tour-card nav #tourSkip{font-size:11px;opacity:.7}.tour-card button:focus-visible{outline:2px solid #655c93;outline-offset:3px}.about-tour{margin:18px 0}.about-tour button{border:0;background:none;padding:6px 0;color:inherit;text-decoration:underline;text-underline-offset:4px;font:400 12px/1.5 var(--f-body);cursor:pointer}
 
 .welcome-pending .lab-badge,.welcome-pending .brand,.welcome-pending #experienceBrand,.welcome-pending #experienceHeaderActions,.welcome-pending #langBtn,.welcome-pending #appHome,.welcome-pending footer.site,.welcome-pending #menuToggle,.welcome-pending #mobilePosterFooter,.welcome-pending #orbFeelingTargets,.welcome-pending #canvasMoodChoice,.welcome-pending #newPaletteInvite,.welcome-pending #autoMoodActions,.welcome-pending #guide,.welcome-pending #menuGuide,.welcome-pending #shakeCoach{visibility:hidden!important;pointer-events:none!important}
@@ -2851,6 +2853,19 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.canvasC
 
 function atlasHomeTarget(){return 'https://jiinahn.com/';}
 function setupAtlasHome(){const params=new URLSearchParams(location.search),home=$('appHome');home.hidden=params.has('study');home.href=atlasHomeTarget(params.get('view'),location.hostname,location.origin,location.pathname);}
+// Keep the pre-initialization editor hidden until the actual artwork is painted.
+async function initializeExperience(){
+ try{
+  if(document.fonts)await document.fonts.ready;
+  fit=null;
+  if(!await loadResearchStudy()){await refreshReviewedReferences();if(!loadReviewedPaletteSet())await loadMultiCatalogSet();}
+ }catch(error){showToast(L('기본 컬러로 시작할게요.','Starting with the available colors.'));}
+ finally{
+  S.canvasChoiceReady=true;if(isAppWelcomeOpen())renderAppWelcome();S.nextChoiceAt=performance.now()+1300;
+  requestAnimationFrame(now=>{try{frame(now);}finally{document.documentElement.classList.remove('experience-loading');}});
+  setTimeout(offerAppTour,650);
+ }
+}
 // ================= 시작 =================
 setupAtlasHome();
 exportLayer.append(imageChoices,sheet,statusEl);setupCatalogDrag();
@@ -2864,8 +2879,8 @@ S.catalogLoading=new URLSearchParams(location.search).has('set')&&!new URLSearch
 setLanguage(languagePreference||deviceLanguage(),false);
 addEventListener('languagechange',()=>{if(!languagePreference)setLanguage(deviceLanguage(),false);});
 showFeeling(chosen[0]);
-warmFonts();
-(document.fonts?document.fonts.ready:Promise.resolve()).then(async()=>{fit=null;if(!await loadResearchStudy()){await refreshReviewedReferences();if(!loadReviewedPaletteSet())await loadMultiCatalogSet();}S.canvasChoiceReady=true;if(isAppWelcomeOpen())renderAppWelcome();S.nextChoiceAt=performance.now()+1300;requestAnimationFrame(frame);setTimeout(offerAppTour,650);});
+void warmFonts().catch(()=>{});
+void initializeExperience();
 // Existing public-site anonymous usage connection.
 function createUsageAnalytics(options,ctx=globalThis){
  const doc=ctx.document,nav=ctx.navigator,win=ctx.window||ctx,perf=ctx.performance;
